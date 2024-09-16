@@ -1,8 +1,19 @@
 {
   "name": "turbo-repo",
   "version": "0.6.9",
+  "devDependencies": {
+    "@yuki/prettier-config": "workspace:*",
+    "@turbo/gen": "^2.1.2",
+    "turbo": "^2.1.2",
+    "prettier": "latest",
+    "eslint": "latest"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.1.27",
+  "prettier": "@yuki/prettier-config",
   "private": true,
-  "type": "module",
   "scripts": {
     "gen": "turbo generate",
     "build": "turbo run build",
@@ -16,21 +27,10 @@
     "lint:fix": "turbo run lint --continue -- --fix --cache --cache-location .cache/.eslintcache",
     "typecheck": "turbo run typecheck"
   },
-  "devDependencies": {
-    "@yuki/prettier-config": "workspace:*",
-    "@turbo/gen": "^2.1.2",
-    "turbo": "^2.1.2",
-    "prettier": "latest",
-    "eslint": "latest"
-  },
-  "engines": {
-    "node": ">=18"
-  },
-  "packageManager": "bun@1.1.27",
+  "type": "module",
   "workspaces": [
     "apps/*",
     "tooling/*",
     "packages/*"
-  ],
-  "prettier": "@yuki/prettier-config"
+  ]
 }
