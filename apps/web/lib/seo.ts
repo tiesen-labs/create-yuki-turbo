@@ -11,8 +11,9 @@ interface Params {
 }
 
 export const seo = (params: Params): Metadata => {
-  const title = params.title ? `${params.title} | Yuki` : 'Yuki'
-  const description = params.description ?? 'Clean and typesafe monorepo using Turbo'
+  const title = params.title ? `${params.title} | Create Yuki Turbo` : 'Create Yuki Turbo'
+  const description =
+    params.description ?? 'Clean and typesafe starter monorepo using Turborepo along with Next.js'
   const images = params.images ?? ['/api/og']
   const url = params.url ? `${getBaseUrl()}/${params.url}` : getBaseUrl()
 
@@ -20,8 +21,8 @@ export const seo = (params: Params): Metadata => {
     metadataBase: new URL(getBaseUrl()),
     title,
     description,
-    applicationName: 'Yuki',
     alternates: { canonical: url },
+    applicationName: 'Create Yuki Turbo',
     twitter: { card: 'summary_large_image' },
     openGraph: { url, images, type: 'website', siteName: 'Yuki' },
     icons: { icon: '/favicon.ico', shortcut: '/favicon-16x16.png', apple: '/apple-touch-icon.png' },
