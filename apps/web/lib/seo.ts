@@ -12,7 +12,7 @@ interface Params {
 
 export const seo = (params: Params): Metadata => {
   const title = params.title ? `${params.title} | Yuki` : 'Yuki'
-  const description = params.description ?? 'Clean and simple starter repo using the Turborepo'
+  const description = params.description ?? 'Clean and typesafe monorepo using Turbo'
   const images = params.images ?? ['/api/og']
   const url = params.url ? `${getBaseUrl()}/${params.url}` : getBaseUrl()
 

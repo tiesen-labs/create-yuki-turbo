@@ -11,13 +11,13 @@ const Page: NextPage = () => (
       <Image src="/tiesen.png" width={2500} height={400} alt="tiesen" />
 
       <Typography level="h1" className="text-center brightness-150">
-        Clean and simple{' '}
+        Clean and typesafe{' '}
         <span className="bg-gradient-to-br from-info to-success bg-clip-text text-transparent">
-          typesafe Turborepo
+          monorepo
         </span>{' '}
-        with{' '}
+        using{' '}
         <span className="bg-gradient-to-br from-success to-warning bg-clip-text text-transparent">
-          Next.js
+          Turbo
         </span>
       </Typography>
 
