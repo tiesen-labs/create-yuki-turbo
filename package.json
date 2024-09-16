@@ -1,5 +1,5 @@
 {
-  "name": "create-yuki-repo",
+  "name": "create-yuki-turbo",
   "version": "0.6.9",
   "devDependencies": {
     "@yuki/prettier-config": "workspace:*",
