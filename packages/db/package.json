@@ -11,7 +11,7 @@
     "build": "tsc",
     "push": "bun with-env prisma db push",
     "studio": "bun with-env prisma studio",
-    "db:generate": "bun with-env prisma generate",
+    "db:generate": "prisma generate",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "format": "prisma format && prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
