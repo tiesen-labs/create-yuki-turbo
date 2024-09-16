@@ -3,11 +3,8 @@
   "ui": "tui",
   "tasks": {
     "topo": { "dependsOn": ["^topo"] },
-    "build": {
-      "dependsOn": ["^build", "^db:generate"],
-      "outputs": [".cache/tsbuildinfo.json", "dist/**"]
-    },
-    "dev": { "dependsOn": ["^db:generate"], "cache": false, "persistent": false },
+    "build": { "dependsOn": ["^build"], "outputs": [".cache/tsbuildinfo.json", "dist/**"] },
+    "dev": { "cache": false, "persistent": false },
     "format": { "outputs": [".cache/.prettiercache"], "outputLogs": "new-only" },
     "lint": { "dependsOn": ["^topo", "^build"], "outputs": [".cache/.eslintcache"] },
     "typecheck": { "dependsOn": ["^topo", "^build"], "outputs": [".cache/tsbuildinfo.json"] },
