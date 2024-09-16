@@ -14,9 +14,9 @@
     "clean": { "cache": false },
     "//#clean": { "cache": false },
     "ui-add": { "cache": false, "interactive": true },
-    "push": { "cache": false, "interactive": true },
-    "studio": { "cache": false, "interactive": true },
-    "db:generate": { "cache": false, "interactive": true }
+    "push": { "cache": false },
+    "studio": { "cache": false },
+    "db:generate": { "cache": false }
   },
   "globalEnv": ["PORT"],
   "globalPassThroughEnv": [
