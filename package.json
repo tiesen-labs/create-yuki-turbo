@@ -15,7 +15,6 @@
   "prettier": "@yuki/prettier-config",
   "private": true,
   "scripts": {
-    "gen": "turbo generate",
     "build": "turbo run build",
     "dev": "turbo dev",
     "ui-add": "turbo run ui-add",
