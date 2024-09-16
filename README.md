@@ -65,3 +65,5 @@ The generator sets up the package.json, tsconfig.json and a index.ts, as well as
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+<img src="./.github/yuki.gif" alt="yuki" width="100%" />
