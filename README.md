@@ -1,5 +1,7 @@
 # create-yuki-repo
 
+Clean and typesafe monorepo using Turbo
+
 ## Installation
 
 ```bash
