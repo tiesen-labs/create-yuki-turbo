@@ -10,7 +10,10 @@
     "typecheck": { "dependsOn": ["^topo", "^build"], "outputs": [".cache/tsbuildinfo.json"] },
     "clean": { "cache": false },
     "//#clean": { "cache": false },
-    "ui-add": { "cache": false, "interactive": true }
+    "ui-add": { "cache": false, "interactive": true },
+    "gnr": { "cache": false, "interactive": true },
+    "push": { "cache": false, "interactive": true },
+    "studio": { "cache": false, "persistent": true }
   },
   "globalEnv": ["PORT"],
   "globalPassThroughEnv": [
