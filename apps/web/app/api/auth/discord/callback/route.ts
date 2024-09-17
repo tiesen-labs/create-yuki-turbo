@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 import { lucia, OAuth2RequestError } from '@yuki/auth/lucia'
 import { db } from '@yuki/db'
 
-import { discord } from '../config'
+import { discord } from '~/app/api/auth/discord/config'
 
 export const GET = async (req: NextRequest) => {
   const url = new URL(req.url)

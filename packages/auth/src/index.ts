@@ -1,9 +1,9 @@
 import 'server-only'
 
+import type { Session, User } from '@prisma/client'
 import { cookies } from 'next/headers'
 import { cache } from 'react'
 
-import type { Session, User } from '@prisma/client'
 import { lucia } from './lucia'
 
 type Auth = null | (Session & { user: User })

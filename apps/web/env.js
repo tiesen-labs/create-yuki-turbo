@@ -14,8 +14,8 @@ export const env = createEnv({
    * This way you can ensure the app isn't built with invalid env vars.
    */
   server: {
-    VERCEL_PROJECT_PRODUCTION_URL: z.string().optional(),
     DATABASE_URL: z.string(),
+    VERCEL_PROJECT_PRODUCTION_URL: z.string().optional(),
   },
 
   /**

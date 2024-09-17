@@ -4,8 +4,8 @@ import { NextResponse } from 'next/server'
 
 import { generateState } from '@yuki/auth/lucia'
 
-import { env } from '@/env'
-import { discord } from './config'
+import { discord } from '~/app/api/auth/discord/config'
+import { env } from '~/env'
 
 export const GET = async (req: NextRequest) => {
   const state = generateState()

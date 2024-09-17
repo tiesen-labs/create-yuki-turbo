@@ -4,8 +4,8 @@ import { auth } from '@yuki/auth'
 import { SessionProvider } from '@yuki/auth/react'
 import { cn, GeistMono, GeistSans, ThemeProvider } from '@yuki/ui'
 
-import { seo } from '@/lib/seo'
-import { TRPCReactProvider } from '@/lib/trpc/react'
+import { seo } from '~/lib/seo'
+import { TRPCReactProvider } from '~/lib/trpc/react'
 
 const RootLayout: React.FC<React.PropsWithChildren> = async ({ children }) => {
   const session = await auth()

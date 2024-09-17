@@ -1,3 +1,9 @@
 import baseConfig from '@yuki/eslint-config/base'
 
-export default [...baseConfig]
+/** @type {import('typescript-eslint').Config} */
+export default [
+  {
+    ignores: [],
+  },
+  ...baseConfig,
+]

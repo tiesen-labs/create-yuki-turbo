@@ -1,5 +1,6 @@
 'use client'
 
+import type { QueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { loggerLink, unstable_httpBatchStreamLink } from '@trpc/client'
@@ -8,10 +9,9 @@ import SuperJSON from 'superjson'
 
 import type { AppRouter } from '@yuki/api'
 
-import type { QueryClient } from '@tanstack/react-query'
-import { env } from '@/env'
-import { getBaseUrl } from '../utils'
-import { createQueryClient } from './query-client'
+import { env } from '~/env'
+import { createQueryClient } from '~/lib/trpc/query-client'
+import { getBaseUrl } from '~/lib/utils'
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined
 const getQueryClient = () => {
