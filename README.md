@@ -14,12 +14,19 @@ This is a template for creating a new application with monorepo structure using 
 
 ```text
 apps
- └─ web
+  └─ web
       ├─ Next.js 14
       ├─ React 18
-      └─ Tailwind CSS
+      ├─ Tailwind CSS
+      └─ E2E Typesafe API Server & Client
 packages
- └─ ui
+  ├─ api
+  |   └─ tRPC v11 router definition
+  ├─ auth
+  |   └─ Authentication using lucia & arctic
+  ├─ db
+  |   └─ Typesafe db calls using Prisma
+  └─ ui
       └─ Start of a UI package for the webapp using shadcn-ui
 tooling
   ├─ eslint
