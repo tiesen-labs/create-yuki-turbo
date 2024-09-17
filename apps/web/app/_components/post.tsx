@@ -22,10 +22,11 @@ export const Post: React.FC = () => {
   return (
     <div className="w-full max-w-xs space-y-4">
       {post ? (
-        <p className="truncate">Your most recent post: {post.content}</p>
+        <p className="truncate">Most recent post: {post.content}</p>
       ) : (
         <p>You have no posts yet.</p>
       )}
+
       <form
         onSubmit={(e) => {
           e.preventDefault()

@@ -1,15 +1,19 @@
 import type { NextPage } from 'next'
 import Image from 'next/image'
+import Link from 'next/link'
 
+import { auth } from '@yuki/auth'
 import { icons } from '@yuki/ui'
 import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
 
+import { signOut } from '@/lib/actions'
 import { api, HydrateClient } from '@/lib/trpc/server'
 import { Post } from './_components/post'
 
 const Page: NextPage = async () => {
   void api.post.getPost.prefetch()
+  const session = await auth()
 
   return (
     <HydrateClient>
@@ -38,7 +42,27 @@ const Page: NextPage = async () => {
             </a>
           </Button>
 
-          <Post />
+          <div className="flex items-center gap-2">
+            {session && <span>Logged in as {session.user.name}</span>}
+            {session ? (
+              <form
+                action={async () => {
+                  'use server'
+                  await signOut(session.id)
+                }}
+              >
+                <Button variant="ghost" size="sm">
+                  Sign Out
+                </Button>
+              </form>
+            ) : (
+              <Button asChild>
+                <Link href="/api/auth/discord">Sign in with Discord</Link>
+              </Button>
+            )}
+          </div>
+
+          {session && <Post />}
         </div>
       </main>
     </HydrateClient>

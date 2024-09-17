@@ -19,6 +19,5 @@ export const SessionProvider: React.FC<SessionProviderProps> = ({ session, child
 
 export const useSession = () => {
   const context = React.useContext(sessionContext)
-  if (!context) throw new Error('useSession must be used within a SessionProvider')
   return context
 }
