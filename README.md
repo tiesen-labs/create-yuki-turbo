@@ -1,6 +1,6 @@
-# create-yuki-repo
+# Create Yuki Turbo
 
-Clean and typesafe monorepo using Turbo
+Clean and typesafe starter monorepo using Turborepo along with Next.js
 
 ## Installation
 
