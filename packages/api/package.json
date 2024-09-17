@@ -1,0 +1,36 @@
+{
+  "name": "@yuki/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "scripts": {
+    "dev": "tsc -w",
+    "build": "tsc",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "dependencies": {
+    "@yuki/db": "workspace:*",
+    "@yuki/auth": "workspace:*",
+    "@trpc/server": "^11.0.0-rc.477",
+    "zod": "^3.23.8",
+    "superjson": "^2.2.1"
+  },
+  "devDependencies": {
+    "@yuki/prettier-config": "workspace:*",
+    "@yuki/eslint-config": "workspace:*",
+    "@yuki/tsconfig": "workspace:*",
+    "typescript": "latest",
+    "prettier": "latest",
+    "eslint": "latest"
+  },
+  "prettier": "@yuki/prettier-config"
+}
