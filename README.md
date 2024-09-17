@@ -2,12 +2,6 @@
 
 Clean and typesafe starter monorepo using Turborepo along with Next.js
 
-## Installation
-
-```bash
-npx create-turbo@latest -e https://github.com/tiesen243/create-yuki-turbo
-```
-
 ## About
 
 This is a template for creating a new application with monorepo structure using [Turborepo](https://turborepo.org) and contains:
@@ -23,7 +17,7 @@ packages
   ├─ api
   |   └─ tRPC v11 router definition
   ├─ auth
-  |   └─ Authentication using lucia & arctic
+  |   └─ Authentication using Lucia & Arctic
   ├─ db
   |   └─ Typesafe db calls using Prisma
   └─ ui
@@ -40,6 +34,12 @@ tooling
 ```
 
 > In this template, we use `@yuki` as a placeholder for package names. As a user, you might want to replace it with your own organization or project name. You can use find-and-replace to change all the instances of `@yuki` to something like `@my-company` or `@project-name`.
+
+## Installation
+
+```bash
+npx create-turbo@latest -e https://github.com/tiesen243/create-yuki-turbo
+```
 
 ## Quick Start
 
