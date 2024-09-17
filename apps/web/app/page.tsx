@@ -19,17 +19,23 @@ const Page: NextPage = async () => {
     <HydrateClient>
       <main className="grid min-h-dvh place-items-center">
         <div className="container flex max-w-screen-lg flex-col items-center">
-          <Image src="/tiesen.png" width={2500} height={400} alt="tiesen" />
+          <Image
+            src="https://tiesen.id.vn/images/tiesen.png"
+            width={2500}
+            height={400}
+            alt="tiesen"
+          />
 
           <Typography level="h1" className="text-center brightness-150">
             Clean and typesafe starter repo using{' '}
-            <span className="bg-gradient-to-br from-info to-success bg-clip-text text-transparent">
+            <span className="bg-gradient-to-br from-[#EF4444] to-secondary bg-clip-text text-transparent">
               Turborepo
             </span>{' '}
             along with{' '}
-            <span className="bg-gradient-to-br from-success to-warning bg-clip-text text-transparent">
+            <span className="bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">
               Next.js
             </span>
+            .
           </Typography>
 
           <Button variant="outline" className="my-4 gap-2" asChild>

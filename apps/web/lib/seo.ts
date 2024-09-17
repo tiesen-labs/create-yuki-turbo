@@ -25,6 +25,6 @@ export const seo = (params: Params): Metadata => {
     applicationName: 'Create Yuki Turbo',
     twitter: { card: 'summary_large_image' },
     openGraph: { url, images, type: 'website', siteName: 'Yuki' },
-    icons: { icon: '/favicon.ico', shortcut: '/favicon-16x16.png', apple: '/apple-touch-icon.png' },
+    icons: { icon: '/favicon.ico' },
   }
 }

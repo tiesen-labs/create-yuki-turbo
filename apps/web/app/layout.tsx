@@ -25,9 +25,7 @@ const RootLayout: React.FC<React.PropsWithChildren> = async ({ children }) => {
 
 export default RootLayout
 
-export const metadata = seo({
-  images: ['/og.png'],
-})
+export const metadata = seo({})
 export const viewport = {
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: 'hsl(0 0% 100%)' },

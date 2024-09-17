@@ -18,7 +18,7 @@
     "studio": { "cache": false },
     "db:generate": { "cache": false }
   },
-  "globalEnv": ["PORT"],
+  "globalEnv": ["DATABASE_URL", "DISCORD_CLIENT_ID", "DISCORD_CLIENT_SECRET", "PORT"],
   "globalPassThroughEnv": [
     "CI",
     "NODE_ENV",

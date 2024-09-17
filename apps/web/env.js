@@ -15,6 +15,7 @@ export const env = createEnv({
    */
   server: {
     VERCEL_PROJECT_PRODUCTION_URL: z.string().optional(),
+    DATABASE_URL: z.string(),
   },
 
   /**
