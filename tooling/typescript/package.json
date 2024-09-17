@@ -1,7 +1,7 @@
 {
   "name": "@yuki/tsconfig",
+  "version": "0.6.9",
   "private": true,
-  "version": "0.1.0",
   "files": [
     "*.json"
   ]
