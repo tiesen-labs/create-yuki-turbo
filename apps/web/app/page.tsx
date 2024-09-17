@@ -6,8 +6,6 @@ import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
 
 import { api, HydrateClient } from '@/lib/trpc/server'
-import { CreatePost } from './_components/create-post'
-import { LatestPost } from './_components/latest-post'
 import { Post } from './_components/post'
 
 const Page: NextPage = async () => {
