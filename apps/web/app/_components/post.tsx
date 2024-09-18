@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { Button } from '@yuki/ui/button'
 import { Input } from '@yuki/ui/input'
 
-import { api } from '~/lib/trpc/react'
+import { api } from '@/lib/trpc/react'
 
 export const Post: React.FC = () => {
   const [post] = api.post.getPost.useSuspenseQuery()

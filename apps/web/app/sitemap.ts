@@ -1,6 +1,6 @@
 import type { MetadataRoute } from 'next'
 
-import { getBaseUrl } from '~/lib/utils'
+import { getBaseUrl } from '@/lib/utils'
 
 interface Route {
   url: string

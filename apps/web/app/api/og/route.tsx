@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server'
 import { ImageResponse } from 'next/og'
 
-import { seo } from '~/lib/seo'
-import { getBaseUrl } from '~/lib/utils'
+import { seo } from '@/lib/seo'
+import { getBaseUrl } from '@/lib/utils'
 
 interface Props {
   params: { title?: string; desc?: string; image?: string }

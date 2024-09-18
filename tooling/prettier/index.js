@@ -11,9 +11,15 @@ const config = {
   printWidth: 100,
   singleQuote: true,
   trailingComma: 'all',
+
   plugins: ['@ianvs/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
+
+  // Tailwind
   tailwindConfig: fileURLToPath(new URL('../../tooling/tailwind/index.ts', import.meta.url)),
   tailwindFunctions: ['cn', 'cva'],
+
+  // Sort Imports
+  importOrderParserPlugins: ['typescript', 'jsx', 'decorators-legacy'],
   importOrder: [
     '<TYPES>',
     '^(next/(.*)$)|^(next$)',
@@ -24,12 +30,13 @@ const config = {
     '<TYPES>^@yuki',
     '^@yuki/(.*)$',
     '',
-    '<TYPES>^[.|..|~]',
-    '^~/',
+    '<TYPES>^([.|..|@]/.*)$',
+    '^@/',
     '^[../]',
     '^[./]',
   ],
-  importOrderParserPlugins: ['typescript', 'jsx', 'decorators-legacy'],
+
+  // Others
   overrides: [
     { files: '*.json.hbs', options: { parser: 'json' } },
     { files: '*.js.hbs', options: { parser: 'babel' } },

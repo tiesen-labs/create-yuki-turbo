@@ -5,7 +5,7 @@ import { createHydrationHelpers } from '@trpc/react-query/rsc'
 import type { AppRouter } from '@yuki/api'
 import { createCaller, createTRPCContext } from '@yuki/api'
 
-import { createQueryClient } from '~/lib/trpc/query-client'
+import { createQueryClient } from '@/lib/trpc/query-client'
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when

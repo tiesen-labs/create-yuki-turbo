@@ -11,7 +11,10 @@ import { authEnv } from '../env'
 const adapter = new PrismaAdapter(db.session, db.user)
 
 export const lucia = new Lucia(adapter, {
-  sessionCookie: { expires: false, attributes: { secure: authEnv.NODE_ENV === 'production' } },
+  sessionCookie: {
+    expires: false,
+    attributes: { secure: authEnv.NODE_ENV === 'production' },
+  },
   getUserAttributes: (attributes) => attributes,
 })
 

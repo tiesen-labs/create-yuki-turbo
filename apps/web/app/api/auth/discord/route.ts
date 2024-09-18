@@ -4,12 +4,14 @@ import { NextResponse } from 'next/server'
 
 import { generateState } from '@yuki/auth/lucia'
 
-import { discord } from '~/app/api/auth/discord/config'
-import { env } from '~/env'
+import { discord } from '@/app/api/auth/discord/config'
+import { env } from '@/env'
 
 export const GET = async (req: NextRequest) => {
   const state = generateState()
-  const url = await discord.createAuthorizationURL(state, { scopes: ['identify', 'email'] })
+  const url = await discord.createAuthorizationURL(state, {
+    scopes: ['identify', 'email'],
+  })
 
   cookies().set('discord_oauth_state', state, {
     path: '/',

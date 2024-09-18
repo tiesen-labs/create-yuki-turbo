@@ -1,7 +1,7 @@
 import { Discord } from '@yuki/auth/lucia'
 
-import { env } from '~/env'
-import { getBaseUrl } from '~/lib/utils'
+import { env } from '@/env'
+import { getBaseUrl } from '@/lib/utils'
 
 export const discord = new Discord(
   env.DISCORD_CLIENT_ID,
