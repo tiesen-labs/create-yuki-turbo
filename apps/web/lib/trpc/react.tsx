@@ -42,7 +42,7 @@ export const TRPCReactProvider: React.FC<React.PropsWithChildren> = ({ children 
           url: `${getBaseUrl()}/api/trpc`,
           headers() {
             const headers = new Headers()
-            headers.set('x-trpc-source', 'nextjs-react')
+            headers.set('x-trpc-source', '@yuki/web')
             return headers
           },
         }),

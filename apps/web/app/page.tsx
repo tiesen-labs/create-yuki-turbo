@@ -28,7 +28,7 @@ const Page: NextPage = async () => {
 
           <Typography level="h1" className="text-center brightness-150">
             Clean and typesafe starter repo using{' '}
-            <span className="bg-gradient-to-br from-[#EF4444] to-secondary bg-clip-text text-transparent">
+            <span className="bg-[linear-gradient(135deg,#EF4444,69%,hsl(var(--background)))] bg-clip-text text-transparent">
               Turborepo
             </span>{' '}
             along with{' '}
