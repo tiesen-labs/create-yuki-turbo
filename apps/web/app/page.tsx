@@ -17,59 +17,59 @@ const Page: NextPage = async () => {
 
   return (
     <HydrateClient>
-      <main className="grid min-h-dvh place-items-center">
-        <div className="container flex max-w-screen-lg flex-col items-center">
-          <Image
-            src="https://tiesen.id.vn/images/tiesen.png"
-            width={2500}
-            height={400}
-            alt="tiesen"
-          />
+      <main className="container flex min-h-dvh max-w-screen-lg flex-col items-center justify-center overflow-x-hidden">
+        <div className="pointer-events-none relative flex place-items-center before:absolute before:h-[700px] before:w-[140px] before:translate-x-1 before:translate-y-[-10px] before:rotate-[-32deg] before:rounded-full before:bg-gradient-to-r before:from-[#AB1D1C] before:to-[#E18317] before:opacity-30 before:blur-[100px] before:content-[''] lg:before:h-[700px] lg:before:w-[240px] lg:before:translate-x-[-100px]" />
 
-          <Typography level="h1" className="text-center brightness-150">
-            Clean and typesafe starter repo using{' '}
-            <span className="bg-[linear-gradient(135deg,#EF4444,69%,hsl(var(--background)))] bg-clip-text text-transparent">
-              Turborepo
-            </span>{' '}
-            along with{' '}
-            <span className="bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">
-              Next.js
-            </span>
-            .
-          </Typography>
+        <Image
+          src="https://tiesen.id.vn/images/tiesen.png"
+          width={2500}
+          height={400}
+          alt="tiesen"
+        />
 
-          <Button variant="outline" className="my-4 gap-2" asChild>
-            <a
-              href="https://github.com/tiesen243/create-yuki-turbo"
-              target="_blank"
-              rel="noopener noreferrer"
+        <Typography level="h1" className="text-center brightness-150">
+          Clean and typesafe starter repo using{' '}
+          <span className="bg-[linear-gradient(135deg,#EF4444,69%,hsl(var(--background)))] bg-clip-text text-transparent">
+            Turborepo
+          </span>{' '}
+          along with{' '}
+          <span className="bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">
+            Next.js
+          </span>
+          .
+        </Typography>
+
+        <Button variant="outline" className="my-4 gap-2" asChild>
+          <a
+            href="https://github.com/tiesen243/create-yuki-turbo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <icons.Github /> Github
+          </a>
+        </Button>
+
+        <div className="flex items-center gap-2">
+          {session && <span>Logged in as {session.user.name}</span>}
+          {session ? (
+            <form
+              action={async () => {
+                'use server'
+                await signOut(session.id)
+              }}
             >
-              <icons.Github /> Github
-            </a>
-          </Button>
-
-          <div className="flex items-center gap-2">
-            {session && <span>Logged in as {session.user.name}</span>}
-            {session ? (
-              <form
-                action={async () => {
-                  'use server'
-                  await signOut(session.id)
-                }}
-              >
-                <Button variant="ghost" size="sm">
-                  Sign Out
-                </Button>
-              </form>
-            ) : (
-              <Button asChild>
-                <Link href="/api/auth/discord">Sign in with Discord</Link>
+              <Button variant="ghost" size="sm">
+                Sign Out
               </Button>
-            )}
-          </div>
-
-          {session && <Post />}
+            </form>
+          ) : (
+            <Button asChild>
+              <Link href="/api/auth/discord">Sign in with Discord</Link>
+            </Button>
+          )}
         </div>
+
+        {session && <Post />}
       </main>
     </HydrateClient>
   )
