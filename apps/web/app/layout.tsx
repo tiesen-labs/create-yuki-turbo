@@ -12,7 +12,7 @@ const RootLayout: React.FC<React.PropsWithChildren> = async ({ children }) => {
 
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={cn('font-sans', GeistSans.variable, GeistMono.variable)}>
+      <body className={cn('min-h-dvh font-sans', GeistSans.variable, GeistMono.variable)}>
         <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
           <SessionProvider session={session}>
             <TRPCReactProvider>{children}</TRPCReactProvider>
