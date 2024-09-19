@@ -13,6 +13,7 @@ import { api, HydrateClient } from '@/lib/trpc/server'
 
 const Page: NextPage = async () => {
   void api.post.getPost.prefetch()
+
   const session = await auth()
 
   return (
@@ -33,10 +34,13 @@ const Page: NextPage = async () => {
             Turborepo
           </span>{' '}
           along with{' '}
-          <span className="bg-gradient-to-br from-primary to-secondary bg-clip-text text-transparent">
+          <span className="bg-[linear-gradient(135deg,#AB1D1C,69%,hsl(var(--background)))] bg-clip-text text-transparent">
             Next.js
+          </span>{' '}
+          and{' '}
+          <span className="bg-[linear-gradient(135deg,#2596BE,69%,hsl(var(--background)))] bg-clip-text text-transparent">
+            TRPC
           </span>
-          .
         </Typography>
 
         <Button variant="outline" className="my-4 gap-2" asChild>

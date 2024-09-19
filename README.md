@@ -1,6 +1,6 @@
 # Create Yuki Turbo
 
-Clean and typesafe starter monorepo using Turborepo along with Next.js
+Clean and typesafe starter monorepo using Turborepo along with Next.js and tRPC.
 
 ## About
 
