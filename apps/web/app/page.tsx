@@ -22,7 +22,7 @@ const Page: NextPage = async () => {
         <div className="pointer-events-none relative flex place-items-center before:absolute before:h-[700px] before:w-[140px] before:translate-x-1 before:translate-y-[-10px] before:rotate-[-32deg] before:rounded-full before:bg-gradient-to-r before:from-[#AB1D1C] before:to-[#E18317] before:opacity-30 before:blur-[100px] before:content-[''] lg:before:h-[700px] lg:before:w-[240px] lg:before:translate-x-[-100px]" />
 
         <Image
-          src="https://tiesen.id.vn/images/tiesen.png"
+          src="https://tiesen.id.vn/assets/tiesen.png"
           width={2500}
           height={400}
           alt="tiesen"
