@@ -1,6 +1,5 @@
 import type { NextPage } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
 
 import { auth } from '@yuki/auth'
 import { icons } from '@yuki/ui'
@@ -67,9 +66,9 @@ const Page: NextPage = async () => {
               </Button>
             </form>
           ) : (
-            <Button asChild>
-              <Link href="/api/auth/discord">Sign in with Discord</Link>
-            </Button>
+            <form action="/api/auth/discord" method="GET">
+              <Button variant="outline">Sign In with Discord</Button>
+            </form>
           )}
         </div>
 
