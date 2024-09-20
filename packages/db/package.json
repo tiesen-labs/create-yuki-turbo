@@ -22,14 +22,14 @@
     "@prisma/client": "^5.19.1"
   },
   "devDependencies": {
-    "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
+    "@yuki/eslint-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "dotenv-cli": "^7.4.2",
-    "eslint": "latest",
-    "prettier": "latest",
     "prisma": "^5.19.1",
-    "typescript": "latest"
+    "dotenv-cli": "^7.4.2",
+    "typescript": "latest",
+    "prettier": "latest",
+    "eslint": "latest"
   },
   "prettier": "@yuki/prettier-config"
 }
