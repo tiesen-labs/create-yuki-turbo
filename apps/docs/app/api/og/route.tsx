@@ -27,7 +27,7 @@ export const GET = async (
 
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://tiesen.id.vn/images/logo.svg"
+          src="https://tiesen.id.vn/assets/logo.svg"
           alt="Logo"
           tw="w-2/5 ml-8"
           style={{ filter: 'invert(1)' }}
