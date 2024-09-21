@@ -75,6 +75,13 @@ bun turbo gen init
 
 The generator sets up the package.json, tsconfig.json and a index.ts, as well as configures all the necessary configurations for tooling around your package such as formatting, linting and typechecking. When the package is created, you're ready to go build out the package.
 
+4. To update all packages in the monorepo:
+
+```bash
+sudo chmod -x ./update-packages.sh
+./update-packages.sh
+```
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
