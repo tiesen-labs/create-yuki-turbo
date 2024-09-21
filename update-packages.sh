@@ -5,8 +5,8 @@ BASE_DIRS=("apps" "packages" "tooling")
 
 # Iterate over each base directory
 for BASE_DIR in "${BASE_DIRS[@]}"; do
-  # Find all package.json files within the base directory
-  find "$BASE_DIR" -name "package.json" | while read -r PACKAGE_JSON; do
+  # Find all package.json files within the base directory, excluding directories starting with a dot
+  find "$BASE_DIR" -name ".*" -prune -o -name "package.json" -print | while read -r PACKAGE_JSON; do
     # Get the directory of the package.json file
     PACKAGE_DIR=$(dirname "$PACKAGE_JSON")
 
