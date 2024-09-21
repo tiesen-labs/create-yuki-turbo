@@ -8,11 +8,15 @@ This is a template for creating a new application with monorepo structure using 
 
 ```text
 apps
-  └─ web
+  ├─ web
+  |   ├─ Next.js 14
+  |   ├─ React 18
+  |   ├─ Tailwind CSS
+  |   └─ E2E Typesafe API Server & Client
+  └─ docs
       ├─ Next.js 14
       ├─ React 18
-      ├─ Tailwind CSS
-      └─ E2E Typesafe API Server & Client
+      └─ Tailwind CSS
 packages
   ├─ api
   |   └─ tRPC v11 router definition

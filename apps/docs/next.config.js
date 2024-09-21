@@ -10,7 +10,7 @@ const config = {
   images: { unoptimized: true },
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
-  transpilePackages: ['@yuki/ui', '@yuki/db', '@yuki/api', '@yuki/auth'],
+  transpilePackages: ['@yuki/ui'],
 }
 
 export default config
