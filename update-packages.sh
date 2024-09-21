@@ -10,15 +10,15 @@ for BASE_DIR in "${BASE_DIRS[@]}"; do
     # Get the directory of the package.json file
     PACKAGE_DIR=$(dirname "$PACKAGE_JSON")
 
+    # Check if the package is outdated
+    echo "Outdated packages in $PACKAGE_DIR"
+    (cd "$PACKAGE_DIR" && bun outdated)
+
     # Check if the package is in the packages/ui directory
     if [[ "$PACKAGE_DIR" == *"packages/ui"* ]]; then
-      echo "Outdated packages in $PACKAGE_DIR"
-      (cd "$PACKAGE_DIR" && bun outdated)
-      echo "Updating $PACKAGE_DIR with bun update --latest"
+     echo "Updating $PACKAGE_DIR with bun update --latest"
       (cd "$PACKAGE_DIR" && bun update --latest)
     else
-      echo "Outdated packages in $PACKAGE_DIR"
-      (cd "$PACKAGE_DIR" && bun outdated)
       echo "Updating $PACKAGE_DIR with bun update"
       (cd "$PACKAGE_DIR" && bun update)
     fi
