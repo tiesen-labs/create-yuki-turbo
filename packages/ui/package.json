@@ -39,7 +39,7 @@
     "@yuki/prettier-config": "workspace:*",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "@types/react": "^18.3.9",
+    "@types/react": "^18.3.10",
     "react": "^18.3.1",
     "typescript": "^5.6.2",
     "prettier": "^3.3.3",

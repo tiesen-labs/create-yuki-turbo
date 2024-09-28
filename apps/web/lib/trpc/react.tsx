@@ -1,6 +1,7 @@
 'use client'
 
 import type { QueryClient } from '@tanstack/react-query'
+import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 import { useState } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
 import { loggerLink, unstable_httpBatchStreamLink } from '@trpc/client'
@@ -9,7 +10,6 @@ import SuperJSON from 'superjson'
 
 import type { AppRouter } from '@yuki/api'
 
-import { env } from '@/env'
 import { createQueryClient } from '@/lib/trpc/query-client'
 import { getBaseUrl } from '@/lib/utils'
 
@@ -18,13 +18,26 @@ const getQueryClient = () => {
   if (typeof window === 'undefined') {
     // Server: always make a new query client
     return createQueryClient()
-  } else {
-    // Browser: use singleton pattern to keep the same query client
-    return (clientQueryClientSingleton ??= createQueryClient())
   }
+  // Browser: use singleton pattern to keep the same query client
+  return (clientQueryClientSingleton ??= createQueryClient())
 }
 
 export const api = createTRPCReact<AppRouter>()
+
+/**
+ * Inference helper for inputs.
+ *
+ * @example type HelloInput = RouterInputs['example']['hello']
+ */
+export type RouterInputs = inferRouterInputs<AppRouter>
+
+/**
+ * Inference helper for outputs.
+ *
+ * @example type HelloOutput = RouterOutputs['example']['hello']
+ */
+export type RouterOutputs = inferRouterOutputs<AppRouter>
 
 export const TRPCReactProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const queryClient = getQueryClient()
@@ -34,15 +47,16 @@ export const TRPCReactProvider: React.FC<React.PropsWithChildren> = ({ children 
       links: [
         loggerLink({
           enabled: (op) =>
-            env.NODE_ENV === 'development' ||
+            // eslint-disable-next-line no-restricted-properties
+            process.env.NODE_ENV === 'development' ||
             (op.direction === 'down' && op.result instanceof Error),
         }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
           url: `${getBaseUrl()}/api/trpc`,
-          headers() {
+          headers: () => {
             const headers = new Headers()
-            headers.set('x-trpc-source', '@yuki/web')
+            headers.set('x-trpc-source', 'yuki-client')
             return headers
           },
         }),
