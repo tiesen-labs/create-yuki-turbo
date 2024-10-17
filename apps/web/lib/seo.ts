@@ -13,7 +13,7 @@ interface Prams {
 export const seo = (params: Prams): Metadata => {
   const title = params.title ? `${params.title} | Create Yuki Turbo` : 'Create Yuki Turbo'
   const description =
-    params.description ?? 'A Next.js template with TypeScript, Tailwind CSS, ESLint and Prettier'
+    params.description ?? 'Clean and typesafe starter monorepo using Turborepo along with Next.js'
   const images = params.images ?? ['/api/og']
   const url = params.url ? `${getBaseUrl()}${params.url}` : getBaseUrl()
 
