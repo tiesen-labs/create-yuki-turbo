@@ -1,19 +1,15 @@
 import type { NextPage } from 'next'
 import Image from 'next/image'
 
-import { auth } from '@yuki/auth'
-import { icons } from '@yuki/ui'
+import { Github } from '@yuki/ui'
 import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
 
-import { Post } from '@/app/_components/post'
-import { signOut } from '@/lib/actions'
 import { api, HydrateClient } from '@/lib/trpc/server'
+import { Post } from './_components/post'
 
 const Page: NextPage = async () => {
-  void api.post.getPost.prefetch()
-
-  const session = await auth()
+  void api.post.getLatest.prefetch()
 
   return (
     <HydrateClient>
@@ -28,51 +24,35 @@ const Page: NextPage = async () => {
         />
 
         <Typography level="h1" className="text-center brightness-150">
-          Clean and typesafe starter repo using{' '}
-          <span className="bg-[linear-gradient(135deg,#EF4444,69%,hsl(var(--background)))] bg-clip-text text-transparent">
-            Turborepo
-          </span>{' '}
-          along with{' '}
-          <span className="bg-[linear-gradient(135deg,#AB1D1C,69%,hsl(var(--background)))] bg-clip-text text-transparent">
-            Next.js
+          A Next.js template with{' '}
+          <span className="bg-[linear-gradient(135deg,#3178C6,69%,hsl(var(--background)))] bg-clip-text text-transparent">
+            TypeScript
+          </span>
+          ,{' '}
+          <span className="bg-[linear-gradient(135deg,#06B6D4,69%,hsl(var(--background)))] bg-clip-text text-transparent">
+            Tailwind CSS
+          </span>
+          ,{' '}
+          <span className="bg-[linear-gradient(135deg,#4B32C3,69%,hsl(var(--background)))] bg-clip-text text-transparent">
+            ESLint
           </span>{' '}
           and{' '}
-          <span className="bg-[linear-gradient(135deg,#2596BE,69%,hsl(var(--background)))] bg-clip-text text-transparent">
-            TRPC
+          <span className="bg-[linear-gradient(135deg,#F7B93E,69%,hsl(var(--background)))] bg-clip-text text-transparent">
+            Prettier
           </span>
         </Typography>
 
         <Button variant="outline" className="my-4 gap-2" asChild>
           <a
-            href="https://github.com/tiesen243/create-yuki-turbo"
+            href="https://github.com/tiesen243/create-yuki-app"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <icons.Github /> Github
+            <Github /> Github
           </a>
         </Button>
 
-        <div className="flex items-center gap-2">
-          {session && <span>Logged in as {session.user.name}</span>}
-          {session ? (
-            <form
-              action={async () => {
-                'use server'
-                await signOut(session.id)
-              }}
-            >
-              <Button variant="ghost" size="sm">
-                Sign Out
-              </Button>
-            </form>
-          ) : (
-            <form action="/api/auth/discord" method="GET">
-              <Button variant="outline">Sign In with Discord</Button>
-            </form>
-          )}
-        </div>
-
-        {session && <Post />}
+        <Post />
       </main>
     </HydrateClient>
   )

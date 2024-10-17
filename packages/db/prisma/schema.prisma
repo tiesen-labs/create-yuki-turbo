@@ -13,21 +13,22 @@ datasource db {
 model User {
   id        String @id @default(cuid())
   discordId String @unique
+  email     String @unique
 
-  email    String  @unique
   username String
-  name     String?
-  avatar   String?
+  name     String
+  avatar   String
 
   sessions Session[]
   posts    Post[]
 
-  createdAt DateTime @default(now()) @db.Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Session {
   id        String   @id
-  expiresAt DateTime @db.Date
+  expiresAt DateTime
 
   user   User   @relation(references: [id], fields: [userId], onDelete: Cascade)
   userId String
@@ -36,11 +37,14 @@ model Session {
 }
 
 model Post {
-  id      String @id @default(cuid())
-  content String
+  id   String @id @default(cuid())
+  name String
 
-  author   User   @relation(fields: [authorId], references: [id])
-  authorId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([name])
 }

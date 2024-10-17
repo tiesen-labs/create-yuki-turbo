@@ -2,47 +2,51 @@
 
 import { useState } from 'react'
 
+import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import { Input } from '@yuki/ui/input'
+import { Typography } from '@yuki/ui/typography'
 
 import { api } from '@/lib/trpc/react'
 
 export const Post: React.FC = () => {
-  const [post] = api.post.getPost.useSuspenseQuery()
+  const [name, setName] = useState<string>('')
 
-  const utils = api.useUtils()
-  const [content, setContent] = useState('')
-  const createPost = api.post.createPost.useMutation({
-    onSuccess: async () => {
-      await utils.post.invalidate()
-      setContent('')
-    },
-  })
+  const session = useSession()
+  if (!session)
+    return (
+      <form action="/api/auth/discord">
+        <Button>Sign in</Button>
+      </form>
+    )
+
+  const [post, { refetch }] = api.post.getLatest.useSuspenseQuery()
+  const createPost = api.post.create.useMutation({ onSuccess: () => refetch() })
 
   return (
-    <div className="w-full max-w-xs space-y-4">
-      {post ? (
-        <p className="truncate">Most recent post: {post.content}</p>
-      ) : (
-        <p>You have no posts yet.</p>
-      )}
+    <section className="flex flex-col items-center">
+      <Typography>You are signed in as {session.user.username}</Typography>
+      <Typography>Your latest post: {post ? post.name : 'No posts yet'}</Typography>
 
       <form
+        className="mt-4 flex gap-4"
         onSubmit={(e) => {
           e.preventDefault()
-          createPost.mutate({ content })
+          if (!name) return
+          createPost.mutate({ name })
+          setName('')
         }}
-        className="flex flex-col gap-2"
       >
         <Input
-          value={content}
           placeholder="What's on your mind?"
-          onChange={(e) => setContent(e.target.value)}
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          disabled={createPost.isPending}
         />
         <Button disabled={createPost.isPending}>
-          {createPost.isPending ? 'Submitting...' : 'Submit'}
+          {createPost.isPending ? 'Posting...' : 'Post'}
         </Button>
       </form>
-    </div>
+    </section>
   )
 }

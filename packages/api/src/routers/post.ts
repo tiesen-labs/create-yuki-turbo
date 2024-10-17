@@ -1,22 +1,27 @@
 import { z } from 'zod'
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc'
+import { createTRPCRouter, protectedProcedure } from '../trpc'
 
 export const postRouter = createTRPCRouter({
-  getPost: publicProcedure.query(({ ctx }) => {
-    const post = ctx.db.post.findFirst({ orderBy: { createdAt: 'desc' } })
-    return post
+  // [GET] /api/trpc/post.getLatest
+  getLatest: protectedProcedure.query(async ({ ctx }) => {
+    const post = await ctx.db.post.findFirst({
+      orderBy: { createdAt: 'desc' },
+      where: { user: { id: ctx.session.user.id } },
+    })
+
+    return post ?? null
   }),
 
-  createPost: protectedProcedure
-    .input(z.object({ content: z.string().min(1, 'Content is required') }))
-    .mutation(({ ctx, input }) => {
-      const post = ctx.db.post.create({
+  // [POST] /api/trpc/post.create
+  create: protectedProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.create({
         data: {
-          content: input.content,
-          author: { connect: { id: ctx.session.user.id } },
+          name: input.name,
+          user: { connect: { id: ctx.session.user.id } },
         },
       })
-      return post
     }),
 })

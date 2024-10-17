@@ -5,15 +5,14 @@ import { appRouter } from './root'
 import { createCallerFactory, createTRPCContext } from './trpc'
 
 /**
- * Create a server-side caller for the tRPC API
+ * Create a server-side caller for the tRPC API.
  * @example
  * const trpc = createCaller(createContext);
  * const res = await trpc.post.all();
  *       ^? Post[]
  */
-const createCaller = createCallerFactory(appRouter)
+const createCaller = createCallerFactory(appRouter) /**
 
-/**
  * Inference helpers for input types
  * @example
  * type PostByIdInput = RouterInputs['post']['byId']

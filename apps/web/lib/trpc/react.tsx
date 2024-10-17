@@ -10,8 +10,8 @@ import SuperJSON from 'superjson'
 
 import type { AppRouter } from '@yuki/api'
 
-import { createQueryClient } from '@/lib/trpc/query-client'
 import { getBaseUrl } from '@/lib/utils'
+import { createQueryClient } from './query-client'
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined
 const getQueryClient = () => {
@@ -53,10 +53,10 @@ export const TRPCReactProvider: React.FC<React.PropsWithChildren> = ({ children 
         }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
-          url: `${getBaseUrl()}/api/trpc`,
+          url: getBaseUrl() + '/api/trpc',
           headers: () => {
             const headers = new Headers()
-            headers.set('x-trpc-source', 'yuki-client')
+            headers.set('x-trpc-source', 'nextjs-react')
             return headers
           },
         }),

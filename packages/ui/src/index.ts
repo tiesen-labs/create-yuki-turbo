@@ -8,5 +8,5 @@ export { cn }
 
 export * from 'geist/font/mono'
 export * from 'geist/font/sans'
-export * as icons from 'lucide-react'
+export * from 'lucide-react'
 export * from 'next-themes'

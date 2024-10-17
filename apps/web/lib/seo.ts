@@ -3,17 +3,17 @@ import type { OpenGraph } from 'next/dist/lib/metadata/types/opengraph-types'
 
 import { getBaseUrl } from '@/lib/utils'
 
-interface Params {
+interface Prams {
   title?: string
   description?: string
-  images?: OpenGraph['images']
   url?: string
+  images?: OpenGraph['images']
 }
 
-export const seo = (params: Params): Metadata => {
+export const seo = (params: Prams): Metadata => {
   const title = params.title ? `${params.title} | Create Yuki Turbo` : 'Create Yuki Turbo'
   const description =
-    params.description ?? 'Clean and typesafe starter monorepo using Turborepo along with Next.js'
+    params.description ?? 'A Next.js template with TypeScript, Tailwind CSS, ESLint and Prettier'
   const images = params.images ?? ['/api/og']
   const url = params.url ? `${getBaseUrl()}${params.url}` : getBaseUrl()
 
@@ -21,10 +21,10 @@ export const seo = (params: Params): Metadata => {
     metadataBase: new URL(getBaseUrl()),
     title,
     description,
-    alternates: { canonical: url },
     applicationName: 'Create Yuki Turbo',
+    alternates: { canonical: url },
+    openGraph: { url, images, type: 'website' },
     twitter: { card: 'summary_large_image' },
-    openGraph: { url, images, type: 'website', siteName: 'Yuki' },
-    icons: { icon: '/favicon.ico' },
+    icons: { icon: 'https://tiesen.id.vn/favicon.ico' },
   }
 }
