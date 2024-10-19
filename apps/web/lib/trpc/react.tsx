@@ -10,8 +10,8 @@ import SuperJSON from 'superjson'
 
 import type { AppRouter } from '@yuki/api'
 
+import { createQueryClient } from '@/lib/trpc/query-client'
 import { getBaseUrl } from '@/lib/utils'
-import { createQueryClient } from './query-client'
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined
 const getQueryClient = () => {

@@ -16,7 +16,7 @@ export const GET = async (req: NextRequest) => {
   if (!code || !state || state !== storedState)
     return NextResponse.json({ message: 'Invalid state' }, { status: 400 })
 
-  const cookie = await cookies()
+  const cookie = cookies()
   cookie.delete('discord_oauth_state')
 
   try {
