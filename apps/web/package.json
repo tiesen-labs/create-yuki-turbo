@@ -20,9 +20,9 @@
     "@yuki/auth": "workspace:*",
     "@t3-oss/env-nextjs": "^0.11.1",
     "@tanstack/react-query": "^5.59.15",
-    "@trpc/client": "^11.0.0-rc.586",
-    "@trpc/react-query": "^11.0.0-rc.586",
-    "@trpc/server": "^11.0.0-rc.586",
+    "@trpc/client": "^11.0.0-rc.593",
+    "@trpc/react-query": "^11.0.0-rc.593",
+    "@trpc/server": "^11.0.0-rc.593",
     "next": "14.2.15",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -31,7 +31,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.16.13",
+    "@types/node": "^20.16.14",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.1",
     "@yuki/eslint-config": "workspace:*",
