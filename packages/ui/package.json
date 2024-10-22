@@ -15,6 +15,13 @@
         "./src/components/ui/*.tsx"
       ]
     },
+    "./hooks/*": {
+      "types": "./dist/src/hooks/*.d.ts",
+      "default": [
+        "./src/hooks/*.ts",
+        "./src/hooks/*.tsx"
+      ]
+    },
     "./tailwind.css": "./styles/tailwind.css"
   },
   "scripts": {
