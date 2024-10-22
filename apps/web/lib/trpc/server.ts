@@ -1,5 +1,3 @@
-import 'server-only'
-
 import { headers } from 'next/headers'
 import { cache } from 'react'
 import { createHydrationHelpers } from '@trpc/react-query/rsc'
@@ -17,9 +15,7 @@ const createContext = cache(async () => {
   const heads = new Headers(headers())
   heads.set('x-trpc-source', 'rsc')
 
-  return createTRPCContext({
-    headers: heads,
-  })
+  return createTRPCContext({ headers: heads })
 })
 
 const getQueryClient = cache(createQueryClient)

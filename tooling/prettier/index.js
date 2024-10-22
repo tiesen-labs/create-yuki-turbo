@@ -30,7 +30,7 @@ const config = {
     '<TYPES>^@yuki',
     '^@yuki/(.*)$',
     '',
-    '<TYPES>^@/',
+    '<TYPES>^(@/(.*)$)',
     '<TYPES>^[.|..]',
     '^@/',
     '^[..]',

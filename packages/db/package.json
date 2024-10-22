@@ -7,7 +7,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "dev": "tsc",
+    "dev": "tsc -w",
     "build": "tsc",
     "push": "bun with-env prisma db push",
     "studio": "bun with-env prisma studio",

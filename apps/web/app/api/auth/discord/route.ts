@@ -10,8 +10,7 @@ export const GET = async (req: NextRequest) => {
   const state = generateState()
   const url = await discord.createAuthorizationURL(state, { scopes: ['identify', 'email'] })
 
-  const cookie = cookies()
-  cookie.set('discord_oauth_state', state, {
+  cookies().set('discord_oauth_state', state, {
     path: '/',
     secure: env.NODE_ENV === 'production',
     httpOnly: true,

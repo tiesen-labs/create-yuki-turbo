@@ -16,8 +16,7 @@ export const GET = async (req: NextRequest) => {
   if (!code || !state || state !== storedState)
     return NextResponse.json({ message: 'Invalid state' }, { status: 400 })
 
-  const cookie = cookies()
-  cookie.delete('discord_oauth_state')
+  cookies().delete('discord_oauth_state')
 
   try {
     const tokens = await discord.validateAuthorizationCode(code)
@@ -41,7 +40,7 @@ export const GET = async (req: NextRequest) => {
 
       const session = await lucia.createSession(existedUser.id, {})
       const sessionCookie = lucia.createSessionCookie(session.id)
-      cookie.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
+      cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
 
       return NextResponse.redirect(new URL('/', req.url))
     }
@@ -52,7 +51,7 @@ export const GET = async (req: NextRequest) => {
 
     const session = await lucia.createSession(newUser.id, {})
     const sessionCookie = lucia.createSessionCookie(session.id)
-    cookie.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
+    cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
 
     return NextResponse.redirect(new URL('/', req.url))
   } catch (e) {

@@ -5,8 +5,8 @@ import { Github } from '@yuki/ui'
 import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
 
+import { Post } from '@/app/_components/post'
 import { api, HydrateClient } from '@/lib/trpc/server'
-import { Post } from './_components/post'
 
 const Page: NextPage = async () => {
   void api.post.getLatest.prefetch()

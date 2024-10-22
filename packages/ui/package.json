@@ -9,17 +9,17 @@
       "default": "./src/index.ts"
     },
     "./*": {
-      "types": "./dist/src/*.d.ts",
+      "types": "./dist/src/components/ui/*.d.ts",
       "default": [
-        "./src/*.ts",
-        "./src/*.tsx"
+        "./src/components/ui/*.ts",
+        "./src/components/ui/*.tsx"
       ]
     },
     "./tailwind.css": "./styles/tailwind.css"
   },
   "scripts": {
-    "build": "tsc",
     "dev": "tsc -w",
+    "build": "tsc",
     "ui-add": "bunx --bun shadcn@latest add && prettier src --write --list-different",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",

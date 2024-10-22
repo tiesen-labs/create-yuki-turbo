@@ -7,7 +7,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "dev": "tsc",
+    "dev": "tsc -w",
     "build": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
@@ -15,9 +15,9 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "devDependencies": {
-    "@yuki/prettier-config": "workspace:*",
-    "@yuki/eslint-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
+    "@yuki/eslint-config": "workspace:*",
+    "@yuki/prettier-config": "workspace:*",
     "typescript": "latest",
     "prettier": "latest",
     "eslint": "latest"
