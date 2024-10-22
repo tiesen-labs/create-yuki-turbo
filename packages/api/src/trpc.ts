@@ -31,10 +31,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   const source = opts.headers.get('x-trpc-source') ?? 'unknown'
   console.log('>>> tRPC Request from', source, 'by', session?.user.name ?? 'anonymous')
 
-  return {
-    session,
-    db,
-  }
+  return { session, db, ...opts }
 }
 
 /**
