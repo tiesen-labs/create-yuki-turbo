@@ -18,30 +18,30 @@
     "./env": "./env.js"
   },
   "scripts": {
-    "dev": "tsc -w",
     "build": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "dev": "tsc -w",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
+  "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@yuki/db": "workspace:*",
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "@t3-oss/env-nextjs": "^0.11.1",
-    "@types/react": "^18.3.11",
-    "server-only": "^0.0.1",
+    "@types/react": "^18.3.12",
+    "@yuki/db": "workspace:*",
     "arctic": "^1.9.2",
     "lucia": "^3.2.2",
+    "next": "14.2.16",
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@yuki/prettier-config": "workspace:*",
     "@yuki/eslint-config": "workspace:*",
+    "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "typescript": "latest",
+    "eslint": "latest",
     "prettier": "latest",
-    "eslint": "latest"
-  },
-  "prettier": "@yuki/prettier-config"
+    "typescript": "latest"
+  }
 }

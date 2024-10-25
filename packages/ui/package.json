@@ -25,14 +25,15 @@
     "./tailwind.css": "./styles/tailwind.css"
   },
   "scripts": {
-    "dev": "tsc -w",
     "build": "tsc",
-    "ui-add": "bunx --bun shadcn@latest add && prettier src --write --list-different",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "dev": "tsc -w",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "ui-add": "bunx --bun shadcn@latest add && prettier src --write --list-different"
   },
+  "prettier": "@yuki/prettier-config",
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.0",
@@ -43,14 +44,13 @@
     "tailwind-merge": "^2.5.4"
   },
   "devDependencies": {
-    "@yuki/prettier-config": "workspace:*",
+    "@types/react": "^18.3.12",
     "@yuki/eslint-config": "workspace:*",
+    "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "@types/react": "^18.3.11",
-    "react": "^18.3.1",
-    "typescript": "^5.6.3",
+    "eslint": "^9.13.0",
     "prettier": "^3.3.3",
-    "eslint": "^9.13.0"
-  },
-  "prettier": "@yuki/prettier-config"
+    "react": "^18.3.1",
+    "typescript": "^5.6.3"
+  }
 }

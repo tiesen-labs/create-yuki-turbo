@@ -13,22 +13,22 @@
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "typecheck": "tsc --noEmit"
   },
+  "prettier": "@yuki/prettier-config",
   "dependencies": {
     "@eslint/compat": "^1.2.1",
-    "@next/eslint-plugin-next": "^14.2.15",
+    "@next/eslint-plugin-next": "^14.2.16",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-jsx-a11y": "^6.10.1",
-    "eslint-plugin-react": "^7.37.1",
+    "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "rc",
     "eslint-plugin-turbo": "^2.2.3",
     "typescript-eslint": "^8.11.0"
   },
   "devDependencies": {
-    "@yuki/tsconfig": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
-    "typescript": "latest",
+    "@yuki/tsconfig": "workspace:*",
+    "eslint": "latest",
     "prettier": "latest",
-    "eslint": "latest"
-  },
-  "prettier": "@yuki/prettier-config"
+    "typescript": "latest"
+  }
 }

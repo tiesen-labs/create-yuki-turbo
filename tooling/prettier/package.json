@@ -11,14 +11,14 @@
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
+  "prettier": "@yuki/prettier-config",
   "dependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
-    "prettier-plugin-tailwindcss": "^0.6.8",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.8"
   },
   "devDependencies": {
     "@yuki/tsconfig": "workspace:*",
     "typescript": "latest"
-  },
-  "prettier": "@yuki/prettier-config"
+  }
 }
