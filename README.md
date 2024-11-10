@@ -4,12 +4,12 @@
 
 > [!NOTE]
 >
-> Make sure to follow the system requirements specified in [`package.json#engines`](./package.json#L4) before proceeding.
+> Make sure to follow the system requirements specified in [`package.json#engines`](./package.json#L31) before proceeding.
 
 Use Turbo's CLI to init your project (use Bun as package manager):
 
 ```bash
-bun create turbo@latest -e https://github.com/tiesen243/create-yuki-turbo
+bun create turbo@latest --example https://github.com/tiesen243/create-yuki-turbo
 ```
 
 ## About
@@ -31,7 +31,7 @@ packages
   ├─ auth
   |   └─ Authentication using lucia-auth and arctic.
   ├─ db
-  |   └─ Typesafe db calls using Prisma & Neon
+  |   └─ Typesafe db calls using Prisma & Neon (PostgreSQL)
   └─ ui
       └─ Start of a UI package for the webapp using shadcn-ui
 tooling
@@ -50,7 +50,7 @@ tooling
 ## Quick Start
 
 > **Note**
-> The [db](./packages/db) package is preconfigured to use Neon. If you're using something else, make the necessary modifications to the [schema](./packages/db/prisma/prisma.schema) as well as the [client](./packages/db/src/index.ts).
+> The [db](./packages/db) package is preconfigured to use PostgreSQL. If you're using something else, make the necessary modifications to the [schema](./packages/db/prisma/prisma.schema) as well as the [client](./packages/db/src/index.ts).
 > To get it running, follow the steps below:
 
 ### 1. Setup dependencies
@@ -63,13 +63,13 @@ bun i
 # There is an `.env.example` in the root directory you can use for reference
 cp .env.example .env
 
-# Push the Drizzle schema to the database
+# Push the Prisma schema to the database
 bun db:push
 ```
 
-### 4a. When it's time to add a new UI component
+### 2a. When it's time to add a new UI component
 
-Run the `ui-add` script to add a new UI component using the interactive `shadcn/ui` CLI:
+Run the `ui-add` script to add a new UI component using the interactive [`shadcn/ui`](https://ui.shadcn.com) CLI:
 
 ```bash
 bun ui-add
@@ -77,7 +77,7 @@ bun ui-add
 
 When the component(s) has been installed, you should be good to go and start using it in your app.
 
-### 4b. When it's time to add a new package
+### 2b. When it's time to add a new package
 
 To add a new package, simply run `bun turbo gen init` in the monorepo root. This will prompt you for a package name as well as if you want to install any dependencies to the new package (of course you can also do this yourself later).
 
@@ -96,9 +96,9 @@ Let's deploy the Next.js application to [Vercel](https://vercel.com). If you've 
 
 1. Create a new project on Vercel, select the `apps/nextjs` folder as the root directory. Vercel's zero-config system should handle all configurations for you.
 
-2. Add your `DATABASE_URL` environment variable.
+2. Add your environment variable.
 
-3. Done! Your app should successfully deploy. Assign your domain and use that instead of `localhost` for the `url` in the Expo app so that your Expo app can communicate with your backend when you are not in development.
+3. Done! Your app should successfully deploy.
 
 ## References
 
