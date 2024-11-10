@@ -9,7 +9,7 @@
 Use Turbo's CLI to init your project (use Bun as package manager):
 
 ```bash
-bun create turbo@latest --example https://github.com/tiesen243/create-yuki-turbo
+bun create turbo@latest --example https://github.com/tiesen243/create-yuki-turbo --package-manager bun
 ```
 
 ## About
