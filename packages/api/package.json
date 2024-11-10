@@ -6,7 +6,7 @@
   "type": "module",
   "exports": {
     "./*": {
-      "types": "./dist/*.d.ts",
+      "types": "./dist/src/*.d.ts",
       "default": [
         "./src/*.ts",
         "./src/*.tsx"

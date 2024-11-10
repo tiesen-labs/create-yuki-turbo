@@ -6,11 +6,11 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/src/index.d.ts",
       "default": "./src/index.ts"
     },
     "./*": {
-      "types": "./dist/*.d.ts",
+      "types": "./dist/src/*.d.ts",
       "default": [
         "./src/*.ts",
         "./src/*.tsx"
@@ -20,7 +20,7 @@
   "scripts": {
     "build": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsc --watch",
+    "dev": "tsc",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
@@ -31,6 +31,7 @@
     "@t3-oss/env-nextjs": "^0.11.1",
     "arctic": "^2.2.2",
     "lucia": "^3.2.2",
+    "next": "14.2.17",
     "zod": "^3.23.8"
   },
   "devDependencies": {

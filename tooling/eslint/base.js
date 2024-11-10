@@ -35,24 +35,6 @@ export const restrictEnvAccess = tseslint.config(
   },
 )
 
-export const restrictIconAccess = tseslint.config({
-  files: ['**/*.tsx'],
-  rules: {
-    '@typescript-eslint/no-restricted-imports': [
-      'error',
-      {
-        patterns: [
-          {
-            regex: '@yuki/ui/icons$',
-            allowImportNamePattern: '.*Icon$',
-            message: "Please import with 'Icon' suffix",
-          },
-        ],
-      },
-    ],
-  },
-})
-
 export default tseslint.config(
   // Ignore files not tracked by VCS and any config files
   includeIgnoreFile(path.join(import.meta.dirname, '../../.gitignore')),
@@ -85,6 +67,7 @@ export default tseslint.config(
         'error',
         { allowConstantLoopConditions: true },
       ],
+      '@typescript-eslint/require-await': 'off',
       'import/consistent-type-specifier-style': ['error', 'prefer-top-level'],
     },
   },

@@ -13,7 +13,7 @@ const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   typescript: { ignoreBuildErrors: true },
 
-  transpilePackages: ['@yuki/ui', '@yuki/db'],
+  transpilePackages: ['@yuki/api', '@yuki/auth', '@yuki/db', '@yuki/ui'],
 
   images: { remotePatterns: [{ protocol: 'https', hostname: 'tiesen.id.vn' }] },
 }
