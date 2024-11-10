@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@yuki/ui": "workspace:*",
+    "@yuki/db": "workspace:*",
     "@t3-oss/env-nextjs": "^0.11.1",
     "next": "14.2.17",
     "react": "^18.3.1",
