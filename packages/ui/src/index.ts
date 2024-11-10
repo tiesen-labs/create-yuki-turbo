@@ -1,12 +1,21 @@
-import type { ClassValue } from 'clsx'
-import { clsx } from 'clsx'
+import localFont from 'next/font/local'
+import { cx } from 'class-variance-authority'
 import { twMerge } from 'tailwind-merge'
 
-const cn = (...inputs: ClassValue[]) => twMerge(clsx(inputs))
+const cn = (...inputs: Parameters<typeof cx>) => twMerge(cx(inputs))
 
-export { cn }
+const geistSans = localFont({
+  src: './fonts/GeistVF.woff',
+  variable: '--font-geist-sans',
+  weight: '100 900',
+})
 
-export * from 'geist/font/mono'
-export * from 'geist/font/sans'
-export * from 'lucide-react'
+const geistMono = localFont({
+  src: './fonts/GeistMonoVF.woff',
+  variable: '--font-geist-mono',
+  weight: '100 900',
+})
+
+export { cn, geistSans, geistMono }
+export * as icons from 'lucide-react'
 export * from 'next-themes'

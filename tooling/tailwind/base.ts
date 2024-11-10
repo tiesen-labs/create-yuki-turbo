@@ -1,12 +1,11 @@
 import type { Config } from 'tailwindcss'
-import animate from 'tailwindcss-animate'
 
-const config = {
+const base = {
   darkMode: ['class'],
-  content: ['./app/**/*.{ts,tsx}'],
+  content: ['src/**/*.{ts,tsx}', 'app/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
   theme: {
+    container: { center: true, padding: '2rem', screens: { '2xl': '1400px' } },
     extend: {
-      container: { center: true, padding: '2rem', screens: { '2xl': '1400px' } },
       colors: {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
@@ -49,14 +48,9 @@ const config = {
           '5': 'hsl(var(--chart-5))',
         },
       },
-      borderRadius: {
-        lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)',
-      },
+      borderColor: { DEFAULT: 'hsl(var(--border))' },
     },
   },
-  plugins: [animate],
 } satisfies Config
 
-export default config
+export default base

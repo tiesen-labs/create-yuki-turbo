@@ -1,11 +1,9 @@
-import baseConfig from '@yuki/eslint-config/base'
-import reactConfig from '@yuki/eslint-config/react'
+import baseConfig from '@acme/eslint-config/base'
 
 /** @type {import('typescript-eslint').Config} */
 export default [
   {
-    ignores: ['dist/**'],
+    ignores: [],
   },
   ...baseConfig,
-  ...reactConfig,
 ]

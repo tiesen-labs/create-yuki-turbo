@@ -1,79 +1,45 @@
-import type { NextPage } from 'next'
 import Image from 'next/image'
 
-import { auth, logout } from '@yuki/auth'
-import { Github } from '@yuki/ui'
+import { icons } from '@yuki/ui'
 import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
 
-import { Post } from '@/app/_components/post'
-import { api, HydrateClient } from '@/lib/trpc/server'
-
-const Page: NextPage = async () => {
-  const session = await auth()
-
-  if (session) void api.post.getLatest.prefetch()
-
+const Page: React.FC = () => {
   return (
-    <HydrateClient>
-      <main className="container flex min-h-dvh max-w-screen-lg flex-col items-center justify-center overflow-x-hidden">
-        <div className="pointer-events-none relative flex place-items-center before:absolute before:h-[700px] before:w-[140px] before:translate-x-1 before:translate-y-[-10px] before:rotate-[-32deg] before:rounded-full before:bg-gradient-to-r before:from-[#AB1D1C] before:to-[#E18317] before:opacity-30 before:blur-[100px] before:content-[''] lg:before:h-[700px] lg:before:w-[240px] lg:before:translate-x-[-100px]" />
+    <main className="container flex min-h-dvh max-w-screen-lg flex-col items-center justify-center overflow-x-hidden">
+      <div className="pointer-events-none relative flex place-items-center before:absolute before:h-[700px] before:w-[140px] before:translate-x-1 before:translate-y-[-10px] before:rotate-[-32deg] before:rounded-full before:bg-gradient-to-r before:from-[#AB1D1C] before:to-[#E18317] before:opacity-30 before:blur-[100px] before:content-[''] lg:before:h-[700px] lg:before:w-[240px] lg:before:translate-x-[-100px]" />
 
-        <Image
-          src="https://tiesen.id.vn/assets/tiesen.png"
-          width={2500}
-          height={400}
-          alt="tiesen"
-        />
+      <Image src="https://tiesen.id.vn/assets/tiesen.png" width={2500} height={400} alt="tiesen" />
 
-        <Typography level="h1" className="text-center brightness-150">
-          A Next.js template with{' '}
-          <span className="bg-[linear-gradient(135deg,#3178C6,69%,hsl(var(--background)))] bg-clip-text text-transparent">
-            TypeScript
-          </span>
-          ,{' '}
-          <span className="bg-[linear-gradient(135deg,#06B6D4,69%,hsl(var(--background)))] bg-clip-text text-transparent">
-            Tailwind CSS
-          </span>
-          ,{' '}
-          <span className="bg-[linear-gradient(135deg,#4B32C3,69%,hsl(var(--background)))] bg-clip-text text-transparent">
-            ESLint
-          </span>{' '}
-          and{' '}
-          <span className="bg-[linear-gradient(135deg,#F7B93E,69%,hsl(var(--background)))] bg-clip-text text-transparent">
-            Prettier
-          </span>
-        </Typography>
+      <Typography level="h1" className="text-center brightness-150">
+        A Next.js template with{' '}
+        <span className="bg-[linear-gradient(135deg,#3178C6,69%,hsl(var(--background)))] bg-clip-text text-transparent">
+          TypeScript
+        </span>
+        ,{' '}
+        <span className="bg-[linear-gradient(135deg,#06B6D4,69%,hsl(var(--background)))] bg-clip-text text-transparent">
+          Tailwind CSS
+        </span>
+        ,{' '}
+        <span className="bg-[linear-gradient(135deg,#4B32C3,69%,hsl(var(--background)))] bg-clip-text text-transparent">
+          ESLint
+        </span>{' '}
+        and{' '}
+        <span className="bg-[linear-gradient(135deg,#F7B93E,69%,hsl(var(--background)))] bg-clip-text text-transparent">
+          Prettier
+        </span>
+      </Typography>
 
-        <Button variant="outline" className="my-4 gap-2" asChild>
-          <a
-            href="https://github.com/tiesen243/create-yuki-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Github /> Github
-          </a>
-        </Button>
-
-        {session ? (
-          <>
-            <div className="mb-4 flex items-center gap-4">
-              <Typography>You are logged in as {session.user.name}</Typography>
-              <form action={logout}>
-                <Button variant="outline" size="sm">
-                  Logout
-                </Button>
-              </form>
-            </div>
-            <Post />
-          </>
-        ) : (
-          <form action="/api/auth/discord">
-            <Button>Login with Discord</Button>
-          </form>
-        )}
-      </main>
-    </HydrateClient>
+      <Button variant="outline" className="my-4 gap-2" asChild>
+        <a
+          href="https://github.com/tiesen243/create-yuki-app"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <icons.Github /> Github
+        </a>
+      </Button>
+    </main>
   )
 }
 

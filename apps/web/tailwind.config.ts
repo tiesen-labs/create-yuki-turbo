@@ -1,11 +1,13 @@
 import type { Config } from 'tailwindcss'
 import { fontFamily } from 'tailwindcss/defaultTheme'
 
-import baseConfig from '@yuki/tailwind-config'
+import base from '@yuki/tailwind-config/web'
 
 const config = {
-  content: [...baseConfig.content, '../../packages/ui/src/**/*.{ts,tsx}'],
-  presets: [baseConfig],
+  // We need to append the path to the UI package to the content array so that
+  // those classes are included correctly.
+  content: [...base.content, '../../packages/ui/src/ui/*.{ts,tsx}'],
+  presets: [base],
   theme: { extend: { fontFamily: { sans: ['var(--font-geist-sans)', ...fontFamily.sans] } } },
 } satisfies Config
 
