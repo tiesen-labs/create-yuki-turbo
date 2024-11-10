@@ -103,3 +103,9 @@ Let's deploy the Next.js application to [Vercel](https://vercel.com). If you've 
 ## References
 
 The stack originates from [create-yuki-app](https://github.com/tiesen243/create-yuki-app).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
+<img src="./.github/yuki.gif" alt="yuki" width="100%" />
