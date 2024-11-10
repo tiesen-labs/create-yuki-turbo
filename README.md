@@ -1,4 +1,4 @@
-# create-yuki-turbo
+# Create Yuki Turbo
 
 ## Installation
 
@@ -50,7 +50,7 @@ tooling
 ## Quick Start
 
 > **Note**
-> The [db](./packages/db) package is preconfigured to use PostgreSQL. If you're using something else, make the necessary modifications to the [schema](./packages/db/prisma/prisma.schema) as well as the [client](./packages/db/src/index.ts).
+> The [db](./packages/db) package is preconfigured to use PostgreSQL. If you're using something else, make the necessary modifications to the [schema](./packages/db/prisma/schema.prisma) as well as the [client](./packages/db/src/index.ts).
 > To get it running, follow the steps below:
 
 ### 1. Setup dependencies
