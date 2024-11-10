@@ -1,11 +1,17 @@
 {
-  "name": "@yuki/{{ name }}",
+  "name": "@yuki/api",
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": [
+        "./src/*.ts",
+        "./src/*.tsx"
+      ]
+    }
   },
   "scripts": {
     "build": "tsc",
@@ -15,7 +21,13 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@yuki/db": "workspace:*",
+    "@yuki/auth": "workspace:*",
+    "@trpc/server": "^11.0.0-rc.621",
+    "superjson": "^2.2.1",
+    "zod": "^3.23.8"
+  },
   "devDependencies": {
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",

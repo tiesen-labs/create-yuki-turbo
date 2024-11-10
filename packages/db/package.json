@@ -10,9 +10,9 @@
   "scripts": {
     "build": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "db:generate": "bun with-env prisma generate",
     "dev": "tsc",
     "format": "prettier --check . --ignore-path ../../.gitignore",
-    "gnr": "bun with-env prisma generate",
     "lint": "eslint",
     "push": "bun with-env prisma db push",
     "studio": "bun with-env prisma studio",
