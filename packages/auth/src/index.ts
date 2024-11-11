@@ -1,6 +1,5 @@
 'use server'
 
-import type { Session, User } from '@prisma/client'
 import { cache } from 'react'
 import { cookies } from 'next/headers'
 
