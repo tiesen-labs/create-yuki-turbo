@@ -50,7 +50,7 @@ tooling
 ## Quick Start
 
 > **Note**
-> The [db](./packages/db) package is preconfigured to use PostgreSQL. If you're using something else, make the necessary modifications to the [schema](./packages/db/prisma/schema.prisma) as well as the [client](./packages/db/src/index.ts).
+> The [db](./packages/db) package is preconfigured to use PostgreSQL. If you're using something else, make the necessary modifications to the [schema](./packages/db/prisma/schema.prisma) as well as the [client](./packages/db/src/index.ts). Neon is a serverless database, so it can be used with Next.js edge functions. If you're using a different database, you can use the [Prisma Accelerate](https://www.prisma.io/accelerate) package to do the same.
 > To get it running, follow the steps below:
 
 ### 1. Setup dependencies
