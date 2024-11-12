@@ -1,5 +1,12 @@
 # Create Yuki Turbo
 
+> [!NOTE]
+> This template is customized from [create-t3-turbo](https://github.com/t3-oss/create-t3-turbo) with some changes:
+>
+> - PNPM -> Bun
+> - Dizzle -> Prisma
+> - NextAuth -> Lucia
+
 ## Installation
 
 > [!NOTE]
@@ -19,6 +26,9 @@ Ever wondered how to migrate your Yuki application into a monorepo? Stop right h
 It uses [Turborepo](https://turborepo.org) and contains:
 
 ```text
+.github
+  └─ workflows
+        └─ CI to check lint, format and type
 apps
  └─ web
       ├─ Next.js 14
