@@ -29,7 +29,7 @@
     "@yuki/db": "workspace:*",
     "@lucia-auth/adapter-prisma": "^4.0.1",
     "@t3-oss/env-nextjs": "^0.11.1",
-    "arctic": "^2.2.2",
+    "arctic": "^2.3.0",
     "lucia": "^3.2.2",
     "next": "14.2.18",
     "zod": "^3.23.8"
