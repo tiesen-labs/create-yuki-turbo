@@ -17,5 +17,4 @@ const geistMono = localFont({
 })
 
 export { cn, geistSans, geistMono }
-export * as icons from 'lucide-react'
-export * from 'next-themes'
+export { ThemeProvider, useTheme } from 'next-themes'

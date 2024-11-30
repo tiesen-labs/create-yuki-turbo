@@ -1,9 +1,16 @@
+import { Pool } from '@neondatabase/serverless'
+import { PrismaNeon } from '@prisma/adapter-neon'
 import { PrismaClient } from '@prisma/client'
 
-// Prisma setup
+import { dbEnv } from '@yuki/db/env'
+
+const pool = new Pool({ connectionString: dbEnv.DATABASE_URL })
+const adapter = new PrismaNeon(pool)
+
 const createPrismaClient = () =>
   new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+    adapter,
+    log: dbEnv.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   })
 
 const globalForPrisma = globalThis as unknown as {
@@ -12,6 +19,6 @@ const globalForPrisma = globalThis as unknown as {
 
 export const db = globalForPrisma.prisma ?? createPrismaClient()
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
+export type * from '@prisma/client'
 
-export * from '@prisma/client'
+if (dbEnv.NODE_ENV !== 'production') globalForPrisma.prisma = db

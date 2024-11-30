@@ -61,9 +61,8 @@
 
 @layer base {
   * {
-    @apply relative box-border border-border;
+    @apply relative border-border;
   }
-
   body {
     @apply bg-background text-foreground;
   }

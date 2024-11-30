@@ -11,9 +11,13 @@
 
 > [!NOTE]
 >
-> Make sure to follow the system requirements specified in [`package.json#engines`](./package.json#L31) before proceeding.
+> Make sure to follow the system requirements specified in [`package.json#engines`](./package.json#L33) before proceeding.
 
-Use Turbo's CLI to init your project (use Bun as package manager):
+There are two ways of initializing an app using the `create-t3-turbo` starter. You can either use this repository as a template:
+
+[use-as-template](https://github.com/new?template_name=create-yuki-turbo&template_owner=tiesen243)
+
+or use Turbo's CLI to init your project (use Bun as package manager):
 
 ```bash
 bun create turbo@latest --example https://github.com/tiesen243/create-yuki-turbo --package-manager bun
@@ -28,9 +32,9 @@ It uses [Turborepo](https://turborepo.org) and contains:
 ```text
 .github
   └─ workflows
-        └─ CI to check lint, format and type
+        └─ CI with pnpm cache setup
 apps
- └─ web
+  └─ web
       ├─ Next.js 14
       ├─ React 18
       ├─ Tailwind CSS
@@ -39,9 +43,9 @@ packages
   ├─ api
   |   └─ tRPC v11 router definition
   ├─ auth
-  |   └─ Authentication using lucia-auth and arctic.
+  |   └─ Authentication using next-auth.
   ├─ db
-  |   └─ Typesafe db calls using Prisma & Neon (PostgreSQL)
+  |   └─ Typesafe db calls using Drizzle & Supabase
   └─ ui
       └─ Start of a UI package for the webapp using shadcn-ui
 tooling

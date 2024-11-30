@@ -4,42 +4,50 @@ import { NextResponse } from 'next/server'
 import { Discord, generateState, OAuth2RequestError } from 'arctic'
 
 import { authEnv } from '@yuki/auth/env'
-import { lucia } from '@yuki/auth/lucia'
 import { db } from '@yuki/db'
 
-export const discordAuth = (callbackUrl: string) => {
-  const discord = new Discord(authEnv.DISCORD_CLIENT_ID, authEnv.DISCORD_CLIENT_SECRET, callbackUrl)
+import { lucia } from './config'
 
-  return async (req: NextRequest) => {
-    const state = generateState()
-    const scopes = ['email', 'identify']
-    const url = discord.createAuthorizationURL(state, scopes)
+export const oauth =
+  (baseUrl: string) =>
+  async (req: NextRequest, { params }: { params: { auth: [string, string] } }) => {
+    const [provider, isCallback] = params.auth
 
-    cookies().set('discord_oauth_state', state, {
-      path: '/',
-      secure: authEnv.NODE_ENV === 'production',
-      httpOnly: true,
-      maxAge: 60 * 10,
-      sameSite: 'lax',
-    })
+    let oauthProvider = null
+    if (provider === 'discord')
+      oauthProvider = new Discord(
+        authEnv.DISCORD_CLIENT_ID,
+        authEnv.DISCORD_CLIENT_SECRET,
+        `${baseUrl}/api/auth/${provider}/callback`,
+      )
+    if (!oauthProvider)
+      return NextResponse.json({
+        message: 'Provider is invalid',
+      })
 
-    return NextResponse.redirect(new URL(url, req.url))
-  }
-}
+    if (!isCallback) {
+      const state = generateState()
+      const scopes = ['email', 'identify']
+      const url = oauthProvider.createAuthorizationURL(state, scopes)
+      cookies().set('oauth_state', state, {
+        path: '/',
+        secure: authEnv.NODE_ENV === 'production',
+        httpOnly: true,
+        maxAge: 60 * 10,
+        sameSite: 'lax',
+      })
+      return NextResponse.redirect(new URL(url, req.url))
+    }
 
-export const discordCallback = (callbackUrl: string) => {
-  const discord = new Discord(authEnv.DISCORD_CLIENT_ID, authEnv.DISCORD_CLIENT_SECRET, callbackUrl)
-
-  return async (req: NextRequest) => {
     try {
       const url = new URL(req.url)
       const code = url.searchParams.get('code') ?? ''
       const state = url.searchParams.get('state') ?? ''
-      const storedState = req.cookies.get('discord_oauth_state')?.value ?? ''
-      cookies().delete('discord_oauth_state')
+      const storedState = req.cookies.get('oauth_state')?.value ?? ''
+      cookies().delete('oauth_state')
       if (!code || !state || state !== storedState) throw new Error('Invalid state')
 
-      const tokens = await discord.validateAuthorizationCode(code)
+      const tokens = await oauthProvider.validateAuthorizationCode(code)
       const accessToken = tokens.accessToken()
 
       const response = await fetch('https://discord.com/api/users/@me', {
@@ -73,7 +81,6 @@ export const discordCallback = (callbackUrl: string) => {
       else return NextResponse.json({ error: 'An unknown error occurred' }, { status: 500 })
     }
   }
-}
 
 interface DiscordUser {
   id: string

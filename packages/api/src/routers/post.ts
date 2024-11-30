@@ -1,8 +1,9 @@
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '@yuki/api/trpc'
-import { createPost } from '@yuki/api/validators/post'
+import { createPost } from '@yuki/api/types/post'
+
+import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc'
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure.query(async () => {
+  hello: publicProcedure.query(() => {
     return 'Hello World'
   }),
 
