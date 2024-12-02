@@ -42,16 +42,3 @@ export const favicon = [
   { rel: 'shortcut icon', href: 'https://tiesen.id.vn/favicon-16x16.png' },
   { rel: 'apple-touch-icon', href: 'https://tiesen.id.vn/apple-touch-icon.png' },
 ]
-
-//     metadataBase: new URL(getBaseUrl()),
-//     title,
-//     description,
-//     applicationName: siteName,
-//     alternates: { canonical: url },
-//     twitter: { card: 'summary_large_image' },
-//     openGraph: { url, images, siteName, type: 'website' },
-//     icons: {
-//       icon: 'https://tiesen.id.vn/favicon.ico',
-//       shortcut: 'https://tiesen.id.vn/favicon-16x16.png',
-//       apple: 'https://tiesen.id.vn/apple-touch-icon.png',
-//     },

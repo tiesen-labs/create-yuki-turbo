@@ -59,12 +59,13 @@ export default ({ loaderData: session }: Route.ComponentProps) => (
             <Button size="sm">Sign out</Button>
           </Form>
         </div>
+
         <Post />
       </>
     ) : (
-      <form action="http://localhost:3000/api/auth/discord">
+      <Form action="/api/auth/discord">
         <Button size="lg">Sign in with Discord</Button>
-      </form>
+      </Form>
     )}
   </main>
 )

@@ -4,9 +4,8 @@ import { ThemeProvider } from '@yuki/ui'
 import stylesheet from '@yuki/ui/tailwind.css?url'
 
 import type { Route } from './+types/root'
-import { env } from '@/env'
 import { favicon, seo } from '@/lib/seo'
-import { TRPCReactProvider } from './lib/trpc'
+import { TRPCReactProvider } from '@/lib/trpc'
 
 export const meta = () => seo({})
 
@@ -55,7 +54,8 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   if (isRouteErrorResponse(error)) {
     code = error.status === 404 ? '404' : 'Error'
     details = error.status === 404 ? 'This page could not be found.' : error.statusText || details
-  } else if (env.DEV && error && error instanceof Error) {
+    // eslint-disable-next-line turbo/no-undeclared-env-vars
+  } else if (import.meta.env.DEV && error && error instanceof Error) {
     details = error.message
     stack = error.stack
   }

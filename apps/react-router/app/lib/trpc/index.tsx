@@ -1,5 +1,3 @@
-'use client'
-
 import type { QueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -9,9 +7,7 @@ import SuperJSON from 'superjson'
 
 import type { AppRouter } from '@yuki/api'
 
-import { env } from '@/env'
 import { createQueryClient } from '@/lib/trpc/query-client'
-import { getBaseUrl } from '@/lib/utils'
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined
 const getQueryClient = () => {
@@ -33,11 +29,12 @@ export const TRPCReactProvider: React.FC<React.PropsWithChildren> = ({ children 
     api.createClient({
       links: [
         loggerLink({
-          enabled: (op) => env.DEV || (op.direction === 'down' && op.result instanceof Error),
+          enabled: (op) =>
+            import.meta.env.DEV || (op.direction === 'down' && op.result instanceof Error),
         }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
-          url: getBaseUrl() + '/api/trpc',
+          url: 'http://localhost:3001' + '/api/trpc',
           headers() {
             const headers = new Headers()
             headers.set('x-trpc-source', 'react')

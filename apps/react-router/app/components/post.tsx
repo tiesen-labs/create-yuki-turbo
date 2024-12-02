@@ -1,5 +1,3 @@
-'use client'
-
 import { Button } from '@yuki/ui/button'
 import { Input } from '@yuki/ui/input'
 
@@ -23,7 +21,7 @@ export const Post: React.FC = () => {
         }}
       >
         <Input name="content" placeholder="Post's content" disabled={createPost.isPending} />
-        <Button disabled={createPost.isPending}>Post</Button>
+        <Button disabled={createPost.isPending}> Post </Button>
       </form>
     </div>
   )

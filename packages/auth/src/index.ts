@@ -49,9 +49,9 @@ const validateToken = async (token: string): Promise<Auth> => {
   const session = await lucia.validateSession(sessionToken)
   return session.user
     ? {
-      ...session.session,
-      user: session.user,
-    }
+        ...session.session,
+        user: session.user,
+      }
     : null
 }
 
