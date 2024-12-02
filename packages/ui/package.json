@@ -23,6 +23,7 @@
         "./src/hooks/*.tsx"
       ]
     },
+    "./fonts": "./src/fonts/index.ts",
     "./tailwind.css": "./src/tailwind.css"
   },
   "scripts": {

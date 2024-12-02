@@ -5,16 +5,18 @@ import { Lucia } from 'lucia'
 import { authEnv } from '@yuki/auth/env'
 import { db } from '@yuki/db'
 
-declare module 'lucia' {
-  interface Register {
-    Lucia: typeof lucia
-    DatabaseUserAttributes: User
-  }
-}
-
 const adapter = new PrismaAdapter(db.session, db.user)
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: { expires: false, attributes: { secure: authEnv.NODE_ENV === 'production' } },
   getUserAttributes: (user) => user,
 })
+
+export * from 'arctic'
+
+declare module 'lucia' {
+  interface Register {
+    Lucia: typeof lucia
+    DatabaseUserAttributes: User
+  }
+}

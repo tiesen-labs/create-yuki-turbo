@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 
 import type { Session, User } from '@yuki/db'
 
-import { lucia } from './config'
+import { lucia } from './lucia'
 
 type Auth = null | (Session & { user: User })
 
@@ -49,9 +49,9 @@ const validateToken = async (token: string): Promise<Auth> => {
   const session = await lucia.validateSession(sessionToken)
   return session.user
     ? {
-        ...session.session,
-        user: session.user,
-      }
+      ...session.session,
+      user: session.user,
+    }
     : null
 }
 

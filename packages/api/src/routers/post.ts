@@ -3,8 +3,8 @@ import { createPost } from '@yuki/api/types/post'
 import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc'
 
 export const postRouter = createTRPCRouter({
-  hello: publicProcedure.query(() => {
-    return 'Hello World'
+  hello: publicProcedure.query(({ ctx }) => {
+    return { message: 'Hello World', user: ctx.session?.user }
   }),
 
   getLatestPost: protectedProcedure.query(async ({ ctx }) => {

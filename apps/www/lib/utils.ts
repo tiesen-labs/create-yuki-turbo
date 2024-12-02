@@ -1,4 +1,4 @@
-import { env } from 'env'
+import { env } from '@/env'
 
 export const getBaseUrl = () => {
   if (typeof window !== 'undefined') return window.location.origin

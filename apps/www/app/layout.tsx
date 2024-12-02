@@ -1,6 +1,7 @@
 import '@yuki/ui/tailwind.css'
 
-import { cn, geistMono, geistSans, ThemeProvider } from '@yuki/ui'
+import { cn, ThemeProvider } from '@yuki/ui'
+import { geistMono, geistSans } from '@yuki/ui/fonts'
 
 import { seo } from '@/lib/seo'
 import { TRPCReactProvider } from '@/lib/trpc/react'
@@ -9,7 +10,7 @@ export default ({ children }: Readonly<{ children: React.ReactNode }>) => (
   <html lang="en" suppressHydrationWarning>
     <body className={cn('min-h-dvh font-sans antialiased', geistSans.variable, geistMono.variable)}>
       <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
-        <TRPCReactProvider> {children} </TRPCReactProvider>
+        <TRPCReactProvider>{children}</TRPCReactProvider>
       </ThemeProvider>
     </body>
   </html>

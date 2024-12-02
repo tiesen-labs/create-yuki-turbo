@@ -1,9 +1,12 @@
-import { Pool } from '@neondatabase/serverless'
+import { neonConfig, Pool } from '@neondatabase/serverless'
 import { PrismaNeon } from '@prisma/adapter-neon'
 import { PrismaClient } from '@prisma/client'
+import ws from 'ws'
 
 import { dbEnv } from '@yuki/db/env'
 
+neonConfig.poolQueryViaFetch = true
+neonConfig.webSocketConstructor = ws
 const pool = new Pool({ connectionString: dbEnv.DATABASE_URL })
 const adapter = new PrismaNeon(pool)
 

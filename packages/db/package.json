@@ -28,12 +28,15 @@
     "@prisma/adapter-neon": "^6.0.0",
     "@prisma/client": "^6.0.0",
     "@t3-oss/env-nextjs": "^0.11.1",
+    "ws": "^8.18.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/ws": "^8.5.13",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
+    "bufferutil": "^4.0.8",
     "dotenv-cli": "^7.4.4",
     "eslint": "latest",
     "prettier": "latest",

@@ -12,7 +12,7 @@ export const seo = (params: {
   const title = params.title ? `${siteName} | ${params.title}` : siteName
   const description =
     params.description ??
-    ' Clean and typesafe starter monorepo using Turborepo along with Next.js and tRPC '
+    'Clean and typesafe starter monorepo using Turborepo along with Next.js and tRPC '
   const url = params.url ? `${getBaseUrl()}${params.url}` : getBaseUrl()
   const images = [...(params.images ?? []), '/api/og']
 
