@@ -4,6 +4,7 @@ import { Discord, generateState, lucia, OAuth2RequestError } from '@yuki/auth/lu
 import { db } from '@yuki/db'
 
 import type { Route } from './+types/api.auth.$'
+import { env } from '@/env'
 import { getBaseUrl } from '@/lib/utils'
 
 export const loader = async ({ request, params }: Route.LoaderArgs) => {
@@ -12,8 +13,8 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
   let oauthProvider = null
   if (provider === 'discord')
     oauthProvider = new Discord(
-      String(process.env.DISCORD_CLIENT_ID),
-      String(process.env.DISCORD_CLIENT_SECRET),
+      env.DISCORD_CLIENT_ID,
+      env.DISCORD_CLIENT_SECRET,
       `${getBaseUrl()}/api/auth/${provider}/callback`,
     )
   if (!oauthProvider) return data({ message: 'Provider is invalid' }, { status: 500 })
@@ -47,8 +48,9 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
     const tokens = await oauthProvider.validateAuthorizationCode(code)
     const accessToken = tokens.accessToken()
 
+
     const response = await fetch('https://discord.com/api/users/@me', {
-      headers: { Authorization: `Bearer_${accessToken}` },
+      headers: { Authorization: `Bearer ${accessToken}` },
     })
       .then((res) => res.json() as Promise<DiscordUser>)
       .then((user) => ({
@@ -61,6 +63,7 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
       .catch(() => {
         throw new Error('Failed to fetch user data from Discord')
       })
+
 
     let user = await db.user.findFirst({ where: { discordId: response.discordId } })
     if (!user) user = await db.user.create({ data: response })
