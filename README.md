@@ -1,12 +1,5 @@
 # Create Yuki Turbo
 
-> [!NOTE]
-> This template is customized from [create-t3-turbo](https://github.com/t3-oss/create-t3-turbo) with some changes:
->
-> - PNPM -> Bun
-> - Dizzle -> Prisma
-> - NextAuth -> Lucia
-
 ## Installation
 
 > [!NOTE]
@@ -123,7 +116,7 @@ Let's deploy the Next.js application to [Vercel](https://vercel.com). If you've 
 
 ## References
 
-The stack originates from [create-yuki-app](https://github.com/tiesen243/create-yuki-app).
+The stack originates from [create-t3-turbo](https://github.com/t3-oss/create-t3-turbo).
 
 ## License
 

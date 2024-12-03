@@ -48,7 +48,6 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
     const tokens = await oauthProvider.validateAuthorizationCode(code)
     const accessToken = tokens.accessToken()
 
-
     const response = await fetch('https://discord.com/api/users/@me', {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
@@ -63,7 +62,6 @@ export const loader = async ({ request, params }: Route.LoaderArgs) => {
       .catch(() => {
         throw new Error('Failed to fetch user data from Discord')
       })
-
 
     let user = await db.user.findFirst({ where: { discordId: response.discordId } })
     if (!user) user = await db.user.create({ data: response })
