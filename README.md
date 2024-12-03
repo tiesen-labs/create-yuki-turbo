@@ -48,9 +48,9 @@ packages
   ├─ api
   |   └─ tRPC v11 router definition
   ├─ auth
-  |   └─ Authentication using next-auth.
+  |   └─ Authentication using lucia-auth.
   ├─ db
-  |   └─ Typesafe db calls using Drizzle & Supabase
+  |   └─ Typesafe db calls using Prisma & Neon
   └─ ui
       └─ Start of a UI package for the webapp using shadcn-ui
 tooling
