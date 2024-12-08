@@ -28,7 +28,7 @@
     "@trpc/server": "^11.0.0-rc.660",
     "@yuki/auth": "workspace:*",
     "@yuki/db": "workspace:*",
-    "superjson": "^2.2.1",
+    "superjson": "^2.2.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {

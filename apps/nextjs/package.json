@@ -2,6 +2,7 @@
   "name": "@yuki/nextjs",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "bun with-env next build",
     "clean": "git clean -xdf .cache .next .turbo node_modules",
@@ -30,14 +31,14 @@
   },
   "devDependencies": {
     "@types/node": "^20.17.9",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tailwind-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
     "postcss": "^8.4.49",
-    "tailwindcss": "^3.4.15",
-    "typescript": "^5"
+    "tailwindcss": "^3.4.16",
+    "typescript": "^5.7.2"
   }
 }
