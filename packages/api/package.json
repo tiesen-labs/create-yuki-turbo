@@ -25,7 +25,7 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@trpc/server": "^11.0.0-rc.648",
+    "@trpc/server": "^11.0.0-rc.660",
     "@yuki/auth": "workspace:*",
     "@yuki/db": "workspace:*",
     "superjson": "^2.2.1",

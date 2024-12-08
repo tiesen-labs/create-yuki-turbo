@@ -11,10 +11,7 @@
     },
     "./*": {
       "types": "./dist/src/ui/*.d.ts",
-      "default": [
-        "./src/ui/*.ts",
-        "./src/ui/*.tsx"
-      ]
+      "default": "./src/ui/*.tsx"
     },
     "./hooks/*": {
       "types": "./dist/src/hooks/*.d.ts",
@@ -37,6 +34,7 @@
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.462.0",
@@ -44,7 +42,7 @@
     "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
-    "@types/react": "^18.3.12",
+    "@types/react": "^19",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",

@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server'
 
 import { auth } from '@yuki/auth'
 
-export default async (req: NextRequest) => {
-  //   const session = await auth() //  { session: { user: { ... } } }
+export default async (_req: NextRequest) => {
+  const _session = await auth() //  { session: { user: { ... } } }
   return NextResponse.next()
 }
 
@@ -12,4 +12,3 @@ export default async (req: NextRequest) => {
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 }
-
