@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "bump-deps": "bunx --bun npm-check-updates --deep -u -x react-day-picker && bun install",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo run clean",
     "db:push": "turbo -F @yuki/db push",
@@ -29,7 +30,7 @@
     "turbo": "^2.3.3",
     "typescript": "latest"
   },
-  "packageManager": "bun@1.1.34",
+  "packageManager": "bun@1.1.38",
   "engines": {
     "bun": "^1.1.38",
     "node": ">=22.18.1"
