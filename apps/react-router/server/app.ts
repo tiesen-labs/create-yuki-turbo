@@ -18,13 +18,13 @@ app.use(
     getLoadContext({ headers }) {
       const cookies = headers.cookie
         ? headers.cookie.split(';').reduce(
-          (acc, cookie) => {
-            const [key, value] = cookie.split('=') as [string, string]
-            acc[key.trim()] = value.trim()
-            return acc
-          },
-          {} as Record<string, string>,
-        )
+            (acc, cookie) => {
+              const [key, value] = cookie.split('=') as [string, string]
+              acc[key.trim()] = value.trim()
+              return acc
+            },
+            {} as Record<string, string>,
+          )
         : {}
 
       return {
