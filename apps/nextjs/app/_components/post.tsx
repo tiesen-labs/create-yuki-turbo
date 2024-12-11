@@ -1,5 +1,6 @@
 'use client'
 
+import type { CreatePost } from '@yuki/api/types/post'
 import { Button } from '@yuki/ui/button'
 import { Input } from '@yuki/ui/input'
 
@@ -16,7 +17,7 @@ export const Post: React.FC = () => {
         className="flex w-full gap-4"
         onSubmit={(e) => {
           e.preventDefault()
-          createPost.mutate({ content: String(new FormData(e.currentTarget).get('content')) })
+          createPost.mutate(Object.fromEntries(new FormData(e.currentTarget)) as CreatePost)
           e.currentTarget.reset()
         }}
       >
