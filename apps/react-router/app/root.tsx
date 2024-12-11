@@ -6,6 +6,8 @@ import stylesheet from '@yuki/ui/tailwind.css?url'
 import type { Route } from './+types/root'
 import { env } from '@/env'
 import { icons, seo } from '@/lib/seo'
+import { TRPCReactProvider } from '@/lib/trpc'
+import { CookiesProvider } from './lib/hooks/use-cookies'
 
 export const meta = seo({})
 
@@ -43,9 +45,17 @@ export const Layout: React.FC<React.PropsWithChildren> = ({ children }) => (
   </html>
 )
 
-export default () => {
-  return <Outlet />
+export const loader = ({ context }: Route.LoaderArgs) => {
+  return { cookies: context.cookies }
 }
+
+export default ({ loaderData }: Route.ComponentProps) => (
+  <CookiesProvider allCookies={loaderData.cookies}>
+    <TRPCReactProvider>
+      <Outlet />
+    </TRPCReactProvider>
+  </CookiesProvider>
+)
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   let message = 'Oops!'
