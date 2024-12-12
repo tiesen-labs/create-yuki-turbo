@@ -28,12 +28,12 @@ It uses [Turborepo](https://turborepo.org) and contains:
         └─ CI with pnpm cache setup
 apps
   ├─ nextjs
-  |   ├─ Next.js 14
-  |   ├─ React 18
+  |   ├─ Next.js 15
+  |   ├─ React 19
   |   ├─ Tailwind CSS
   |   └─ E2E Typesafe API Server & Client
   └─ react-router
-      ├─ React 18
+      ├─ React 19
       ├─ React Router 7
       ├─ Tailwind CSS
       └─ E2E Typesafe API Server & Client
