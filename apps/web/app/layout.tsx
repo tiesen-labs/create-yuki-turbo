@@ -27,7 +27,7 @@ export default async ({ children }: Readonly<{ children: React.ReactNode }>) => 
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
+          defaultTheme="dark"
           disableTransitionOnChange
         >
           <SessionProvider session={session}>
