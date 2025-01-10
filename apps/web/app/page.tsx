@@ -6,7 +6,7 @@ import { api, HydrateClient } from '@/lib/trpc/server'
 import { AuthShowcase } from './_components/auth-showcase'
 import { CreatePostForm, PostCardSkeleton, PostList } from './_components/post'
 
-export const runtime = 'edge'
+// export const runtime = 'edge'
 
 export default () => {
   void api.post.all.prefetch()
