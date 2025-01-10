@@ -45,7 +45,7 @@ export const PostList: React.FC = () => {
   const [posts] = api.post.all.useSuspenseQuery()
 
   return (
-    <div className="flex w-full flex-col gap-4">
+    <div className="flex w-full flex-col gap-4 md:max-h-80 md:overflow-y-auto">
       {posts.map((p) => {
         return <PostCard key={p.id} post={p} />
       })}

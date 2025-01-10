@@ -5,6 +5,7 @@ import { Typography } from '@yuki/ui/typography'
 import { api, HydrateClient } from '@/lib/trpc/server'
 import { AuthShowcase } from './_components/auth-showcase'
 import { CreatePostForm, PostCardSkeleton, PostList } from './_components/post'
+import { ThemeBtn } from './_components/theme-btn'
 
 // export const runtime = 'edge'
 
@@ -22,6 +23,8 @@ export default () => {
         <AuthShowcase />
 
         <CreatePostForm />
+
+        <ThemeBtn />
 
         <div className="mt-4 w-full max-w-2xl overflow-y-scroll">
           <Suspense
