@@ -1,5 +1,5 @@
-name: "Setup and install"
-description: "Common setup steps for Actions"
+name: 'Setup and install'
+description: 'Common setup steps for Actions'
 
 runs:
   using: composite
@@ -7,10 +7,13 @@ runs:
     - uses: oven-sh/setup-bun@v2
     - uses: actions/setup-node@v4
       with:
-        node-version-file: ".nvmrc"
+        node-version-file: '.nvmrc'
 
     - shell: bash
       run: bun add -g turbo
 
     - shell: bash
       run: bun install
+
+    - shell: bash
+      run: bun run db:generate
