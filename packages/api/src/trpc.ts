@@ -6,11 +6,12 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
+
 import { initTRPC, TRPCError } from '@trpc/server'
-import SuperJSON from 'superjson'
+import superjson from 'superjson'
 import { ZodError } from 'zod'
 
-import { auth, validateToken } from '@yuki/auth'
+import { validateSessionToken } from '@yuki/auth'
 import { db } from '@yuki/db'
 
 /**
@@ -19,9 +20,9 @@ import { db } from '@yuki/db'
  * - Next.js requests will have a session token in cookies
  */
 const isomorphicGetSession = async (headers: Headers) => {
-  const authToken = headers.get('Authorization') ?? ''
-  if (authToken) return validateToken(authToken)
-  return auth()
+  const authToken = headers.get('Authorization') ?? null
+  if (authToken) return validateSessionToken(authToken.replace('Bearer ', ''))
+  return {}
 }
 
 /**
@@ -41,13 +42,12 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   const session = await isomorphicGetSession(opts.headers)
 
   const source = opts.headers.get('x-trpc-source') ?? 'unknown'
-  console.log('>>> tRPC Request from', source, 'by', session?.user)
+  console.log('>>> tRPC Request from', source, 'by', session.userId ?? 'anonymous')
 
   return {
-    db,
     session,
+    db,
     token: authToken,
-    ...opts,
   }
 }
 
@@ -58,12 +58,13 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  * transformer
  */
 const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: SuperJSON,
+  transformer: superjson,
   errorFormatter: ({ shape, error }) => ({
     ...shape,
     data: {
       ...shape.data,
-      zodError: error.cause instanceof ZodError ? error.cause.flatten().fieldErrors : null,
+      zodError:
+        error.cause instanceof ZodError ? error.cause.flatten().fieldErrors : null,
     },
   }),
 })
@@ -88,7 +89,7 @@ export const createCallerFactory = t.createCallerFactory
 export const createTRPCRouter = t.router
 
 /**
- * Middleware for timing procedure execution and adding an artificial delay in development.
+ * Middleware for timing procedure execution and adding an articifial delay in development.
  *
  * You can remove this if you don't like it, but it can help catch unwanted waterfalls by simulating
  * network latency that would occur in production but not in local development.
@@ -127,13 +128,15 @@ export const publicProcedure = t.procedure.use(timingMiddleware)
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(timingMiddleware).use(({ ctx, next }) => {
-  if (!ctx.session) throw new TRPCError({ code: 'UNAUTHORIZED' })
+export const protectedProcedure = t.procedure
+  .use(timingMiddleware)
+  .use(({ ctx, next }) => {
+    if (!ctx.session.user) throw new TRPCError({ code: 'UNAUTHORIZED' })
 
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
-    },
+    return next({
+      ctx: {
+        // infers the `session` as non-nullable
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    })
   })
-})

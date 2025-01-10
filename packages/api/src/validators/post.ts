@@ -1,4 +1,12 @@
 import { z } from 'zod'
 
-export const createPost = z.object({ content: z.string().min(1) })
-export type CreatePost = z.infer<typeof createPost>
+const byId = z.object({ id: z.string() })
+export type PostById = z.infer<typeof byId>
+
+const create = z.object({ title: z.string() })
+export type CreatePost = z.infer<typeof create>
+
+export const postSchema = {
+  byId,
+  create,
+}

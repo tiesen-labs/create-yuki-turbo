@@ -1,15 +1,20 @@
 import type { Config } from 'tailwindcss'
 import animate from 'tailwindcss-animate'
+import { fontFamily } from 'tailwindcss/defaultTheme'
 
 import base from './base'
 
-const config = {
-  darkMode: ['class'],
-  content: base.content,
+export default {
+  content: ['app/**/*.{ts,tsx}', 'components/**/*.{ts,tsx}'],
   presets: [base],
   theme: {
+    container: { center: true, padding: '2rem', screens: { '2xl': '1400px' } },
     extend: {
-      container: { center: true, padding: '2rem', screens: { '2xl': '1400px' } },
+      fontFamily: {
+        sans: ['var(--font-sans)', ...fontFamily.sans],
+        mono: ['var(--font-mono)', ...fontFamily.mono],
+      },
+
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
@@ -19,5 +24,3 @@ const config = {
   },
   plugins: [animate],
 } satisfies Config
-
-export default config

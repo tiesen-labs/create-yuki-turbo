@@ -1,32 +1,29 @@
 {
   "name": "@yuki/auth",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": {
-      "react-server": "./src/index.rsc.ts",
-      "default": "./src/index.ts"
-    },
-    "./lucia": "./src/lucia.ts",
-    "./env": "./env.ts"
+    ".": "./src/index.ts",
+    "./oauth": "./src/oauth.ts",
+    "./env": "./src/env.ts"
   },
   "scripts": {
     "build": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsc",
+    "dev": "tsc --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
+  "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@lucia-auth/adapter-prisma": "^4.0.1",
+    "@oslojs/crypto": "^1.0.1",
+    "@oslojs/encoding": "^1.1.0",
     "@t3-oss/env-nextjs": "^0.11.1",
     "@yuki/db": "workspace:*",
-    "arctic": "^2.3.1",
-    "lucia": "^3.2.2",
-    "next": "15.1.0",
+    "arctic": "^3.1.1",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -36,6 +33,5 @@
     "eslint": "latest",
     "prettier": "latest",
     "typescript": "latest"
-  },
-  "prettier": "@yuki/prettier-config"
+  }
 }

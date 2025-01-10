@@ -1,29 +1,24 @@
-import { createPost } from '@yuki/api/types/post'
+import type { TRPCRouterRecord } from '@trpc/server'
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from '../trpc'
+import { protectedProcedure, publicProcedure } from '../trpc'
+import { postSchema } from '../validators/post'
 
-export const postRouter = createTRPCRouter({
-  hello: publicProcedure.query(() => {
-    return { message: 'Hello World' }
+export const postRouter = {
+  all: publicProcedure.query(({ ctx }) => {
+    return ctx.db.post.findMany()
   }),
 
-  getLatestPost: protectedProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.post.findFirst({
-      where: { authorId: ctx.session.userId },
-      orderBy: { createdAt: 'desc' },
+  byId: publicProcedure.input(postSchema.byId).query(({ ctx, input }) => {
+    return ctx.db.post.findUnique({ where: { id: input.id } })
+  }),
+
+  create: protectedProcedure.input(postSchema.create).mutation(({ ctx, input }) => {
+    return ctx.db.post.create({
+      data: { title: input.title, user: { connect: { id: ctx.session.userId } } },
     })
-
-    return post ?? null
   }),
 
-  createPost: protectedProcedure.input(createPost).mutation(async ({ input, ctx }) => {
-    const post = await ctx.db.post.create({
-      data: {
-        content: input.content,
-        author: { connect: { id: ctx.session.userId } },
-      },
-    })
-
-    return post
+  delete: protectedProcedure.input(postSchema.byId).mutation(({ ctx, input }) => {
+    return ctx.db.post.delete({ where: { id: input.id } })
   }),
-})
+} satisfies TRPCRouterRecord

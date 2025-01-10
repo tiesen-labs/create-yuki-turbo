@@ -24,9 +24,6 @@ apps/expo/.gitignore
 apps/expo/ios
 apps/expo/android
 
-# react-router
-.react-router
-
 # production
 build
 
@@ -50,7 +47,6 @@ yarn-error.log*
 # typescript
 dist/
 .cache
-*.tsbuildinfo
 
 # turbo
 .turbo

@@ -9,17 +9,17 @@ const config = {
   /* General Prettier Config */
   semi: false,
   tabWidth: 2,
-  printWidth: 100,
+  printWidth: 85,
   singleQuote: true,
   trailingComma: 'all',
 
   plugins: ['@ianvs/prettier-plugin-sort-imports', 'prettier-plugin-tailwindcss'],
 
-  /* Tailwind Classname Sorting Config */
-  tailwindConfig: fileURLToPath(new URL('../../tooling/tailwind/web.ts', import.meta.url)),
+  tailwindConfig: fileURLToPath(
+    new URL('../../tooling/tailwind/web.ts', import.meta.url),
+  ),
   tailwindFunctions: ['cn', 'cva'],
 
-  /* Sort Imports Config */
   importOrder: [
     '<TYPES>',
     '^(react/(.*)$)|^(react$)|^(react-native(.*)$)',
@@ -38,9 +38,10 @@ const config = {
   ],
   importOrderParserPlugins: ['typescript', 'jsx', 'decorators-legacy'],
   importOrderTypeScriptVersion: '4.4.0',
+
   overrides: [
-    { files: '*.js.hbs', options: { parser: 'babel' } },
     { files: '*.json.hbs', options: { parser: 'json' } },
+    { files: '*.js.hbs', options: { parser: 'babel' } },
   ],
 }
 

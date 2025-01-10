@@ -1,19 +1,14 @@
 {
   "name": "@yuki/api",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./src/index.ts"
-    },
-    "./types/*": {
-      "types": "./dist/src/validators/*.d.ts",
-      "default": [
-        "./src/validators/*.ts"
-      ]
+    ".": "./src/index.ts",
+    "./validators/*": {
+      "type": "./dist/validators/*.d.ts",
+      "default": "./src/validators/*.ts"
     }
   },
   "scripts": {
@@ -24,8 +19,9 @@
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
+  "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@trpc/server": "^11.0.0-rc.660",
+    "@trpc/server": "^11.0.0-rc.694",
     "@yuki/auth": "workspace:*",
     "@yuki/db": "workspace:*",
     "superjson": "^2.2.2",
@@ -38,6 +34,5 @@
     "eslint": "latest",
     "prettier": "latest",
     "typescript": "latest"
-  },
-  "prettier": "@yuki/prettier-config"
+  }
 }

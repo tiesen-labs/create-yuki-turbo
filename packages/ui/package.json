@@ -1,26 +1,13 @@
 {
   "name": "@yuki/ui",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/src/index.d.ts",
-      "default": "./src/index.ts"
-    },
-    "./*": {
-      "types": "./dist/src/ui/*.d.ts",
-      "default": "./src/ui/*.tsx"
-    },
-    "./hooks/*": {
-      "types": "./dist/src/hooks/*.d.ts",
-      "default": [
-        "./src/hooks/*.ts",
-        "./src/hooks/*.tsx"
-      ]
-    },
-    "./fonts": "./src/fonts/index.ts",
+    "./*": "./src/components/*.tsx",
+    "./lib/*": "./src/lib/*.ts",
+    "./hooks/*": "./src/hooks/*.ts",
     "./tailwind.css": "./src/tailwind.css"
   },
   "scripts": {
@@ -30,25 +17,26 @@
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
-    "ui-add": "bunx --bun shadcn@latest add && prettier src --write --list-different"
+    "ui-add": "bunx --bun shadcn@canary add && prettier src --write --list-different"
   },
+  "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@radix-ui/react-slot": "^1.1.0",
-    "@radix-ui/react-toast": "^1.2.2",
+    "@radix-ui/react-slot": "^1.1.1",
+    "@radix-ui/react-toast": "^1.2.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^0.468.0",
+    "lucide-react": "^0.471.0",
     "next-themes": "^0.4.4",
-    "tailwind-merge": "^2.5.5"
+    "react": "^19.0.0",
+    "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
-    "@types/react": "^19.0.1",
+    "@types/react": "^19.0.4",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "eslint": "^9.16.0",
-    "prettier": "^3.4.2",
-    "typescript": "^5.7.2"
-  },
-  "prettier": "@yuki/prettier-config"
+    "eslint": "latest",
+    "prettier": "latest",
+    "typescript": "latest"
+  }
 }

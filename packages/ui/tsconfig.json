@@ -1,12 +1,9 @@
 {
-  "extends": "@yuki/tsconfig/internal-package.json",
+  "extends": "@yuki/tsconfig/react-library.json",
   "compilerOptions": {
-    "lib": ["ES2022", "dom", "dom.iterable"],
-    "jsx": "preserve",
-    "rootDir": ".",
     "baseUrl": ".",
-    "paths": { "@yuki/ui/*": ["src/*"] }
+    "paths": { "@yuki/ui/*": ["./src/*"] }
   },
-  "include": ["*.ts", "src"],
-  "exclude": ["node_modules"]
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
 }
