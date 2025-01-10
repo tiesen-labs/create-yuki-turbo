@@ -16,4 +16,4 @@ runs:
       run: bun install
 
     - shell: bash
-      run: bun run db:generate
+      run: TURBO_UI=false bun run db:generate
