@@ -18,7 +18,7 @@ const KEY = 'auth_token'
 
 export const auth = cache(async (): Promise<SessionValidation> => {
   const token = (await cookies()).get(KEY)?.value ?? ''
-  if (!token) return {}
+  if (!token) return { expires: new Date(Date.now()) }
   return validateSessionToken(token)
 })
 
@@ -35,10 +35,10 @@ export const signIn = async (userId: string) => {
 }
 
 export const signOut = cache(async () => {
-  const session = await auth()
-  if (!session.id) return
+  const token = (await cookies()).get(KEY)?.value ?? ''
+  if (!token) return null
 
-  await invalidateSession(session.id)
+  await invalidateSession(token)
   ;(await cookies()).set(KEY, '', {
     httpOnly: true,
     path: '/',

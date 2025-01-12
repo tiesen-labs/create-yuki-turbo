@@ -9,7 +9,7 @@ const config = {
   /* General Prettier Config */
   semi: false,
   tabWidth: 2,
-  printWidth: 85,
+  printWidth: 90,
   singleQuote: true,
   trailingComma: 'all',
 

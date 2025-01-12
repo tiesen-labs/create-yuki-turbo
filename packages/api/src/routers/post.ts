@@ -5,7 +5,7 @@ import { postSchema } from '../validators/post'
 
 export const postRouter = {
   all: publicProcedure.query(({ ctx }) => {
-    return ctx.db.post.findMany()
+    return ctx.db.post.findMany({ orderBy: { createdAt: 'desc' } })
   }),
 
   byId: publicProcedure.input(postSchema.byId).query(({ ctx, input }) => {
@@ -14,7 +14,7 @@ export const postRouter = {
 
   create: protectedProcedure.input(postSchema.create).mutation(({ ctx, input }) => {
     return ctx.db.post.create({
-      data: { title: input.title, user: { connect: { id: ctx.session.userId } } },
+      data: { ...input, user: { connect: { id: ctx.session.user.id } } },
     })
   }),
 

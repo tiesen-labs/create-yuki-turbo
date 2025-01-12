@@ -1,8 +1,9 @@
 import '@yuki/ui/tailwind.css'
 
 import { Geist, Geist_Mono } from 'next/font/google'
+import { ThemeProvider } from 'next-themes'
 
-import { cn, ThemeProvider } from '@yuki/ui/lib/utils'
+import { cn } from '@yuki/lib/cn'
 import { Toaster } from '@yuki/ui/toaster'
 
 import { SessionProvider } from '@/lib/auth/react'
@@ -19,17 +20,9 @@ export default async ({ children }: Readonly<{ children: React.ReactNode }>) => 
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={cn(
-          'font-sans antialiased',
-          geistSans.variable,
-          geistMono.variable,
-        )}
+        className={cn('font-sans antialiased', geistSans.variable, geistMono.variable)}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          disableTransitionOnChange
-        >
+        <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
           <SessionProvider session={session}>
             <TRPCReactProvider>{children}</TRPCReactProvider>
             <Toaster />

@@ -26,10 +26,11 @@ export default () => {
 
         <ThemeBtn />
 
-        <div className="mt-4 w-full max-w-2xl overflow-y-scroll">
+        <div className="mt-4 w-full max-w-2xl md:max-h-80 md:overflow-y-auto">
           <Suspense
             fallback={
               <div className="flex w-full flex-col gap-4">
+                <PostCardSkeleton />
                 <PostCardSkeleton />
                 <PostCardSkeleton />
                 <PostCardSkeleton />

@@ -2,7 +2,7 @@ import type { VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 import { cva } from 'class-variance-authority'
 
-import { cn } from '@yuki/ui/lib/utils'
+import { cn } from '@yuki/lib/cn'
 
 const typographyVariants = cva('font-sans text-base font-normal text-foreground', {
   variants: {

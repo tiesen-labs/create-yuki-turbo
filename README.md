@@ -36,7 +36,7 @@ packages
   ├─ api
   |   └─ tRPC v11 router definition
   ├─ auth
-  |   └─ Authentication using lucia-auth and arctic.
+  |   └─ Authentication from scratch using arctic for OAuth.
   ├─ db
   |   └─ Typesafe db calls using Prisma & Neon
   └─ ui

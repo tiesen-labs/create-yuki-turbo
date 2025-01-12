@@ -22,7 +22,8 @@ import { db } from '@yuki/db'
 const isomorphicGetSession = async (headers: Headers) => {
   const authToken = headers.get('Authorization') ?? null
   if (authToken) return validateSessionToken(authToken.replace('Bearer ', ''))
-  return {}
+
+  return { user: undefined }
 }
 
 /**
@@ -38,16 +39,14 @@ const isomorphicGetSession = async (headers: Headers) => {
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
-  const authToken = opts.headers.get('Authorization') ?? null
   const session = await isomorphicGetSession(opts.headers)
 
   const source = opts.headers.get('x-trpc-source') ?? 'unknown'
-  console.log('>>> tRPC Request from', source, 'by', session.userId ?? 'anonymous')
+  console.log('>>> tRPC Request from', source, 'by', session.user ?? 'anonymous')
 
   return {
-    session,
     db,
-    token: authToken,
+    session,
   }
 }
 
@@ -61,6 +60,7 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => ({
     ...shape,
+    message: error.cause instanceof ZodError ? 'Validation error' : error.message,
     data: {
       ...shape.data,
       zodError:

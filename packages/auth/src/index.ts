@@ -13,54 +13,47 @@ export function generateSessionToken(): string {
   return token
 }
 
-export const createSession = async (
-  token: string,
-  userId: string,
-): Promise<Session> => {
-  const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
-  const session: Session = {
-    id: sessionId,
-    userId,
+export const createSession = async (token: string, userId: string): Promise<Session> => {
+  const session = {
+    sessionToken: encodeHexLowerCase(sha256(new TextEncoder().encode(token))),
     expiresAt: new Date(Date.now() + EXPIRES_IN),
+    user: { connect: { id: userId } },
   }
-  await db.session.create({ data: session })
-  return session
+
+  return await db.session.create({ data: session })
 }
 
-export const validateSessionToken = async (
-  token: string,
-): Promise<SessionValidation> => {
-  const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
+export const validateSessionToken = async (token: string): Promise<SessionValidation> => {
+  const sessionToken = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
   const result = await db.session.findUnique({
-    where: { id: sessionId },
-    include: { user: { include: { accounts: true } } },
+    where: { sessionToken },
+    include: { user: true },
   })
-  if (!result) return {}
+  if (!result) return { expires: new Date(Date.now()) }
 
   const { user, ...session } = result
   if (Date.now() >= session.expiresAt.getTime()) {
-    await db.session.delete({ where: { id: sessionId } })
-    return {}
+    await db.session.delete({ where: { sessionToken } })
+    return { expires: new Date(Date.now()) }
   }
 
   if (Date.now() >= session.expiresAt.getTime() - EXPIRES_IN / 2) {
     session.expiresAt = new Date(Date.now() + EXPIRES_IN)
     await db.session.update({
-      where: { id: session.id },
+      where: { sessionToken },
       data: { expiresAt: session.expiresAt },
     })
   }
 
-  return { ...session, user }
+  return { user, expires: session.createdAt }
 }
 
-export const invalidateSession = async (sessionId: string): Promise<void> => {
-  await db.session.delete({ where: { id: sessionId } })
+export const invalidateSession = async (token: string): Promise<void> => {
+  const sessionToken = encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
+  await db.session.delete({ where: { sessionToken } })
 }
 
 export interface SessionValidation {
-  id?: string
-  expiresAt?: Date
-  user?: User | null
-  userId?: string
+  user?: User
+  expires: Date
 }

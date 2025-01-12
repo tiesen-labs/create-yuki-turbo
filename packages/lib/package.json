@@ -1,13 +1,14 @@
 {
-  "name": "@yuki/ui",
-  "version": "2.0.0",
+  "name": "@yuki/lib",
+  "version": "0.1.0",
   "private": true,
   "license": "MIT",
   "type": "module",
   "exports": {
-    "./*": "./src/components/*.tsx",
-    "./hooks/*": "./src/hooks/*.ts",
-    "./tailwind.css": "./src/tailwind.css"
+    "./*": {
+      "type": "./dist/*.d.ts",
+      "default": "./src/*.ts"
+    }
   },
   "scripts": {
     "build": "tsc",
@@ -15,22 +16,14 @@
     "dev": "tsc --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
-    "ui-add": "bunx --bun shadcn@canary add && prettier src --write --list-different"
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@radix-ui/react-slot": "^1.1.1",
-    "@radix-ui/react-toast": "^1.2.4",
-    "@yuki/lib": "workspace:*",
-    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "lucide-react": "^0.471.0",
-    "react": "^19.0.0",
     "tailwind-merge": "^2.6.0"
   },
   "devDependencies": {
-    "@types/react": "^19.0.5",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",

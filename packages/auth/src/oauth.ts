@@ -61,29 +61,24 @@ export class OAuth {
         throw new Error(`Provider ${this.name} not supported`)
     }
 
-    const { email, ...rest } = oauthUser
+    const { id, email, name, image } = oauthUser
+    const create = { provider: this.name, providerId: id, providerName: name }
 
-    const account = await db.account.findFirst({
-      where: { AND: { provider: this.name, providerId: rest.providerId } },
+    const account = await db.account.findUnique({
+      where: { provider_providerId: { provider: this.name, providerId: id } },
     })
     let user = await db.user.findFirst({ where: { email } })
 
     if (!account && !user)
       user = await db.user.create({
-        data: {
-          email,
-          name: rest.userName,
-          avatar: rest.avatar,
-          accounts: { create: { ...rest, provider: this.name } },
-        },
+        data: { email, name, image, accounts: { create } },
       })
     else if (!account && user)
       user = await db.user.update({
         where: { email },
-        data: { accounts: { create: { ...rest, provider: this.name } } },
+        data: { accounts: { create } },
       })
 
-    if (!user) throw new Error(`Failed to sign in with ${this.name}`)
     return user
   }
 
@@ -94,11 +89,11 @@ export class OAuth {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json() as Promise<DiscordUser>)
-      .then((user) => ({
-        providerId: user.id,
-        email: user.email,
-        userName: user.username,
-        avatar: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`,
+      .then((account) => ({
+        id: account.id,
+        name: account.username,
+        email: account.email,
+        image: `https://cdn.discordapp.com/avatars/${account.id}/${account.avatar}.png`,
       }))
       .catch(() => {
         throw new Error('Failed to fetch user data from Discord')
@@ -114,11 +109,11 @@ export class OAuth {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => res.json() as Promise<GithubUser>)
-      .then((user) => ({
-        providerId: user.id.toString(),
-        email: user.email,
-        userName: user.login,
-        avatar: user.avatar_url,
+      .then((account) => ({
+        id: String(account.id),
+        email: account.email,
+        name: account.login,
+        image: account.avatar_url,
       }))
       .catch(() => {
         throw new Error('Failed to fetch user data from GitHub')
@@ -129,8 +124,8 @@ export class OAuth {
 }
 
 interface fetchedUser {
-  providerId: string
+  id: string
   email: string
-  userName: string
-  avatar: string
+  name: string
+  image: string
 }

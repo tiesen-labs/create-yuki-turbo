@@ -4,6 +4,6 @@
     "baseUrl": ".",
     "paths": { "@yuki/ui/*": ["./src/*"] }
   },
-  "include": ["."],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }
