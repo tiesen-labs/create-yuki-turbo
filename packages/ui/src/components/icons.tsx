@@ -5,6 +5,7 @@ export const DiscordIcon = (props: React.SVGProps<SVGSVGElement>) => (
     viewBox="0 0 256 199"
     width="1em"
     height="1em"
+    fill="currentColor"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     {...props}
@@ -18,6 +19,7 @@ export const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
     viewBox="0 0 256 250"
     width="1em"
     height="1em"
+    fill="currentColor"
     xmlns="http://www.w3.org/2000/svg"
     preserveAspectRatio="xMidYMid"
     {...props}
