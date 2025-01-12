@@ -36,7 +36,7 @@ export const signIn = async (userId: string) => {
 
 export const signOut = async () => {
   const token = (await cookies()).get(KEY)?.value ?? ''
-  if (!token) return null
+  if (!token) return
 
   await invalidateSession(token)
   ;(await cookies()).set(KEY, '', {

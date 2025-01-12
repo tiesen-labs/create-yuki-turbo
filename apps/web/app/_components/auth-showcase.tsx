@@ -25,11 +25,7 @@ export async function AuthShowcase() {
     <div className="mb-4 flex flex-col items-center justify-center gap-4">
       <Typography className="text-xl">Logged in as {session.user.name}</Typography>
 
-      <form
-        action={async () => {
-          await signOut()
-        }}
-      >
+      <form action={signOut}>
         <Button>Sign out</Button>
       </form>
     </div>
