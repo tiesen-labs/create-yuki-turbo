@@ -62,7 +62,6 @@ export const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> 
     onSuccess: async () => utils.post.invalidate(),
     onError: (err) => {
       toast({
-        title: 'Failed to delete post',
         description:
           err.data?.code === 'UNAUTHORIZED'
             ? 'You must be logged in to delete a post'
