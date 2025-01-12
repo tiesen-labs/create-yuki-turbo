@@ -1,13 +1,5 @@
 'use client'
 
-import {
-  Toast,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from '@yuki/ui/components/toast'
 import { useToast } from '@yuki/ui/hooks/use-toast'
 import {
   CircleAlertIcon,
@@ -15,6 +7,14 @@ import {
   InfoIcon,
   TriangleAlertIcon,
 } from '@yuki/ui/icons'
+import {
+  Toast,
+  ToastClose,
+  ToastDescription,
+  ToastProvider,
+  ToastTitle,
+  ToastViewport,
+} from '@yuki/ui/toast'
 
 export function Toaster() {
   const { toasts } = useToast()

@@ -35,8 +35,8 @@ export const GET = async (
 
   if (!isCallback) {
     const { url, state } = authProvider.create()
-
     ;(await cookies()).set('oauth_state', `${state}`)
+
     return NextResponse.redirect(new URL(`${url}`, nextUrl))
   }
 

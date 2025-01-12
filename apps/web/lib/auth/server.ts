@@ -34,7 +34,7 @@ export const signIn = async (userId: string) => {
   })
 }
 
-export const signOut = cache(async () => {
+export const signOut = async () => {
   const token = (await cookies()).get(KEY)?.value ?? ''
   if (!token) return null
 
@@ -46,4 +46,4 @@ export const signOut = cache(async () => {
     sameSite: 'lax',
     maxAge: 0,
   })
-})
+}

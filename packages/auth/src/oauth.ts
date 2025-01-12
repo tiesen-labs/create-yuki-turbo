@@ -79,6 +79,7 @@ export class OAuth {
         data: { accounts: { create } },
       })
 
+    if (!user) throw new Error(`Failed to sign in with ${this.name}`)
     return user
   }
 
