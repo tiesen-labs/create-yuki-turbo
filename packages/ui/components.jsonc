@@ -11,11 +11,11 @@
     "prefix": "",
   },
   "aliases": {
-    "components": "@workspace/ui", // Change to workspace name will make error
+    "components": "@workspace/ui",
     "utils": "@yuki/ui/utils",
-    "ui": "@yuki/ui/components",
+    "ui": "@yuki/ui",
     "lib": "@yuki/ui",
-    "hooks": "@yuki/ui/hooks",
+    "hooks": "@yuki/hooks",
   },
   "iconLibrary": "lucide",
 }
