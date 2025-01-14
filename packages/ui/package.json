@@ -5,10 +5,23 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    "./utils": "./src/utils.ts",
-    "./*": "./src/components/*.tsx",
-    "./hooks/*": "./src/hooks/*.ts",
-    "./tailwind.css": "./src/tailwind.css"
+    "./utils": {
+      "types": "./dist/src/utils.d.ts",
+      "default": "./src/utils.ts"
+    },
+    "./*": {
+      "types": "./dist/src/components/*.d.ts",
+      "default": "./src/components/*.tsx"
+    },
+    "./hooks/*": {
+      "types": "./dist/src/hooks/*.d.ts",
+      "default": [
+        "./src/hooks/*.ts",
+        "./src/hooks/*.tsx"
+      ]
+    },
+    "./tailwind.css": "./src/tailwind.css",
+    "./components/*": "./src/components/*.tsx"
   },
   "scripts": {
     "build": "tsc",

@@ -7,7 +7,6 @@ import {
   TriangleAlertIcon,
 } from 'lucide-react'
 
-import { useToast } from '@yuki/ui/hooks/use-toast'
 import {
   Toast,
   ToastClose,
@@ -15,7 +14,8 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from '@yuki/ui/toast'
+} from '@yuki/ui/components/toast'
+import { useToast } from '@yuki/ui/hooks/use-toast'
 
 export function Toaster() {
   const { toasts } = useToast()
