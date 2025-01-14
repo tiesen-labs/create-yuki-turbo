@@ -15,7 +15,7 @@ interface Metadata extends Omit<NextMetadata, 'title'> {
   title?: string
 }
 
-export const seo = (params: Metadata): Metadata => {
+export const seo = (params: Metadata) => {
   const siteName = 'Create Yuki Turbo'
   const title = params.title ? `${siteName} | ${params.title}` : siteName
   const description =

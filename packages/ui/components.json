@@ -12,9 +12,9 @@
   },
   "aliases": {
     "components": "@yuki/ui",
-    "utils": "@yuki/ui/lib/utils",
+    "utils": "@yuki/ui/utils",
     "ui": "@yuki/ui/components",
-    "lib": "@yuki/ui/lib",
+    "lib": "@yuki/ui",
     "hooks": "@yuki/ui/hooks"
   },
   "iconLibrary": "lucide"
