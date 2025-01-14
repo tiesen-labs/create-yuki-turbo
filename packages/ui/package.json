@@ -5,8 +5,8 @@
   "license": "MIT",
   "type": "module",
   "exports": {
+    "./*": "./src/ui/*.tsx",
     "./utils": "./src/utils.ts",
-    "./*": "./src/components/*.tsx",
     "./hooks/*": "./src/hooks/*.ts",
     "./tailwind.css": "./src/tailwind.css"
   },
