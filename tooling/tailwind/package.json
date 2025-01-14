@@ -16,7 +16,7 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "postcss": "^8.4.49",
+    "postcss": "^8.5.1",
     "tailwindcss": "latest",
     "tailwindcss-animate": "^1.0.7"
   },
