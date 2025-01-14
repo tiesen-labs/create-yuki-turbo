@@ -3,12 +3,11 @@ import '@yuki/ui/tailwind.css'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 
-import { cn } from '@yuki/lib/cn'
+import { cn } from '@yuki/ui'
 import { Toaster } from '@yuki/ui/toaster'
 
 import { SessionProvider } from '@/lib/auth/react'
 import { auth } from '@/lib/auth/server'
-import { seo } from '@/lib/seo'
 import { TRPCReactProvider } from '@/lib/trpc/react'
 
 const geistSans = Geist({ variable: '--font-sans', subsets: ['latin'] })
@@ -33,4 +32,7 @@ export default async ({ children }: Readonly<{ children: React.ReactNode }>) => 
   )
 }
 
-export const metadata = seo({})
+export const metadata = {
+  title: 'Yuki',
+  description: 'Yuki is a full-stack TypeScript framework for building web applications.',
+}

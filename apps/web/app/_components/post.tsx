@@ -1,11 +1,11 @@
 'use client'
 
 import type { RouterOutputs } from '@yuki/api'
-import { cn } from '@yuki/lib/cn'
 import { Button } from '@yuki/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@yuki/ui/card'
 import { toast } from '@yuki/ui/hooks/use-toast'
 import { Input } from '@yuki/ui/input'
+import { cn } from '@yuki/ui/utils'
 
 import { api } from '@/lib/trpc/react'
 

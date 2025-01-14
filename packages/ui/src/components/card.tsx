@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { cn } from '@yuki/lib/cn'
+import { cn } from '@yuki/ui/utils'
 
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (

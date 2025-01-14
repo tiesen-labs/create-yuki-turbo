@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { cn } from '@yuki/lib/cn'
+import { cn } from '@yuki/ui/utils'
 
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<'input'>>(
   ({ className, type, ...props }, ref) => {

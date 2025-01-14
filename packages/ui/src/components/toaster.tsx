@@ -1,12 +1,13 @@
 'use client'
 
-import { useToast } from '@yuki/ui/hooks/use-toast'
 import {
   CircleAlertIcon,
   CircleCheckIcon,
   InfoIcon,
   TriangleAlertIcon,
-} from '@yuki/ui/icons'
+} from 'lucide-react'
+
+import { useToast } from '@yuki/ui/hooks/use-toast'
 import {
   Toast,
   ToastClose,

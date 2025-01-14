@@ -2,7 +2,7 @@ import type { VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 import { cva } from 'class-variance-authority'
 
-import { cn } from '@yuki/lib/cn'
+import { cn } from '@yuki/ui/utils'
 
 const typographyVariants = cva('font-sans text-base font-normal text-foreground', {
   variants: {
@@ -30,7 +30,7 @@ const typographyVariants = cva('font-sans text-base font-normal text-foreground'
 
 export interface TypographyProps
   extends Omit<React.HTMLAttributes<HTMLParagraphElement>, 'color'>,
-    VariantProps<typeof typographyVariants> {}
+  VariantProps<typeof typographyVariants> { }
 
 const Typography = React.forwardRef<HTMLButtonElement, TypographyProps>(
   ({ className, level = 'p', color, ...props }, ref) => {

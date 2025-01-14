@@ -4,7 +4,7 @@
   "tasks": {
     "topo": { "dependsOn": ["^topo"] },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^gnr", "^build"],
       "outputs": [".cache/tsbuildinfo.json", "dist/**"]
     },
     "dev": { "dependsOn": ["^dev"], "cache": false, "persistent": false },
@@ -23,7 +23,7 @@
     "clean": { "cache": false },
     "//#clean": { "cache": false },
     "push": { "cache": false, "interactive": true },
-    "studio": { "cache": false, "persistent": true },
+    "studio": { "cache": false, "persistent": false },
     "gnr": { "cache": false, "interactive": false },
     "ui-add": { "cache": false, "interactive": true }
   },
