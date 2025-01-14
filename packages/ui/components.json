@@ -8,14 +8,14 @@
     "css": "src/tailwind.css",
     "baseColor": "neutral",
     "cssVariables": true,
-    "prefix": "",
+    "prefix": ""
   },
   "aliases": {
     "components": "@workspace/ui",
     "utils": "@yuki/ui/utils",
     "ui": "@yuki/ui",
     "lib": "@yuki/ui",
-    "hooks": "@yuki/hooks",
+    "hooks": "@yuki/hooks"
   },
-  "iconLibrary": "lucide",
+  "iconLibrary": "lucide"
 }
