@@ -13,9 +13,9 @@
   "aliases": {
     "components": "@workspace/ui",
     "utils": "@yuki/ui/utils",
-    "ui": "@yuki/ui",
+    "ui": "@yuki/ui/components",
     "lib": "@yuki/ui",
-    "hooks": "@yuki/hooks"
+    "hooks": "@yuki/ui/hooks"
   },
   "iconLibrary": "lucide"
 }

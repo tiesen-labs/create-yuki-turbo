@@ -3,7 +3,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "baseUrl": ".",
-    "paths": { "@yuki/*": ["./src/*"] }
+    "paths": { "@yuki/ui/*": ["./src/*"] }
   },
   "include": ["src"],
   "exclude": ["node_modules"]
