@@ -32,7 +32,7 @@ export class OAuth {
     }
   }
 
-  public getOAuthUrl() {
+  public getOAuthUrl(): { url: URL; state: string } {
     const state = generateState()
 
     const url =
