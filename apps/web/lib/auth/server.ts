@@ -10,7 +10,6 @@ import {
   invalidateSession,
   validateSessionToken,
 } from '@yuki/auth'
-import { authEnv } from '@yuki/auth/env'
 
 import { env } from '@/env'
 
@@ -28,7 +27,7 @@ export const signIn = async (userId: string) => {
   ;(await cookies()).set(KEY, token, {
     httpOnly: true,
     path: '/',
-    secure: authEnv.NODE_ENV === 'production',
+    secure: env.NODE_ENV === 'production',
     sameSite: 'lax',
     expires: session.expiresAt,
   })

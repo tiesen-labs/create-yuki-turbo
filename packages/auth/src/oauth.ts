@@ -1,6 +1,6 @@
 import { Discord, generateState, GitHub } from 'arctic'
 
-import { authEnv } from '@yuki/auth/env'
+import { env } from '@yuki/auth/env'
 import { db } from '@yuki/db'
 
 export class OAuth {
@@ -15,16 +15,12 @@ export class OAuth {
     switch (provider) {
       case 'discord':
         this.name = 'discord'
-        this.provider = new Discord(
-          authEnv.DISCORD_ID,
-          authEnv.DISCORD_SECRET,
-          callback_url,
-        )
+        this.provider = new Discord(env.DISCORD_ID, env.DISCORD_SECRET, callback_url)
         this.scopes = ['identify', 'email']
         break
       case 'github':
         this.name = 'github'
-        this.provider = new GitHub(authEnv.GITHUB_ID, authEnv.GITHUB_SECRET, callback_url)
+        this.provider = new GitHub(env.GITHUB_ID, env.GITHUB_SECRET, callback_url)
         this.scopes = ['user:email']
         break
       default:
@@ -38,9 +34,9 @@ export class OAuth {
     const url =
       this.provider.createAuthorizationURL.length === 3
         ? // @ts-expect-error - This is a hack to make the types work
-        this.provider.createAuthorizationURL(state, null, this.scopes)
+          this.provider.createAuthorizationURL(state, null, this.scopes)
         : // @ts-expect-error - This is a hack to make the types work
-        this.provider.createAuthorizationURL(state, this.scopes)
+          this.provider.createAuthorizationURL(state, this.scopes)
 
     return { url, state }
   }
@@ -50,7 +46,7 @@ export class OAuth {
       this.provider.validateAuthorizationCode.length == 2
         ? await this.provider.validateAuthorizationCode(code, '')
         : // @ts-expect-error - This is a hack to make the types work
-        await this.provider.validateAuthorizationCode(code)
+          await this.provider.validateAuthorizationCode(code)
 
     switch (this.name) {
       case 'discord':

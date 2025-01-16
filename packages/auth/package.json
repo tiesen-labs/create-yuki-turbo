@@ -6,15 +6,15 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
+      "types": "./dist/src/index.d.ts",
       "default": "./src/index.ts"
     },
     "./oauth": {
-      "types": "./dist/oauth.d.ts",
+      "types": "./dist/src/oauth.d.ts",
       "default": "./src/oauth.ts"
     },
     "./env": {
-      "types": "./dist/env.d.ts",
+      "types": "./dist/src/env.d.ts",
       "default": "./src/env.ts"
     }
   },

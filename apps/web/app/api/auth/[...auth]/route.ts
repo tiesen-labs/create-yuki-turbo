@@ -22,7 +22,7 @@ export const GET = async (
 
   if (!isCallback) {
     const { url, state } = authProvider.getOAuthUrl()
-      ; (await cookies()).set('oauth_state', `${state}`)
+    ;(await cookies()).set('oauth_state', `${state}`)
 
     return NextResponse.redirect(new URL(`${url}`, nextUrl))
   }
@@ -31,7 +31,7 @@ export const GET = async (
     const code = nextUrl.searchParams.get('code') ?? ''
     const state = nextUrl.searchParams.get('state') ?? ''
     const storedState = req.cookies.get('oauth_state')?.value ?? ''
-      ; (await cookies()).delete('oauth_state')
+    ;(await cookies()).delete('oauth_state')
 
     if (!code || !state || state !== storedState) throw new Error('Invalid state')
 

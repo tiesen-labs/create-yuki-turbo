@@ -2,7 +2,7 @@ import { createEnv } from '@t3-oss/env-nextjs'
 import { vercel } from '@t3-oss/env-nextjs/presets'
 import { z } from 'zod'
 
-import { authEnv } from '@yuki/auth/env'
+import { env as authEnv } from '@yuki/auth/env'
 
 export const env = createEnv({
   extends: [vercel(), authEnv],
