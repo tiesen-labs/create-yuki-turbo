@@ -20,8 +20,7 @@
         "./src/hooks/*.tsx"
       ]
     },
-    "./tailwind.css": "./src/tailwind.css",
-    "./components/*": "./src/components/*.tsx"
+    "./tailwind.css": "./src/tailwind.css"
   },
   "scripts": {
     "build": "tsc",

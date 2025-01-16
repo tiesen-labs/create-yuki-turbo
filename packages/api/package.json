@@ -5,9 +5,12 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./src/index.ts"
+    },
     "./validators/*": {
-      "type": "./dist/validators/*.d.ts",
+      "types": "./dist/validators/*.d.ts",
       "default": "./src/validators/*.ts"
     }
   },
