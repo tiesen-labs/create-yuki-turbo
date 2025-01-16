@@ -18,7 +18,7 @@ export const GET = async (
   const [provider, isCallback] = (await params).auth
   const callbackUrl = `${nextUrl.origin}/api/auth/${provider}/callback`
 
-  const authProvider = new OAuth('discord', callbackUrl)
+  const authProvider = new OAuth(provider, callbackUrl)
 
   if (!isCallback) {
     const { url, state } = authProvider.getOAuthUrl()
