@@ -8,7 +8,7 @@ import { cn } from '@yuki/ui/utils'
 
 import { SessionProvider } from '@/lib/auth/react'
 import { auth } from '@/lib/auth/server'
-import { seo } from '@/lib/seo'
+import { createMetadata } from '@/lib/metadata'
 import { TRPCReactProvider } from '@/lib/trpc/react'
 
 const geistSans = Geist({ variable: '--font-sans', subsets: ['latin'] })
@@ -33,4 +33,4 @@ export default async ({ children }: Readonly<{ children: React.ReactNode }>) => 
   )
 }
 
-export const metadata = seo({})
+export const metadata = createMetadata({})

@@ -1,6 +1,5 @@
 import reactPlugin from 'eslint-plugin-react'
 import hooksPlugin from 'eslint-plugin-react-hooks'
-import globals from 'globals'
 
 /**
  * A custom ESLint configuration for libraries that use React.
@@ -20,9 +19,6 @@ export default [
       // React scope no longer necessary with new JSX transform.
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
-    },
-    languageOptions: {
-      globals: { ...globals.serviceworker, ...globals.browser },
     },
   },
 ]
