@@ -3,29 +3,29 @@ import type { Metadata } from 'next'
 import { getBaseUrl } from '@/lib/utils'
 
 export const createMetadata = (
-  overides: Omit<Metadata, 'title'> & { title: string },
+  override: Omit<Metadata, 'title'> & { title: string },
 ): Metadata => {
   const siteName = 'Create Yuki Turbo'
 
-  const url = overides.openGraph?.url
-    ? `${getBaseUrl()}${overides.openGraph.url}`
+  const url = override.openGraph?.url
+    ? `${getBaseUrl()}${override.openGraph.url}`
     : getBaseUrl()
   const images = [
-    ...((overides.openGraph?.images as [] | null) ?? []),
+    ...((override.openGraph?.images as [] | null) ?? []),
     'https://tiesen.id.vn/api/og', // Or create your own API route to generate OG images in `/app/api/og`
   ]
 
   return {
-    ...overides,
+    ...override,
     metadataBase: new URL(getBaseUrl()),
-    title: overides.title ? `${siteName} | ${overides.title}` : siteName,
+    title: override.title ? `${siteName} | ${override.title}` : siteName,
     description:
-      overides.description ??
+      override.description ??
       'Clean and typesafe starter monorepo using Turborepo along with Next.js and tRPC ',
     applicationName: siteName,
     alternates: { canonical: url },
     twitter: { card: 'summary_large_image' },
-    openGraph: { url, images, siteName, type: 'website', ...overides.openGraph },
+    openGraph: { url, images, siteName, type: 'website', ...override.openGraph },
     icons: {
       // Replace with your own icons
       icon: 'https://tiesen.id.vn/favicon.ico',
