@@ -25,7 +25,7 @@ It uses [Turborepo](https://turborepo.org) and contains:
 ```text
 .github
   └─ workflows
-        └─ CI with pnpm cache setup
+        └─ CI to check the monorepo: format, lint, and typecheck
 apps
   └─ www
       ├─ Next.js 15

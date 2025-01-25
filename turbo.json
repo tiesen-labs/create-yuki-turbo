@@ -14,11 +14,11 @@
       "outputLogs": "new-only"
     },
     "lint": {
-      "dependsOn": ["^gnr", "^lint"],
+      "dependsOn": ["^lint"],
       "outputs": [".cache/.eslintcache"]
     },
     "typecheck": {
-      "dependsOn": ["^gnr", "^typecheck"],
+      "dependsOn": ["^typecheck"],
       "outputs": [".cache/tsbuildinfo.json"]
     },
     "push": { "cache": false, "interactive": true },

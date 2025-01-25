@@ -53,6 +53,11 @@ export const invalidateSession = async (token: string): Promise<void> => {
   await db.session.delete({ where: { sessionToken } })
 }
 
+export const getGravatarUrl = (email: string, size = 100): string => {
+  const hash = encodeHexLowerCase(sha256(new TextEncoder().encode(email)))
+  return `https://www.gravatar.com/avatar/${hash}?s=${size}`
+}
+
 export interface SessionValidation {
   user?: User
   expires: Date

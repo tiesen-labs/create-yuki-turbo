@@ -13,9 +13,9 @@ export default function HomePage() {
   return (
     <HydrateClient>
       <main className="container flex min-h-dvh max-w-screen-lg flex-col items-center justify-center overflow-x-hidden">
-        <div className="pointer-events-none relative -z-10 flex place-items-center before:absolute before:h-[700px] before:w-[140px] before:translate-x-1 before:translate-y-[-10px] before:rotate-[-32deg] before:rounded-full before:bg-gradient-to-r before:from-[#2C2F7B] before:to-[#B45076] before:opacity-50 before:blur-[100px] before:content-[''] lg:before:h-[700px] lg:before:w-[240px] lg:before:translate-x-[-100px]" />
         <Typography level="h1" className="mb-4 text-center">
-          Create <span className="text-[#774087]">Yuki</span> Turbo
+          Create{' '}
+          <span className="text-foreground dark:text-[hsl(221,89%,72%)]">Yuki</span> Turbo
         </Typography>
 
         <AuthShowcase />

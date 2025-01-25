@@ -1,9 +1,8 @@
 import type { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
-import { OAuth2RequestError } from 'arctic'
 
-import { OAuth } from '@yuki/auth/oauth'
+import { OAuth, OAuth2RequestError } from '@yuki/auth/oauth'
 
 import { signIn } from '@/lib/auth/server'
 
@@ -16,25 +15,22 @@ export const GET = async (
   const [provider, isCallback] = (await params).auth
   const callbackUrl = `${nextUrl.origin}/api/auth/${provider}/callback`
 
-  const authProvider = new OAuth(provider, callbackUrl)
-
-  if (!isCallback) {
-    const { url, state } = authProvider.getOAuthUrl()
-    ;(await cookies()).set('oauth_state', state)
-
-    return NextResponse.redirect(new URL(`${url}`, nextUrl))
-  }
-
   try {
-    const code = nextUrl.searchParams.get('code') ?? ''
-    const state = nextUrl.searchParams.get('state') ?? ''
-    const storedState = req.cookies.get('oauth_state')?.value ?? ''
-    ;(await cookies()).delete('oauth_state')
+    const authProvider = new OAuth(provider, callbackUrl)
 
-    if (!code || !state || state !== storedState) throw new Error('Invalid state')
+    if (!isCallback) {
+      const { url, state } = authProvider.getOAuthUrl()
+      ;(await cookies()).set('oauth_state', state)
 
-    const user = await authProvider.callback(code)
+      return NextResponse.redirect(new URL(`${url}`, nextUrl))
+    }
+
+    const user = await authProvider.callback(
+      nextUrl,
+      req.cookies.get('oauth_state')?.value,
+    )
     await signIn(user.id)
+    ;(await cookies()).delete('oauth_state')
 
     return NextResponse.redirect(new URL('/', nextUrl))
   } catch (e) {

@@ -19,6 +19,17 @@ env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
 
 jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./tooling/github/setup
+
+      - name: Format
+        run: bun format
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -31,19 +42,11 @@ jobs:
         shell: bash
         run: cp .env.example .env
 
+      - name: Generate prisma client
+        run: bun db:generate
+
       - name: Lint
         run: bun lint && bun lint:ws
-
-  format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup
-        uses: ./tooling/github/setup
-
-      - name: Format
-        run: bun format
 
   typecheck:
     runs-on: ubuntu-latest
@@ -52,6 +55,9 @@ jobs:
 
       - name: Setup
         uses: ./tooling/github/setup
+
+      - name: Generate prisma client
+        run: bun db:generate
 
       - name: Typecheck
         run: bun typecheck
