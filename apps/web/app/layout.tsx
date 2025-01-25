@@ -22,7 +22,11 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={cn('font-sans antialiased', geistSans.variable, geistMono.variable)}
+        className={cn(
+          'min-h-dvh font-sans antialiased',
+          geistSans.variable,
+          geistMono.variable,
+        )}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
           <SessionProvider session={session}>

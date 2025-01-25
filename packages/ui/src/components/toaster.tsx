@@ -23,7 +23,7 @@ export function Toaster() {
   return (
     <ToastProvider>
       {toasts.map(({ id, title, description, action, ...props }) => (
-        <Toast key={id} {...props}>
+        <Toast key={id} {...props} className="mt-1">
           {props.variant === 'success' && <CircleCheckIcon size={20} />}
           {props.variant === 'warning' && <CircleAlertIcon size={20} />}
           {props.variant === 'info' && <InfoIcon size={20} />}

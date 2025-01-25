@@ -10,9 +10,8 @@
     "tooling/*"
   ],
   "scripts": {
-    "build": "turbo run gnr && turbo run build",
+    "build": "turbo run build",
     "bump-deps": "bunx --bun npm-check-updates --deep -u -x react-day-picker && bun install",
-    "check": "bun lint && bun format && bun typecheck",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo run clean",
     "db:generate": "turbo -F @yuki/db gnr",

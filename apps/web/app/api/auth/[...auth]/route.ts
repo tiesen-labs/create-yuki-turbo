@@ -7,8 +7,6 @@ import { OAuth } from '@yuki/auth/oauth'
 
 import { signIn } from '@/lib/auth/server'
 
-// export const runtime = 'edge'
-
 export const GET = async (
   req: NextRequest,
   { params }: { params: Promise<{ auth: [string, string] }> },

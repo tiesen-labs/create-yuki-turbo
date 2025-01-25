@@ -4,7 +4,7 @@
   "tasks": {
     "topo": { "dependsOn": ["^topo"] },
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^gnr", "^build"],
       "outputs": [".cache/tsbuildinfo.json", "dist/**"]
     },
     "clean": { "cache": false },
