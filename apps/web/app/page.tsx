@@ -7,9 +7,7 @@ import { AuthShowcase } from './_components/auth-showcase'
 import { CreatePostForm, PostCardSkeleton, PostList } from './_components/post'
 import { ThemeBtn } from './_components/theme-btn'
 
-// export const runtime = 'edge'
-
-export default () => {
+export default function HomePage() {
   void api.post.all.prefetch()
 
   return (

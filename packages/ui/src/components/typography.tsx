@@ -4,7 +4,7 @@ import { cva } from 'class-variance-authority'
 
 import { cn } from '@yuki/ui/utils'
 
-const typographyVariants = cva('font-sans text-base font-normal text-foreground', {
+const typographyVariants = cva('text-foreground font-sans text-base font-normal', {
   variants: {
     level: {
       h1: 'scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl',
@@ -13,7 +13,7 @@ const typographyVariants = cva('font-sans text-base font-normal text-foreground'
       h4: 'scroll-m-20 text-xl font-semibold tracking-tight',
       p: 'leading-7 [&:not(:first-child)]:mt-4',
       blockquote: 'my-4 border-l-2 pl-6 italic',
-      code: 'relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold',
+      code: 'bg-muted relative rounded px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold',
     },
     color: {
       primary: 'text-primary',

@@ -22,7 +22,7 @@ export const GET = async (
 
   if (!isCallback) {
     const { url, state } = authProvider.getOAuthUrl()
-    ;(await cookies()).set('oauth_state', `${state}`)
+    ;(await cookies()).set('oauth_state', state)
 
     return NextResponse.redirect(new URL(`${url}`, nextUrl))
   }

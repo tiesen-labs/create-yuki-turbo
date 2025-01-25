@@ -14,9 +14,10 @@ export default [
     },
     settings: { react: { version: 'detect' } },
     rules: {
-      ...reactPlugin.configs['jsx-runtime'].rules,
+      ...reactPlugin.configs.recommended.rules,
       ...hooksPlugin.configs.recommended.rules,
-      // React scope no longer necessary with new JSX transform.
+
+      'react/no-unknown-property': 'off',
       'react/react-in-jsx-scope': 'off',
       'react/prop-types': 'off',
     },

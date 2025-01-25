@@ -4,24 +4,24 @@
   "tasks": {
     "topo": { "dependsOn": ["^topo"] },
     "build": {
-      "dependsOn": ["^gnr", "^build"],
+      "dependsOn": ["^build"],
       "outputs": [".cache/tsbuildinfo.json", "dist/**"]
     },
+    "clean": { "cache": false },
+    "//#clean": { "cache": false },
     "dev": { "dependsOn": ["^dev"], "cache": false, "persistent": false },
     "format": {
       "outputs": [".cache/.prettiercache"],
       "outputLogs": "new-only"
     },
     "lint": {
-      "dependsOn": ["^topo", "^build"],
+      "dependsOn": ["^topo", "^lint"],
       "outputs": [".cache/.eslintcache"]
     },
     "typecheck": {
-      "dependsOn": ["^topo", "^build"],
+      "dependsOn": ["^topo", "^typecheck"],
       "outputs": [".cache/tsbuildinfo.json"]
     },
-    "clean": { "cache": false },
-    "//#clean": { "cache": false },
     "push": { "cache": false, "interactive": true },
     "studio": { "cache": false, "persistent": false },
     "gnr": { "cache": false, "interactive": false },

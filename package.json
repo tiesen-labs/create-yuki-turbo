@@ -1,6 +1,6 @@
 {
   "name": "create-yuki-turbo",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": true,
   "description": "Turborepo template for doing stuff",
   "license": "MIT",
@@ -10,8 +10,9 @@
     "tooling/*"
   ],
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run gnr && turbo run build",
     "bump-deps": "bunx --bun npm-check-updates --deep -u -x react-day-picker && bun install",
+    "check": "bun lint && bun format && bun typecheck",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo run clean",
     "db:generate": "turbo -F @yuki/db gnr",
@@ -29,14 +30,14 @@
   },
   "prettier": "@yuki/prettier-config",
   "devDependencies": {
-    "@turbo/gen": "^2.3.3",
+    "@turbo/gen": "^2.3.4",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
     "prettier": "^3.4.2",
-    "turbo": "^2.3.3",
+    "turbo": "^2.3.4",
     "typescript": "^5.7.3"
   },
-  "packageManager": "bun@1.1.45",
+  "packageManager": "bun@1.2.0",
   "engines": {
     "bun": "^1.1.43",
     "node": ">=20.18.1"

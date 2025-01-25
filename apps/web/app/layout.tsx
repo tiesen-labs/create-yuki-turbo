@@ -14,7 +14,9 @@ import { TRPCReactProvider } from '@/lib/trpc/react'
 const geistSans = Geist({ variable: '--font-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'] })
 
-export default async ({ children }: Readonly<{ children: React.ReactNode }>) => {
+export default async function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
   const session = await auth()
 
   return (

@@ -80,7 +80,9 @@ export const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> 
       <Button
         variant="ghost"
         className="m-6 ml-0"
-        onClick={() => deletePost.mutate(post)}
+        onClick={() => {
+          deletePost.mutate(post)
+        }}
       >
         Delete
       </Button>
@@ -91,7 +93,7 @@ export const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> 
 export const PostCardSkeleton: React.FC<{ pulse?: boolean }> = ({ pulse = true }) => (
   <Card>
     <CardHeader>
-      <CardTitle className={cn('w-1/4 rounded bg-primary', pulse && 'animate-pulse')}>
+      <CardTitle className={cn('bg-primary w-1/4 rounded', pulse && 'animate-pulse')}>
         &nbsp;
       </CardTitle>
       <CardDescription

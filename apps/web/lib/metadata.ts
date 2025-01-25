@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { getBaseUrl } from '@/lib/utils'
 
 export const createMetadata = (
-  override: Omit<Metadata, 'title'> & { title: string },
+  override: Omit<Metadata, 'title'> & { title?: string },
 ): Metadata => {
   const siteName = 'Create Yuki Turbo'
 

@@ -46,8 +46,6 @@ tooling
   |   └─ shared, fine-grained, eslint presets
   ├─ prettier
   |   └─ shared prettier configuration
-  ├─ tailwind
-  |   └─ shared tailwind configuration
   └─ typescript
       └─ shared tsconfig you can extend from
 ```

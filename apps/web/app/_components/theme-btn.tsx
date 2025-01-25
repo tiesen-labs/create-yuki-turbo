@@ -10,16 +10,20 @@ export const ThemeBtn: React.FC = () => {
   const { theme, setTheme } = useTheme()
 
   const [isMounted, setMount] = useState<boolean>(false)
-  useEffect(() => setMount(true), [])
+  useEffect(() => {
+    setMount(true)
+  }, [])
   if (!isMounted) return null
 
-  const toggle = () => setTheme(theme === 'dark' ? 'light' : 'dark')
+  const toggle = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+  }
 
   return (
     <Button
       variant="ghost"
       size="icon"
-      className="fixed bottom-4 right-4"
+      className="fixed right-4 bottom-4"
       onClick={toggle}
     >
       {theme === 'dark' ? <SunIcon /> : <MoonIcon />}

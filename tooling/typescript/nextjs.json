@@ -3,9 +3,9 @@
   "display": "Next.js",
   "extends": "./internal-package.json",
   "compilerOptions": {
-    "lib": ["ES2022", "dom", "dom.iterable"],
     "jsx": "preserve",
-    "plugins": [{ "name": "next" }],
-    "module": "esnext"
+    "lib": ["ES2022", "dom", "dom.iterable"],
+    "module": "esnext",
+    "plugins": [{ "name": "next" }]
   }
 }
