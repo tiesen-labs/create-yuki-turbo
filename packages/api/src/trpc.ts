@@ -11,7 +11,7 @@ import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
 
-import { validateSessionToken } from '@yuki/auth'
+import { auth, validateSessionToken } from '@yuki/auth'
 import { db } from '@yuki/db'
 
 /**
@@ -22,8 +22,7 @@ import { db } from '@yuki/db'
 const isomorphicGetSession = async (headers: Headers) => {
   const authToken = headers.get('Authorization') ?? null
   if (authToken) return validateSessionToken(authToken.replace('Bearer ', ''))
-
-  return { user: undefined }
+  return auth()
 }
 
 /**
@@ -39,6 +38,7 @@ const isomorphicGetSession = async (headers: Headers) => {
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const authToken = opts.headers.get('Authorization') ?? null
   const session = await isomorphicGetSession(opts.headers)
 
   const source = opts.headers.get('x-trpc-source') ?? 'unknown'
@@ -47,6 +47,7 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
     db,
     session,
+    token: authToken,
   }
 }
 

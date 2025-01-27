@@ -1,7 +1,6 @@
 {
   "extends": "@yuki/tsconfig/react-library.json",
   "compilerOptions": {
-    "rootDir": ".",
     "baseUrl": ".",
     "paths": { "@yuki/ui/*": ["./src/*"] }
   },

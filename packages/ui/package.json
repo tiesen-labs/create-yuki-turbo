@@ -6,15 +6,15 @@
   "type": "module",
   "exports": {
     "./utils": {
-      "types": "./dist/src/utils.d.ts",
+      "types": "./dist/utils.d.ts",
       "default": "./src/utils.ts"
     },
     "./*": {
-      "types": "./dist/src/components/*.d.ts",
+      "types": "./dist/components/*.d.ts",
       "default": "./src/components/*.tsx"
     },
     "./hooks/*": {
-      "types": "./dist/src/hooks/*.d.ts",
+      "types": "./dist/hooks/*.d.ts",
       "default": [
         "./src/hooks/*.ts",
         "./src/hooks/*.tsx"

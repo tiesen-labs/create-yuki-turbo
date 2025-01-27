@@ -1,8 +1,7 @@
+import { auth, signOut } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
 import { DiscordIcon, GithubIcon } from '@yuki/ui/icons'
 import { Typography } from '@yuki/ui/typography'
-
-import { auth, signOut } from '@/lib/auth/server'
 
 export async function AuthShowcase() {
   const session = await auth()

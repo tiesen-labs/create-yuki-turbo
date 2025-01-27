@@ -6,15 +6,12 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/src/index.d.ts",
+      "types": "./dist/index.d.ts",
+      "react-server": "./src/index.rsc.ts",
       "default": "./src/index.ts"
     },
-    "./oauth": {
-      "types": "./dist/src/oauth.d.ts",
-      "default": "./src/oauth.ts"
-    },
     "./env": {
-      "types": "./dist/src/env.d.ts",
+      "types": "./dist/env.d.ts",
       "default": "./src/env.ts"
     }
   },
@@ -30,9 +27,10 @@
   "dependencies": {
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
-    "@t3-oss/env-nextjs": "^0.11.1",
+    "@t3-oss/env-nextjs": "^0.12.0",
     "@yuki/db": "workspace:*",
     "arctic": "^3.2.1",
+    "next": "15.1.6",
     "zod": "^3.24.1"
   },
   "devDependencies": {

@@ -1,5 +1,4 @@
 import type { NextRequest } from 'next/server'
-import { cookies } from 'next/headers'
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
 
 import { appRouter, createTRPCContext } from '@yuki/api'
@@ -22,15 +21,11 @@ export const OPTIONS = () => {
 }
 
 const handler = async (req: NextRequest) => {
-  const authToken = (await cookies()).get('auth_token')?.value ?? ''
-  const heads = new Headers(req.headers)
-  heads.set('Authorization', `Bearer ${authToken}`)
-
   const response = await fetchRequestHandler({
     endpoint: '/api/trpc',
     router: appRouter,
     req,
-    createContext: () => createTRPCContext({ headers: heads }),
+    createContext: () => createTRPCContext({ headers: req.headers }),
     onError({ error, path }) {
       console.error(`>>> tRPC Error on '${path}'`, error)
     },

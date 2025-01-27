@@ -6,19 +6,16 @@ import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@yuki/ui/toaster'
 import { cn } from '@yuki/ui/utils'
 
-import { SessionProvider } from '@/lib/auth/react'
-import { auth } from '@/lib/auth/server'
 import { createMetadata } from '@/lib/metadata'
+import { SessionProvider } from '@/lib/session'
 import { TRPCReactProvider } from '@/lib/trpc/react'
 
 const geistSans = Geist({ variable: '--font-sans', subsets: ['latin'] })
 const geistMono = Geist_Mono({ variable: '--font-mono', subsets: ['latin'] })
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const session = await auth()
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -29,10 +26,10 @@ export default async function RootLayout({
         )}
       >
         <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange>
-          <SessionProvider session={session}>
-            <TRPCReactProvider>{children}</TRPCReactProvider>
-            <Toaster />
-          </SessionProvider>
+          <TRPCReactProvider>
+            <SessionProvider>{children}</SessionProvider>
+          </TRPCReactProvider>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>

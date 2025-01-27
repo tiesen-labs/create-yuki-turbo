@@ -1,9 +1,11 @@
-import { Discord, generateState, GitHub, OAuth2RequestError } from 'arctic'
+import type { Discord, GitHub } from 'arctic'
+import { generateState } from 'arctic'
 
-import { env } from '@yuki/auth/env'
 import { db } from '@yuki/db'
 
-class OAuth {
+import { getOAuthConfig } from '../config'
+
+export class OAuth {
   private name: string
   private provider: Discord | GitHub
   private scopes: string[]
@@ -23,40 +25,7 @@ class OAuth {
   } = { id: '', email: '', name: '', image: '' }
 
   constructor(provider: string, callbackUrl: string) {
-    const providers = {
-      discord: {
-        instance: new Discord(env.DISCORD_ID, env.DISCORD_SECRET, callbackUrl),
-        scopes: ['identify', 'email'],
-        fetchUserUrl: 'https://discord.com/api/users/@me',
-        mapFn: (data: {
-          id: string
-          email: string
-          username: string
-          avatar: string
-        }) => ({
-          id: data.id,
-          email: data.email,
-          name: data.username,
-          image: `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`,
-        }),
-      },
-      github: {
-        instance: new GitHub(env.GITHUB_ID, env.GITHUB_SECRET, callbackUrl),
-        scopes: ['user:email'],
-        fetchUserUrl: 'https://api.github.com/user',
-        mapFn: (data: {
-          id: string
-          email: string
-          login: string
-          avatar_url: string
-        }) => ({
-          id: String(data.id),
-          email: data.email,
-          name: data.login,
-          image: data.avatar_url,
-        }),
-      },
-    }
+    const providers = getOAuthConfig(callbackUrl)
 
     const providerConfig = providers[provider as keyof typeof providers]
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
@@ -138,5 +107,3 @@ class OAuth {
     })
   }
 }
-
-export { OAuth, OAuth2RequestError }
