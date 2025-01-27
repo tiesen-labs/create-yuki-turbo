@@ -1,4 +1,4 @@
-import '@yuki/ui/index.css'
+import '@/app/globals.css'
 
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
