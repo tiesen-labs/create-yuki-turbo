@@ -24,6 +24,10 @@ apps/expo/.gitignore
 apps/expo/ios
 apps/expo/android
 
+# React Router
+/.react-router/
+/build/
+
 # production
 build
 
