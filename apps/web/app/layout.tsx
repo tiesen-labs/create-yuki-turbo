@@ -1,4 +1,4 @@
-import '@yuki/ui/tailwind.css'
+import '@yuki/ui/index.css'
 
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
@@ -6,8 +6,8 @@ import { ThemeProvider } from 'next-themes'
 import { Toaster } from '@yuki/ui/toaster'
 import { cn } from '@yuki/ui/utils'
 
+import { SessionProvider } from '@/hooks/use-session'
 import { createMetadata } from '@/lib/metadata'
-import { SessionProvider } from '@/lib/session'
 import { TRPCReactProvider } from '@/lib/trpc/react'
 
 const geistSans = Geist({ variable: '--font-sans', subsets: ['latin'] })
