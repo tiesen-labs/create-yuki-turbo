@@ -6,9 +6,7 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "target": "ES2022",
-    "lib": [
-      "ES2022"
-    ],
+    "lib": ["ES2022"],
     "allowJs": true,
     "resolveJsonModule": true,
     "moduleDetection": "force",
@@ -26,11 +24,5 @@
     "moduleResolution": "Bundler",
     "noEmit": true
   },
-  "exclude": [
-    "node_modules",
-    "build",
-    "dist",
-    ".next",
-    ".expo"
-  ]
+  "exclude": ["node_modules", "build", "dist", ".next", ".expo"]
 }
