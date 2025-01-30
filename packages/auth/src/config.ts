@@ -5,12 +5,7 @@ import { Discord, GitHub } from 'arctic'
 
 import type { Session } from './lib/session'
 import { env } from './env'
-import {
-  createSession,
-  generateSessionToken,
-  invalidateSessionToken,
-  validateSessionToken,
-} from './lib/session'
+import { validateSessionToken } from './lib/session'
 
 const getOAuthConfig = (callbackUrl: string) => ({
   // add more configs based on the OAuth providers you want to use
@@ -47,32 +42,5 @@ const auth = async (): Promise<Session> => {
   return validateSessionToken(token)
 }
 
-const signIn = async (userId: string) => {
-  const token = generateSessionToken()
-  const session = await createSession(token, userId)
-  ;(await cookies()).set(KEY, token, {
-    httpOnly: true,
-    path: '/',
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    expires: session.expiresAt,
-  })
-}
-
-const signOut = async () => {
-  const token = (await cookies()).get(KEY)?.value ?? ''
-  if (!token) return
-
-  await invalidateSessionToken(`Bearer ${token}`)
-  ;(await cookies()).set(KEY, '', {
-    httpOnly: true,
-    path: '/',
-    secure: env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 0,
-  })
-}
-
-export { getOAuthConfig }
-export { auth, signIn, signOut }
+export { auth, getOAuthConfig }
 export type { Session }

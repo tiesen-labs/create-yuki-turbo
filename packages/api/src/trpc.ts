@@ -11,7 +11,8 @@ import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
 
-import { auth, validateSessionToken } from '@yuki/auth'
+import type { Session } from '@yuki/auth';
+import { validateSessionToken } from '@yuki/auth'
 import { db } from '@yuki/db'
 
 /**
@@ -19,10 +20,10 @@ import { db } from '@yuki/db'
  * - Expo requests will have a session token in the Authorization header
  * - Next.js requests will have a session token in cookies
  */
-const isomorphicGetSession = async (headers: Headers) => {
+const isomorphicGetSession = async (headers: Headers): Promise<Session> => {
   const authToken = headers.get('Authorization') ?? null
   if (authToken) return validateSessionToken(authToken.replace('Bearer ', ''))
-  return auth()
+  return { expires: new Date(Date.now()) }
 }
 
 /**

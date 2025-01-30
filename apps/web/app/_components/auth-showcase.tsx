@@ -1,7 +1,9 @@
-import { auth, signOut } from '@yuki/auth'
+import { auth } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
 import { DiscordIcon, GithubIcon } from '@yuki/ui/icons'
 import { Typography } from '@yuki/ui/typography'
+
+import { api } from '@/lib/trpc/server'
 
 export async function AuthShowcase() {
   const session = await auth()
@@ -24,7 +26,12 @@ export async function AuthShowcase() {
     <div className="mb-4 flex flex-col items-center justify-center gap-4">
       <Typography className="text-xl">Logged in as {session.user.name}</Typography>
 
-      <form action={signOut}>
+      <form
+        action={async () => {
+          'use server'
+          await api.auth.signOut()
+        }}
+      >
         <Button>Sign out</Button>
       </form>
     </div>

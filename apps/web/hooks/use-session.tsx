@@ -7,9 +7,9 @@ import type { Session } from '@yuki/auth'
 
 const sessionContext = React.createContext<
   | {
-    session?: Session
-    isLoading: boolean
-  }
+      session?: Session
+      isLoading: boolean
+    }
   | undefined
 >(undefined)
 
