@@ -11,7 +11,7 @@ import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
 import { ZodError } from 'zod'
 
-import type { Session } from '@yuki/auth';
+import type { Session } from '@yuki/auth'
 import { validateSessionToken } from '@yuki/auth'
 import { db } from '@yuki/db'
 

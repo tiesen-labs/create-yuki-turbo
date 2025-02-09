@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 
 import type { Session } from '@yuki/auth'
 
@@ -9,6 +9,7 @@ const sessionContext = React.createContext<
   | {
       session?: Session
       isLoading: boolean
+      signOut: () => void
     }
   | undefined
 >(undefined)
@@ -16,15 +17,28 @@ const sessionContext = React.createContext<
 export const SessionProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { data: session, isLoading } = useQuery({
-    queryKey: ['getSession'],
+  const {
+    data: session,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: ['auth'],
     queryFn: async () => {
-      const res = await fetch('/api/auth/getSession')
+      const res = await fetch('/api/auth')
       return res.json() as Promise<Session>
     },
   })
+
+  const signOut = useMutation({
+    mutationKey: ['auth', 'signOut'],
+    mutationFn: async () => {
+      await fetch('/api/auth/signOut')
+    },
+    onSuccess: () => refetch(),
+  })
+
   return (
-    <sessionContext.Provider value={{ session, isLoading }}>
+    <sessionContext.Provider value={{ session, isLoading, signOut: signOut.mutate }}>
       {children}
     </sessionContext.Provider>
   )
