@@ -1,29 +1,38 @@
 import type { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
-import { generateState, OAuth2RequestError } from 'arctic'
+import { generateCodeVerifier, generateState } from 'arctic'
 
 import { db } from '@yuki/db'
 
-import { getOAuthConfig } from '../config'
+import { OAuthConfig } from '../config'
 import { env } from '../env'
-import { AUTH_KEY } from './constants'
 import { verifyHashedPassword } from './password'
 import { createSession, invalidateSessionToken, validateSessionToken } from './session'
 
-type Provider = 'credentials' | 'signOut' | 'discord' | 'github'
+type Provider = 'credentials' | keyof ReturnType<typeof OAuthConfig>
 
-const cookieAttributes = (expires: Date) => ({
-  httpOnly: true,
-  path: '/',
-  secure: env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
-  expires,
-})
+const setCorsHeaders = (res: Response) => {
+  res.headers.set('Access-Control-Allow-Origin', '*')
+  res.headers.set('Access-Control-Request-Method', '*')
+  res.headers.set('Access-Control-Allow-Methods', 'OPTIONS,GET,POST')
+  res.headers.set(
+    'Access-Control-Allow-Headers',
+    'authorization,accept,content-type,trpc-accept,x-trpc-source',
+  )
+}
 
-export const handler = async (
+const AUTH_KEY = 'auth_token'
+
+export const OPTIONS = () => {
+  const response = new Response(null, { status: 204 })
+  setCorsHeaders(response)
+  return response
+}
+
+export const GET = async (
   req: NextRequest,
-  { params }: { params: Promise<{ auth?: [Provider, string] }> },
+  { params }: { params: Promise<{ auth?: [string, string] }> },
 ) => {
   const nextUrl = new URL(req.url)
   const nextCookies = await cookies()
@@ -36,10 +45,16 @@ export const handler = async (
       ''
 
     const session = await validateSessionToken(token)
-    return NextResponse.json(session)
+
+    const response = NextResponse.json(session)
+    setCorsHeaders(response)
+    return response
   }
 
-  const [provider, isCallback] = auth
+  const [provider, isCallback] = auth.map((segment) => segment.toLowerCase()) as [
+    Provider,
+    string,
+  ]
 
   try {
     if (provider === 'credentials') {
@@ -58,48 +73,46 @@ export const handler = async (
 
       const session = await createSession(user.id)
       nextCookies.set(AUTH_KEY, session.token, cookieAttributes(session.expiresAt))
-      return NextResponse.json({ meesage: 'Login success', session })
+
+      const response = NextResponse.json({ meesage: 'Login success', session })
+      setCorsHeaders(response)
+      return response
     }
 
-    if (provider === 'signOut') {
-      const token =
-        nextCookies.get(AUTH_KEY)?.value ??
-        req.headers.get('Authorization')?.replace('Bearer ', '') ??
-        ''
-
-      try {
-        await invalidateSessionToken(token)
-        nextCookies.delete(AUTH_KEY)
-        return NextResponse.redirect(new URL('/', nextUrl))
-      } catch {
-        return NextResponse.json({ message: 'Sign out fail' }, { status: 500 })
-      }
-    }
-
-    const providers = getOAuthConfig(`${nextUrl.origin}/api/auth/${provider}/callback`)
-    const { ins1, ins2, scopes, fetchUserUrl, mapFn } = providers[provider]
+    const providers = OAuthConfig(`${nextUrl.origin}/api/auth/${provider}/callback`)
+    const { ins, scopes, fetchUserUrl, mapFn } = providers[provider]
     if (!fetchUserUrl) throw new Error(`Provider "${provider}" is not supported`)
 
     if (!isCallback) {
       const state = generateState()
+      const codeVerifier = generateCodeVerifier()
 
-      let url: URL
-      if (ins1) url = ins1.createAuthorizationURL(state, scopes)
-      else url = ins2.createAuthorizationURL(state, null, scopes)
+      const url: URL = ins.createAuthorizationURL(
+        state, // @ts-expect-error - some provider require codeVerifier
+        ins.createAuthorizationURL.length === 3 ? codeVerifier : scopes,
+        scopes,
+      )
 
       nextCookies.set('oauth_state', state)
-      return NextResponse.redirect(new URL(url, nextUrl))
+      nextCookies.set('oauth_code_verifier', codeVerifier)
+      const response = NextResponse.redirect(new URL(url, nextUrl))
+      setCorsHeaders(response)
+      return response
     }
 
     const code = nextUrl.searchParams.get('code') ?? ''
     const state = nextUrl.searchParams.get('state') ?? ''
-    const storedState = req.cookies.get('oauth_state')?.value
+
+    const storedState = req.cookies.get('oauth_state')?.value ?? ''
+    const storedCodeVerifier = req.cookies.get('oauth_code_verifier')?.value ?? ''
+
     if (!code || !state || state !== storedState) throw new Error('Invalid state')
 
-    let c = undefined
-    if (ins1) c = await ins1.validateAuthorizationCode(code)
-    else c = await ins2.validateAuthorizationCode(code, null)
-    const token = c.accessToken()
+    const verifiedCode =
+      ins.validateAuthorizationCode.length === 2
+        ? await ins.validateAuthorizationCode(code, storedCodeVerifier)
+        : await ins.validateAuthorizationCode(code, '')
+    const token = verifiedCode.accessToken()
 
     const r = await fetch(fetchUserUrl, { headers: { Authorization: `Bearer ${token}` } })
     if (!r.ok) throw new Error(`Failed to fetch user data from ${provider}`)
@@ -109,14 +122,45 @@ export const handler = async (
 
     nextCookies.set(AUTH_KEY, session.token, cookieAttributes(session.expiresAt))
     nextCookies.delete('oauth_state')
+    nextCookies.delete('oauth_code_verifier')
 
-    return NextResponse.redirect(new URL('/', nextUrl))
+    const response = NextResponse.redirect(new URL('/', nextUrl))
+    setCorsHeaders(response)
+    return response
   } catch (e) {
-    if (e instanceof OAuth2RequestError)
-      return NextResponse.json({ error: e.message }, { status: Number(e.code) })
-    else if (e instanceof Error)
-      return NextResponse.json({ error: e.message }, { status: 500 })
+    if (e instanceof Error)
+      return NextResponse.json({ error: e.message }, { status: 401 })
     else return NextResponse.json({ error: 'An unknown error occurred' }, { status: 500 })
+  }
+}
+
+export const POST = async (
+  req: NextRequest,
+  { params }: { params: Promise<{ auth?: [string, string] }> },
+) => {
+  const nextUrl = new URL(req.url)
+  const nextCookies = await cookies()
+
+  const { auth } = await params
+  if (!auth)
+    return NextResponse.json({ message: 'No auth parameters provided' }, { status: 404 })
+
+  if (auth.at(0) === 'sign-out') {
+    const token =
+      nextCookies.get(AUTH_KEY)?.value ??
+      req.headers.get('Authorization')?.replace('Bearer ', '') ??
+      ''
+
+    try {
+      await invalidateSessionToken(token)
+      nextCookies.delete(AUTH_KEY)
+
+      const response = NextResponse.redirect(new URL('/', nextUrl))
+      setCorsHeaders(response)
+      return response
+    } catch {
+      return NextResponse.json({ message: 'Sign out fail' }, { status: 500 })
+    }
   }
 }
 
@@ -155,3 +199,11 @@ const createUser = async (p: {
     },
   })
 }
+
+const cookieAttributes = (expires: Date) => ({
+  httpOnly: true,
+  path: '/',
+  secure: env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  expires,
+})

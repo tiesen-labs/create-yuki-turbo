@@ -10,17 +10,19 @@ import { env } from './env'
 import { AUTH_KEY } from './lib/constants'
 import { validateSessionToken } from './lib/session'
 
-const getOAuthConfig = (callbackUrl: string) => ({
-  /** add more configs based on the OAuth providers you want to use
-   * NOTE: mapFn is used for map user data form OAuth to database account schema
+const OAuthConfig = (callbackUrl: string) => ({
+  /**
+   * OAuth Provider Configuration
+   *
+   * @remarks
+   * - mapFn: Maps OAuth user data to database account schema
    *
    * @see https://arcticjs.dev
    */
   discord: {
-    ins1: null,
-    ins2: new Discord(env.DISCORD_ID, env.DISCORD_SECRET, callbackUrl),
+    ins: new Discord(env.DISCORD_ID, env.DISCORD_SECRET, callbackUrl),
     scopes: ['identify', 'email'],
-    fetchUserUrl: 'https://discord.com/api/users/@me', // @see https://discord.com/developers/docs/resources/user#get-current-user
+    fetchUserUrl: 'https://discord.com/api/users/@me',
     mapFn: (data: { id: string; email: string; username: string; avatar: string }) => ({
       providerId: data.id,
       email: data.email,
@@ -29,11 +31,10 @@ const getOAuthConfig = (callbackUrl: string) => ({
     }),
   },
   github: {
-    ins1: new GitHub(env.GITHUB_ID, env.GITHUB_SECRET, callbackUrl),
-    ins2: null,
+    ins: new GitHub(env.GITHUB_ID, env.GITHUB_SECRET, callbackUrl),
     scopes: ['user:email'],
     fetchUserUrl: 'https://api.github.com/user', // @see https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
-    mapFn: (data: { id: string; email: string; login: string; avatar_url: string }) => ({
+    mapFn: (data: { id: number; email: string; login: string; avatar_url: string }) => ({
       providerId: String(data.id),
       email: data.email,
       name: data.login,
@@ -51,5 +52,5 @@ const auth = async (): Promise<Session> => {
 const generateGravatar = (email: string): string =>
   encodeHexLowerCase(sha256(new TextEncoder().encode(email)))
 
-export { auth, getOAuthConfig, generateGravatar }
+export { auth, OAuthConfig, generateGravatar }
 export type { Session }

@@ -3,8 +3,8 @@
 import type { RouterOutputs } from '@yuki/api'
 import { Button } from '@yuki/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@yuki/ui/card'
-import { toast } from '@yuki/ui/hooks/use-toast'
 import { Input } from '@yuki/ui/input'
+import { toast } from '@yuki/ui/sonner'
 import { cn } from '@yuki/ui/utils'
 
 import { api } from '@/lib/trpc/react'
@@ -13,13 +13,7 @@ export const CreatePostForm: React.FC = () => {
   const utils = api.useUtils()
   const createPost = api.post.create.useMutation({
     onSuccess: async () => utils.post.invalidate(),
-    onError: (e) => {
-      toast({
-        description:
-          e.data?.code === 'UNAUTHORIZED' ? 'You must be logged in to post' : e.message,
-        variant: 'error',
-      })
-    },
+    onError: (e) => toast.error(e.message),
   })
 
   return (
@@ -60,15 +54,7 @@ export const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> 
   const utils = api.useUtils()
   const deletePost = api.post.delete.useMutation({
     onSuccess: async () => utils.post.invalidate(),
-    onError: (err) => {
-      toast({
-        description:
-          err.data?.code === 'UNAUTHORIZED'
-            ? 'You must be logged in to delete a post'
-            : err.message,
-        variant: 'error',
-      })
-    },
+    onError: (e) => toast.error(e.message),
   })
 
   return (

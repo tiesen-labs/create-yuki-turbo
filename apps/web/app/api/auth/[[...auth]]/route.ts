@@ -1,1 +1,1 @@
-export { handler as GET } from '@yuki/auth'
+export { GET, POST, OPTIONS } from '@yuki/auth'
