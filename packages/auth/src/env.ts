@@ -6,8 +6,6 @@ export const env = createEnv({
     NODE_ENV: z.enum(['development', 'production']).optional(),
     DISCORD_ID: z.string().min(1),
     DISCORD_SECRET: z.string().min(1),
-    GITHUB_ID: z.string().min(1),
-    GITHUB_SECRET: z.string().min(1),
   },
   client: {},
   experimental__runtimeEnv: {},

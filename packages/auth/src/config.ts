@@ -3,7 +3,7 @@
 import { cookies } from 'next/headers'
 import { sha256 } from '@oslojs/crypto/sha2'
 import { encodeHexLowerCase } from '@oslojs/encoding'
-import { Discord, GitHub } from 'arctic'
+import { Discord } from 'arctic'
 
 import type { Session } from './lib/session'
 import { env } from './env'
@@ -15,6 +15,9 @@ const OAuthConfig = (callbackUrl: string) => ({
    * OAuth Provider Configuration
    *
    * @remarks
+   * - ins: create a new instance for OAuth provider
+   * - scopes: authentication permissions for user identification and email
+   * - fetchUserUrl: OAuth API endpoint to get user data
    * - mapFn: Maps OAuth user data to database account schema
    *
    * @see https://arcticjs.dev
@@ -30,21 +33,17 @@ const OAuthConfig = (callbackUrl: string) => ({
       image: `https://cdn.discordapp.com/avatars/${data.id}/${data.avatar}.png`,
     }),
   },
-  github: {
-    ins: new GitHub(env.GITHUB_ID, env.GITHUB_SECRET, callbackUrl),
-    scopes: ['user:email'],
-    fetchUserUrl: 'https://api.github.com/user', // @see https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
-    mapFn: (data: { id: number; email: string; login: string; avatar_url: string }) => ({
-      providerId: String(data.id),
-      email: data.email,
-      name: data.login,
-      image: data.avatar_url,
-    }),
-  },
 })
 
-const auth = async (): Promise<Session> => {
-  const token = (await cookies()).get(AUTH_KEY)?.value ?? ''
+const auth = async (req?: Request): Promise<Session> => {
+  const token =
+    req?.headers
+      .get('cookie')
+      ?.split(';')
+      .find((c) => c.trim().startsWith(`${AUTH_KEY}=`))
+      ?.split('=')[1] ??
+    (await cookies()).get(AUTH_KEY)?.value ??
+    ''
   if (!token) return { expires: new Date(Date.now()) }
   return validateSessionToken(token)
 }

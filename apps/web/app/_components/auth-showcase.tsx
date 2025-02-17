@@ -1,6 +1,6 @@
 import { auth } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
-import { DiscordIcon, GithubIcon } from '@yuki/ui/icons'
+import { DiscordIcon } from '@yuki/ui/icons'
 import { Typography } from '@yuki/ui/typography'
 
 export async function AuthShowcase() {
@@ -11,10 +11,6 @@ export async function AuthShowcase() {
       <form className="mb-4 flex flex-col gap-4">
         <Button size="lg" formAction={'/api/auth/discord'}>
           <DiscordIcon /> Sign in with Discord
-        </Button>
-
-        <Button size="lg" formAction={'/api/auth/github'}>
-          <GithubIcon /> Sign in with GitHub
         </Button>
       </form>
     )
