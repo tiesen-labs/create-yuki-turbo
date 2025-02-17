@@ -3,7 +3,7 @@
 import type { RouterOutputs } from '@yuki/api'
 import { Button } from '@yuki/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@yuki/ui/card'
-import { Input } from '@yuki/ui/input'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@yuki/ui/form'
 import { toast } from '@yuki/ui/sonner'
 import { cn } from '@yuki/ui/utils'
 
@@ -11,28 +11,42 @@ import { api } from '@/lib/trpc/react'
 
 export const CreatePostForm: React.FC = () => {
   const utils = api.useUtils()
-  const createPost = api.post.create.useMutation({
+  const { mutate, isPending, error } = api.post.create.useMutation({
     onSuccess: async () => utils.post.invalidate(),
     onError: (e) => toast.error(e.message),
   })
 
   return (
-    <form
-      className="flex w-full max-w-2xl flex-col gap-4"
-      onSubmit={(e) => {
-        e.preventDefault()
-        const fd = new FormData(e.currentTarget)
-        createPost.mutate({
-          title: fd.get('title') as string,
-          content: fd.get('content') as string,
-        })
-        e.currentTarget.reset()
-      }}
+    <Form<typeof mutate>
+      className="w-full max-w-2xl"
+      onSubmit={mutate}
+      isPending={isPending}
     >
-      <Input name="title" placeholder="What's on your mind?" />
-      <Input name="content" placeholder="Tell us more" />
-      <Button disabled={createPost.isPending}>Create</Button>
-    </form>
+      <FormField
+        name="title"
+        error={error?.data?.zodError?.title?.at(0)}
+        render={() => (
+          <FormItem>
+            <FormControl placeholder="What's on your mind?" />
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        name="content"
+        error={error?.data?.zodError?.content?.at(0)}
+        render={() => (
+          <FormItem>
+            <FormControl placeholder="Tell us more" />
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <Button className="w-full" disabled={isPending}>
+        Create
+      </Button>
+    </Form>
   )
 }
 
