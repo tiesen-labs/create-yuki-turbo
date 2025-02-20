@@ -20,7 +20,7 @@ export async function AuthShowcase() {
     <div className="mb-4 flex flex-col items-center justify-center gap-4">
       <Typography className="text-xl">Logged in as {session.user.name}</Typography>
 
-      <form action="/api/auth/signOut">
+      <form action="/api/auth/sign-out" method="POST">
         <Button>Sign out</Button>
       </form>
     </div>

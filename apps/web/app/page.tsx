@@ -2,13 +2,14 @@ import { Suspense } from 'react'
 
 import { Typography } from '@yuki/ui/typography'
 
-import { api, HydrateClient } from '@/lib/trpc/server'
+import { getQueryClient, HydrateClient, trpc } from '@/lib/trpc/server'
 import { AuthShowcase } from './_components/auth-showcase'
 import { CreatePostForm, PostCardSkeleton, PostList } from './_components/post'
 import { ThemeBtn } from './_components/theme-btn'
 
 export default function HomePage() {
-  void api.post.all.prefetch()
+  const queryClient = getQueryClient()
+  void queryClient.prefetchQuery(trpc.post.all.queryOptions())
 
   return (
     <HydrateClient>

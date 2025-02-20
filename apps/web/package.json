@@ -18,8 +18,8 @@
     "@t3-oss/env-nextjs": "^0.12.0",
     "@tanstack/react-query": "^5.66.7",
     "@trpc/client": "^11.0.0-rc.795",
-    "@trpc/react-query": "^11.0.0-rc.795",
     "@trpc/server": "^11.0.0-rc.795",
+    "@trpc/tanstack-react-query": "^11.0.0-rc.795",
     "@yuki/api": "workspace:*",
     "@yuki/auth": "workspace:*",
     "@yuki/db": "workspace:*",
@@ -40,7 +40,7 @@
     "@yuki/tsconfig": "workspace:*",
     "dotenv-cli": "^8.0.0",
     "eslint": "latest",
-    "postcss": "^8.5.2",
+    "postcss": "^8.5.3",
     "prettier": "latest",
     "tailwindcss": "^4.0.7",
     "typescript": "latest"

@@ -1,5 +1,7 @@
 'use client'
 
+import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+
 import type { RouterOutputs } from '@yuki/api'
 import { Button } from '@yuki/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@yuki/ui/card'
@@ -7,14 +9,17 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@yuki/ui/fo
 import { toast } from '@yuki/ui/sonner'
 import { cn } from '@yuki/ui/utils'
 
-import { api } from '@/lib/trpc/react'
+import { useTRPC } from '@/lib/trpc/react'
 
 export const CreatePostForm: React.FC = () => {
-  const utils = api.useUtils()
-  const { mutate, isPending, error } = api.post.create.useMutation({
-    onSuccess: async () => utils.post.invalidate(),
-    onError: (e) => toast.error(e.message),
-  })
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+  const { mutate, isPending, error } = useMutation(
+    trpc.post.create.mutationOptions({
+      onSuccess: async () => queryClient.invalidateQueries(trpc.post.queryFilter()),
+      onError: (e) => toast.error(e.message),
+    }),
+  )
 
   return (
     <Form<typeof mutate>
@@ -51,7 +56,8 @@ export const CreatePostForm: React.FC = () => {
 }
 
 export const PostList: React.FC = () => {
-  const [posts] = api.post.all.useSuspenseQuery()
+  const trpc = useTRPC()
+  const { data: posts } = useSuspenseQuery(trpc.post.all.queryOptions())
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -65,11 +71,14 @@ export const PostList: React.FC = () => {
 export const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> = ({
   post,
 }) => {
-  const utils = api.useUtils()
-  const deletePost = api.post.delete.useMutation({
-    onSuccess: async () => utils.post.invalidate(),
-    onError: (e) => toast.error(e.message),
-  })
+  const trpc = useTRPC()
+  const queryClient = useQueryClient()
+  const deletePost = useMutation(
+    trpc.post.delete.mutationOptions({
+      onSuccess: async () => queryClient.invalidateQueries(trpc.post.queryFilter()),
+      onError: (e) => toast.error(e.message),
+    }),
+  )
 
   return (
     <Card className="flex justify-between">
