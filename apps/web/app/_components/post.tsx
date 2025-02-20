@@ -26,10 +26,10 @@ export const CreatePostForm: React.FC = () => {
       className="w-full max-w-2xl"
       onSubmit={mutate}
       isPending={isPending}
+      errors={error?.data?.zodError}
     >
       <FormField
         name="title"
-        error={error?.data?.zodError?.title?.at(0)}
         render={() => (
           <FormItem>
             <FormControl placeholder="What's on your mind?" />
@@ -39,7 +39,6 @@ export const CreatePostForm: React.FC = () => {
       />
       <FormField
         name="content"
-        error={error?.data?.zodError?.content?.at(0)}
         render={() => (
           <FormItem>
             <FormControl placeholder="Tell us more" />
