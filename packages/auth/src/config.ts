@@ -26,7 +26,12 @@ const OAuthConfig = (callbackUrl: string) => ({
     ins: new Discord(env.DISCORD_ID, env.DISCORD_SECRET, callbackUrl),
     scopes: ['identify', 'email'],
     fetchUserUrl: 'https://discord.com/api/users/@me',
-    mapFn: (data: { id: string; email: string; username: string; avatar: string }) => ({
+    mapFn: (data: {
+      id: string
+      email: string
+      username: string
+      avatar: string
+    }) => ({
       providerId: data.id,
       email: data.email,
       name: data.username,

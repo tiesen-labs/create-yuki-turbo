@@ -1,11 +1,21 @@
 'use client'
 
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query'
 
 import type { RouterOutputs } from '@yuki/api'
 import { Button } from '@yuki/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@yuki/ui/card'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@yuki/ui/form'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@yuki/ui/form'
 import { toast } from '@yuki/ui/sonner'
 import { cn } from '@yuki/ui/utils'
 
@@ -16,7 +26,8 @@ export const CreatePostForm: React.FC = () => {
   const queryClient = useQueryClient()
   const { mutate, isPending, error } = useMutation(
     trpc.post.create.mutationOptions({
-      onSuccess: async () => queryClient.invalidateQueries(trpc.post.queryFilter()),
+      onSuccess: async () =>
+        queryClient.invalidateQueries(trpc.post.queryFilter()),
       onError: (e) => toast.error(e.message),
     }),
   )
@@ -67,14 +78,15 @@ export const PostList: React.FC = () => {
   )
 }
 
-export const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> = ({
-  post,
-}) => {
+export const PostCard: React.FC<{
+  post: RouterOutputs['post']['all'][number]
+}> = ({ post }) => {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const deletePost = useMutation(
     trpc.post.delete.mutationOptions({
-      onSuccess: async () => queryClient.invalidateQueries(trpc.post.queryFilter()),
+      onSuccess: async () =>
+        queryClient.invalidateQueries(trpc.post.queryFilter()),
       onError: (e) => toast.error(e.message),
     }),
   )
@@ -98,10 +110,14 @@ export const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> 
   )
 }
 
-export const PostCardSkeleton: React.FC<{ pulse?: boolean }> = ({ pulse = true }) => (
+export const PostCardSkeleton: React.FC<{ pulse?: boolean }> = ({
+  pulse = true,
+}) => (
   <Card>
     <CardHeader>
-      <CardTitle className={cn('bg-primary w-1/4 rounded', pulse && 'animate-pulse')}>
+      <CardTitle
+        className={cn('bg-primary w-1/4 rounded', pulse && 'animate-pulse')}
+      >
         &nbsp;
       </CardTitle>
       <CardDescription

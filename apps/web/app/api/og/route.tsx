@@ -38,7 +38,9 @@ export function GET(req: NextRequest) {
         >
           {title}
         </p>
-        <p style={{ fontSize: '32px', color: 'rgba(240,240,240,0.8)' }}>{description}</p>
+        <p style={{ fontSize: '32px', color: 'rgba(240,240,240,0.8)' }}>
+          {description}
+        </p>
       </div>
     ),
     {

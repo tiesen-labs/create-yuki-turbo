@@ -16,7 +16,10 @@ export default function HomePage() {
       <main className="container flex min-h-dvh max-w-screen-lg flex-col items-center justify-center overflow-x-hidden">
         <Typography variant="h1" className="mb-4 text-center">
           Create{' '}
-          <span className="text-foreground dark:text-[hsl(221,89%,72%)]">Yuki</span> Turbo
+          <span className="text-foreground dark:text-[hsl(221,89%,72%)]">
+            Yuki
+          </span>{' '}
+          Turbo
         </Typography>
 
         <AuthShowcase />

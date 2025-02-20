@@ -25,7 +25,13 @@ export const createMetadata = (
     applicationName: siteName,
     alternates: { canonical: url },
     twitter: { card: 'summary_large_image' },
-    openGraph: { url, images, siteName, type: 'website', ...override.openGraph },
+    openGraph: {
+      url,
+      images,
+      siteName,
+      type: 'website',
+      ...override.openGraph,
+    },
     icons: {
       // Replace with your own icons
       icon: 'https://tiesen.id.vn/favicon.ico',

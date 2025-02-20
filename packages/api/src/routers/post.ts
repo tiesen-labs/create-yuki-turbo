@@ -12,13 +12,17 @@ export const postRouter = {
     return ctx.db.post.findUnique({ where: { id: input.id } })
   }),
 
-  create: protectedProcedure.input(postSchema.create).mutation(({ ctx, input }) => {
-    return ctx.db.post.create({
-      data: { ...input, user: { connect: { id: ctx.session.user.id } } },
-    })
-  }),
+  create: protectedProcedure
+    .input(postSchema.create)
+    .mutation(({ ctx, input }) => {
+      return ctx.db.post.create({
+        data: { ...input, user: { connect: { id: ctx.session.user.id } } },
+      })
+    }),
 
-  delete: protectedProcedure.input(postSchema.byId).mutation(({ ctx, input }) => {
-    return ctx.db.post.delete({ where: { id: input.id } })
-  }),
+  delete: protectedProcedure
+    .input(postSchema.byId)
+    .mutation(({ ctx, input }) => {
+      return ctx.db.post.delete({ where: { id: input.id } })
+    }),
 } satisfies TRPCRouterRecord
