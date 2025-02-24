@@ -35,24 +35,26 @@ export const CreatePostForm: React.FC = () => {
   return (
     <Form<typeof mutate>
       className="w-full max-w-2xl"
+      defaultValues={{ title: '', content: '' }}
       onSubmit={mutate}
       isPending={isPending}
       errors={error?.data?.zodError}
     >
       <FormField
         name="title"
-        render={() => (
+        render={(field) => (
           <FormItem>
-            <FormControl placeholder="What's on your mind?" />
+            <FormControl placeholder="What's on your mind?" {...field} />
             <FormMessage />
           </FormItem>
         )}
       />
+
       <FormField
         name="content"
-        render={() => (
+        render={(field) => (
           <FormItem>
-            <FormControl placeholder="Tell us more" />
+            <FormControl placeholder="Tell us more" {...field} />
             <FormMessage />
           </FormItem>
         )}
