@@ -3,10 +3,10 @@ import '@/app/globals.css'
 import { Geist } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 
+import { SessionProvider } from '@yuki/auth/react'
 import { Toaster } from '@yuki/ui/sonner'
 import { cn } from '@yuki/ui/utils'
 
-import { SessionProvider } from '@/hooks/use-session'
 import { createMetadata } from '@/lib/metadata'
 import { TRPCReactProvider } from '@/lib/trpc/react'
 
