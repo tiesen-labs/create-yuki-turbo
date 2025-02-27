@@ -1,7 +1,7 @@
 import { Discord, Google } from 'arctic'
 
+import type { AuthOptions } from './utils/auth'
 import { env } from './env'
-import { AuthOptions } from './utils/auth'
 
 export const getBaseUrl = () => {
   if (env.VERCEL_PROJECT_PRODUCTION_URL)

@@ -27,7 +27,7 @@ export const CreatePostForm: React.FC = () => {
   const { mutate, isPending, error } = useMutation(
     trpc.post.create.mutationOptions({
       onSuccess: async () =>
-        queryClient.invalidateQueries(trpc.post.queryFilter()),
+        queryClient.invalidateQueries(trpc.post.pathFilter()),
       onError: (e) => toast.error(e.message),
     }),
   )
@@ -88,7 +88,7 @@ export const PostCard: React.FC<{
   const deletePost = useMutation(
     trpc.post.delete.mutationOptions({
       onSuccess: async () =>
-        queryClient.invalidateQueries(trpc.post.queryFilter()),
+        queryClient.invalidateQueries(trpc.post.pathFilter()),
       onError: (e) => toast.error(e.message),
     }),
   )
