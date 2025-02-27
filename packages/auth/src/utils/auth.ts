@@ -13,6 +13,7 @@ import { Password } from './password'
 import { Session } from './session'
 
 export interface AuthOptions {
+  cookieKey: string
   providers: Providers
 }
 
@@ -27,8 +28,7 @@ class AuthClass {
   private readonly providers: Providers
 
   constructor(options: AuthOptions) {
-    this.COOKIE_KEY = 'auth_token'
-
+    this.COOKIE_KEY = options.cookieKey
     this.providers = options.providers
 
     this.db = db
