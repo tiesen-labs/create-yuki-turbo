@@ -1,3 +1,5 @@
+import { revalidatePath } from 'next/cache'
+
 import { auth, signIn, signOut } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
@@ -31,6 +33,7 @@ export async function AuthShowcase() {
         action={async () => {
           'use server'
           await signOut()
+          revalidatePath('/')
         }}
         method="POST"
       >
