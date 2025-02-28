@@ -137,7 +137,7 @@ class AuthClass {
                 httpOnly: true,
                 path: '/',
                 secure: env.NODE_ENV === 'production',
-                sameSite: 'lax' as const,
+                sameSite: 'lax',
                 expires: session.expires,
               })
               response.cookies.delete('oauth_state')
@@ -205,7 +205,7 @@ class AuthClass {
         httpOnly: true,
         path: '/',
         secure: env.NODE_ENV === 'production',
-        sameSite: 'lax' as const,
+        sameSite: 'lax',
         expires: session.expires,
       })
 
