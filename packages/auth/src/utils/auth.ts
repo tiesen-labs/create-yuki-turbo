@@ -116,7 +116,7 @@ class AuthClass {
                 provider
 
               const verifiedCode = await validateAuthorizationCode(
-                'dsadasd',
+                code,
                 codeVerifier,
               )
 
