@@ -27,6 +27,7 @@ import {
 } from '@yuki/ui/form'
 import { TrashIcon } from '@yuki/ui/icons'
 import { Input } from '@yuki/ui/input'
+import { toast } from '@yuki/ui/sonner'
 import { createPostSchema } from '@yuki/validators/post'
 
 import { useTRPC } from '@/lib/trpc/react'
@@ -40,8 +41,8 @@ export const CreatePost: React.FC = () => {
     schema: createPostSchema,
     defaultValues: { title: '', content: '' },
     submitFn: (values) => mutateAsync(values),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
         queryKey: trpc.post.all.queryKey(),
       })
     },
@@ -95,6 +96,7 @@ const PostCard: React.FC<{ post: Post }> = ({ post }) => {
   const queryClient = useQueryClient()
   const { mutate, isPending } = useMutation(
     trpc.post.delete.mutationOptions({
+      onError: (error) => toast.error(error.message),
       onSuccess: () => {
         queryClient.invalidateQueries({
           queryKey: trpc.post.all.queryKey(),
