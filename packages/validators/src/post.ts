@@ -1,3 +1,5 @@
+import './config'
+
 import { type } from 'arktype'
 
 export const byIdSchema = type({
