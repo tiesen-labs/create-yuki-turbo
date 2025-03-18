@@ -30,17 +30,17 @@ import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { createPostSchema } from '@yuki/validators/post'
 
-import { useTRPC } from '@/lib/trpc/react'
+import { useTRPC, useTRPCClient } from '@/lib/trpc/react'
 
 export const CreatePost: React.FC = () => {
   const trpc = useTRPC()
+  const trpcClient = useTRPCClient()
   const queryClient = useQueryClient()
-  const { mutateAsync } = useMutation(trpc.post.create.mutationOptions())
 
   const form = useForm({
     schema: createPostSchema,
     defaultValues: { title: '', content: '' },
-    submitFn: (values) => mutateAsync(values),
+    submitFn: (values) => trpcClient.post.create.mutate(values),
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: trpc.post.all.queryKey(),

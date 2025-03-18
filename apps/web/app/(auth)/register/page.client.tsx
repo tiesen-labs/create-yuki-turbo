@@ -16,22 +16,23 @@ import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { signUpSchema } from '@yuki/validators/auth'
 
-import { trpc } from '@/lib/trpc/react'
+import { useTRPCClient } from '@/lib/trpc/react'
 
 export const RegisterForm: React.FC = () => {
   const router = useRouter()
+  const trpcClient = useTRPCClient()
 
   const form = useForm({
     schema: signUpSchema,
     defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
-    submitFn: async (values) => {
-      await trpc.auth.signUp.mutate(values)
-    },
+    submitFn: async (values) => trpcClient.auth.signUp.mutate(values),
     onSuccess: () => {
       toast.success('You have successfully registered!')
       router.push('/login')
     },
-    onError: (error) => toast.error(error),
+    onError: (error) => {
+      toast.error(error)
+    },
   })
 
   return (
