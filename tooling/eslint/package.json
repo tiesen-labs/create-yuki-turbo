@@ -16,7 +16,7 @@
   "prettier": "@yuki/prettier-config",
   "dependencies": {
     "@eslint/compat": "^1.2.7",
-    "@next/eslint-plugin-next": "^15.2.2",
+    "@next/eslint-plugin-next": "^15.2.3",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.4",
     "eslint-plugin-react-hooks": "^5.2.0",
