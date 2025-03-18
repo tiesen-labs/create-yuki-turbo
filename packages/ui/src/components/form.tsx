@@ -102,10 +102,16 @@ const useForm = <TSchema extends StandardSchemaV1, TData = unknown>({
     [schema, values],
   )
 
+  const reset = React.useCallback(() => {
+    setValues(defaultValues)
+    setErrors({})
+  }, [defaultValues])
+
   return {
     handleSubmit,
     handleChange,
     handleBlur,
+    reset,
     isPending,
     values,
     errors,
