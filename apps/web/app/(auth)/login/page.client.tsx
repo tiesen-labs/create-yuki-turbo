@@ -28,7 +28,9 @@ export const LoginForm: React.FC = () => {
       toast.success('You have successfully logged in!')
       router.push('/')
     },
-    onError: (error) => toast.error(error),
+    onError: (error) => {
+      toast.error(error)
+    },
   })
 
   return (

@@ -45,6 +45,7 @@ export const CreatePost: React.FC = () => {
       await queryClient.invalidateQueries({
         queryKey: trpc.post.all.queryKey(),
       })
+      form.reset()
     },
   })
 
@@ -97,8 +98,8 @@ const PostCard: React.FC<{ post: Post }> = ({ post }) => {
   const { mutate, isPending } = useMutation(
     trpc.post.delete.mutationOptions({
       onError: (error) => toast.error(error.message),
-      onSuccess: () => {
-        queryClient.invalidateQueries({
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
           queryKey: trpc.post.all.queryKey(),
         })
       },
