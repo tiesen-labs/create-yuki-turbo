@@ -1,13 +1,13 @@
 {
-  "name": "@yuki/api",
-  "version": "2.0.0",
+  "name": "@yuki/validators",
+  "version": "0.1.0",
   "private": true,
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./src/index.ts"
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./src/*.ts"
     }
   },
   "scripts": {
@@ -20,11 +20,7 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@trpc/server": "^11.0.0-rc.833",
-    "@yuki/auth": "workspace:*",
-    "@yuki/db": "workspace:*",
-    "@yuki/validators": "workspace:*",
-    "superjson": "^2.2.2"
+    "arktype": "^2.1.9"
   },
   "devDependencies": {
     "@yuki/eslint-config": "workspace:*",

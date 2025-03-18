@@ -25,31 +25,31 @@ const getQueryClient = () => {
 
 export const { TRPCProvider, useTRPC } = createTRPCContext<AppRouter>()
 
+export const trpc = createTRPCClient<AppRouter>({
+  links: [
+    loggerLink({
+      enabled: (op) =>
+        env.NODE_ENV === 'development' ||
+        (op.direction === 'down' && op.result instanceof Error),
+    }),
+    unstable_httpBatchStreamLink({
+      transformer: SuperJSON,
+      url: getBaseUrl() + '/api/trpc',
+      headers() {
+        const headers = new Headers()
+        headers.set('x-trpc-source', 'nextjs-react')
+        return headers
+      },
+    }),
+  ],
+})
+
 export const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const queryClient = getQueryClient()
 
-  const [trpcClient] = useState(() =>
-    createTRPCClient<AppRouter>({
-      links: [
-        loggerLink({
-          enabled: (op) =>
-            env.NODE_ENV === 'development' ||
-            (op.direction === 'down' && op.result instanceof Error),
-        }),
-        unstable_httpBatchStreamLink({
-          transformer: SuperJSON,
-          url: getBaseUrl() + '/api/trpc',
-          headers() {
-            const headers = new Headers()
-            headers.set('x-trpc-source', 'nextjs-react')
-            return headers
-          },
-        }),
-      ],
-    }),
-  )
+  const [trpcClient] = useState(() => trpc)
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -1,7 +1,10 @@
+'use server'
+
 import { Discord, Google } from 'arctic'
 
 import type { AuthOptions } from './utils/auth'
 import { env } from './env'
+import { Auth } from './utils/auth'
 
 const getBaseUrl = () => {
   if (env.VERCEL_PROJECT_PRODUCTION_URL)
@@ -22,7 +25,7 @@ const google = new Google(
   `${getBaseUrl()}/api/auth/oauth/google/callback`,
 )
 
-export const authOptions = {
+const authOptions = {
   cookieKey: 'auth_token',
   providers: {
     discord: {
@@ -72,3 +75,5 @@ export const authOptions = {
     },
   },
 } satisfies AuthOptions
+
+export const { auth, signIn, signOut, handlers } = Auth(authOptions)

@@ -2,9 +2,9 @@ import type { TRPCRouterRecord } from '@trpc/server'
 import { TRPCError } from '@trpc/server'
 
 import { Password } from '@yuki/auth'
+import { signUpSchema } from '@yuki/validators/auth'
 
 import { publicProcedure } from '../trpc'
-import * as schemas from '../validators/auth'
 
 export const authRouter = {
   getSession: publicProcedure.query(({ ctx }) => {
@@ -12,7 +12,7 @@ export const authRouter = {
   }),
 
   signUp: publicProcedure
-    .input(schemas.signUpSchema)
+    .input(signUpSchema)
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db.user.findUnique({
         where: { email: input.email },

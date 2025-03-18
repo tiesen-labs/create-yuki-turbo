@@ -5,9 +5,9 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
-import { z } from 'zod'
 
 import { db } from '@yuki/db'
+import { signInSchema } from '@yuki/validators/auth'
 
 import type { SessionResult } from './session'
 import { env } from '../env'
@@ -175,24 +175,12 @@ class AuthClass {
     return response
   }
 
-  public async signIn(
-    type: SignInType,
-    data?: z.infer<typeof credentialsSchema>,
-  ): Promise<
-    | { success: false; fieldErrors: Record<string, string[]> }
-    | { success: true; message: string }
-    | undefined
-  > {
+  public async signIn(type: SignInType, values?: typeof signInSchema.infer) {
     if (type === 'credentials') {
-      const parsedData = credentialsSchema.safeParse(data)
-      if (!parsedData.success)
-        return {
-          success: false,
-          fieldErrors: parsedData.error.flatten().fieldErrors,
-        }
+      const parsed = await signInSchema['~standard'].validate(values)
+      if (parsed.issues) throw new Error('Invalid data')
 
-      const { email, password } = parsedData.data
-
+      const { email, password } = parsed.value
       const user = await this.db.user.findUnique({ where: { email } })
       if (!user) throw new Error('User not found')
       if (!user.password) throw new Error('User has no password')
@@ -208,8 +196,6 @@ class AuthClass {
         sameSite: 'lax',
         expires: session.expires,
       })
-
-      return { success: true, message: 'Signed in' }
     } else {
       redirect(`/api/auth/oauth/${type}`)
     }
@@ -283,23 +269,12 @@ export const Auth = (options: AuthOptions) => {
 
   return {
     auth: (req?: NextRequest) => authInstance.auth(req),
-    signIn: (type: SignInType, data?: z.infer<typeof credentialsSchema>) =>
-      authInstance.signIn(type, data),
+    signIn: (type: SignInType, values?: typeof signInSchema.infer) =>
+      authInstance.signIn(type, values),
     signOut: (req?: NextRequest) => authInstance.signOut(req),
     handlers: (req: NextRequest) => authInstance.handlers(req),
   }
 }
-
-const credentialsSchema = z.object({
-  email: z.string().email(),
-  password: z
-    .string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/,
-      'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character',
-    ),
-})
 
 type SignInType = 'credentials' | 'discord' | 'google'
 type Providers = Record<

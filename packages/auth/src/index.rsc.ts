@@ -1,9 +1,6 @@
 import { cache } from 'react'
 
-import { authOptions } from './configs'
-import { Auth } from './utils/auth'
-
-const { auth: uncachedAuth, signIn, signOut, handlers } = Auth(authOptions)
+import { handlers, signIn, signOut, auth as uncachedAuth } from './configs'
 
 /**
  * This is the main way to get session data for your RSCs.
