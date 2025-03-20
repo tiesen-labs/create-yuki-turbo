@@ -2,6 +2,10 @@ import type { StandardSchemaV1 } from '@standard-schema/spec'
 
 type ClientSchema = Record<string, StandardSchemaV1>
 type ServerSchema = Record<string, StandardSchemaV1>
+type StandardSchemaDictionary = Record<string, StandardSchemaV1>
+
+// Simple utility type to improve type display
+type Simplify<T> = { [P in keyof T]: T[P] } & {}
 
 interface EnvOptions<
   TPrefix extends string | undefined,
@@ -9,8 +13,8 @@ interface EnvOptions<
   TServerSchema extends ServerSchema,
 > {
   server: TServerSchema
-  clientPrefix?: TPrefix
   client: TClientSchema
+  clientPrefix?: TPrefix
   runtimeEnv: Record<
     | {
         [TKey in keyof TClientSchema]: TPrefix extends undefined
@@ -31,9 +35,6 @@ interface EnvOptions<
   skipValidation?: boolean
 }
 
-type Simplify<T> = {
-  [P in keyof T]: T[P]
-} & {}
 type CreateEnv<
   TServer extends Record<string, StandardSchemaV1>,
   TClient extends Record<string, StandardSchemaV1>,
@@ -44,6 +45,76 @@ type CreateEnv<
   >
 >
 
+// eslint-disable-next-line @typescript-eslint/no-namespace
+export namespace StandardSchemaDictionary {
+  export type Matching<
+    Input,
+    Output extends Record<keyof Input, unknown> = Input,
+  > = {
+    [K in keyof Input]-?: StandardSchemaV1<Input[K], Output[K]>
+  }
+
+  export type InferInput<T extends StandardSchemaDictionary> = {
+    [K in keyof T]: StandardSchemaV1.InferInput<T[K]>
+  }
+
+  export type InferOutput<T extends StandardSchemaDictionary> = {
+    [K in keyof T]: StandardSchemaV1.InferOutput<T[K]>
+  }
+}
+
+/**
+ * Parse and validate environment variables using a schema dictionary
+ */
+function parseWithDictionary<TDict extends StandardSchemaDictionary>(
+  dictionary: TDict,
+  value: Record<string, unknown>,
+): StandardSchemaV1.Result<StandardSchemaDictionary.InferOutput<TDict>> {
+  const result: Record<string, unknown> = {}
+  const issues: StandardSchemaV1.Issue[] = []
+
+  for (const key in dictionary) {
+    const schema = dictionary[key] as StandardSchemaV1
+    const prop = value[key]
+    const propResult = schema['~standard'].validate(prop)
+
+    if (propResult instanceof Promise) {
+      throw new Error(
+        `Validation must be synchronous, but ${key} returned a Promise.`,
+      )
+    }
+
+    if (typeof prop === 'string' && prop.trim() === '') {
+      issues.push({
+        message: `Environment variable "${key}" has an empty value`,
+        path: [key],
+      })
+      continue
+    }
+
+    if (propResult.issues) {
+      issues.push(
+        ...propResult.issues.map((issue) => ({
+          ...issue,
+          path: [key, ...(issue.path ?? [])],
+        })),
+      )
+      continue
+    }
+
+    result[key] = propResult.value
+  }
+
+  if (issues.length) {
+    return { issues }
+  }
+
+  return { value: result as never }
+}
+
+/**
+ * Create a type-safe environment variables object that handles both client and server environments
+ */
 export function createEnv<
   TPrefix extends string | undefined,
   TClientSchema extends ClientSchema,
@@ -77,9 +148,11 @@ export function createEnv<
     if (!opts.clientPrefix) return true
     return !prop.startsWith(opts.clientPrefix)
   }
+
   const isValidServerAccess = (prop: string) => {
     return isServer || !isServerAccess(prop)
   }
+
   const ignoreProp = (prop: string) => {
     return prop === '__esModule' || prop === '$$typeof'
   }
@@ -96,53 +169,4 @@ export function createEnv<
   })
 
   return env as never
-}
-
-type StandardSchemaDictionary = Record<string, StandardSchemaV1>
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export namespace StandardSchemaDictionary {
-  export type Matching<
-    Input,
-    Output extends Record<keyof Input, unknown> = Input,
-  > = {
-    [K in keyof Input]-?: StandardSchemaV1<Input[K], Output[K]>
-  }
-  export type InferInput<T extends StandardSchemaDictionary> = {
-    [K in keyof T]: StandardSchemaV1.InferInput<T[K]>
-  }
-  export type InferOutput<T extends StandardSchemaDictionary> = {
-    [K in keyof T]: StandardSchemaV1.InferOutput<T[K]>
-  }
-}
-
-function parseWithDictionary<TDict extends StandardSchemaDictionary>(
-  dictionary: TDict,
-  value: Record<string, unknown>,
-): StandardSchemaV1.Result<StandardSchemaDictionary.InferOutput<TDict>> {
-  const result: Record<string, unknown> = {}
-  const issues: StandardSchemaV1.Issue[] = []
-  for (const key in dictionary) {
-    const schema = dictionary[key] as StandardSchemaV1
-    const prop = value[key]
-    const propResult = schema['~standard'].validate(prop)
-    if (propResult instanceof Promise) {
-      throw new Error(
-        `Validation must be synchronous, but ${key} returned a Promise.`,
-      )
-    }
-    if (propResult.issues) {
-      issues.push(
-        ...propResult.issues.map((issue) => ({
-          ...issue,
-          path: [key, ...(issue.path ?? [])],
-        })),
-      )
-      continue
-    }
-    result[key] = propResult.value
-  }
-  if (issues.length) {
-    return { issues }
-  }
-  return { value: result as never }
 }
