@@ -1,37 +1,45 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 
-type ClientSchema = Record<string, StandardSchemaV1>
+const clientPrefix = 'NEXT_PUBLIC_' as const
+type CLIENT_PREFIX = typeof clientPrefix
+
+type ClientSchema = Record<`${CLIENT_PREFIX}${string}`, StandardSchemaV1>
 type ServerSchema = Record<string, StandardSchemaV1>
 type StandardSchemaDictionary = Record<string, StandardSchemaV1>
 
 // Simple utility type to improve type display
 type Simplify<T> = { [P in keyof T]: T[P] } & {}
 
-interface EnvOptions<
+type StrictRuntimeEnv<
   TPrefix extends string | undefined,
-  TClientSchema extends ClientSchema,
-  TServerSchema extends ServerSchema,
-> {
-  server: TServerSchema
-  client: TClientSchema
-  clientPrefix?: TPrefix
-  runtimeEnv: Record<
-    | {
-        [TKey in keyof TClientSchema]: TPrefix extends undefined
-          ? never
-          : TKey extends `${TPrefix}${string}`
-            ? TKey
-            : never
-      }[keyof TClientSchema]
-    | {
-        [TKey in keyof TServerSchema]: TPrefix extends undefined
+  TServer extends Record<string, StandardSchemaV1>,
+  TClient extends Record<string, StandardSchemaV1>,
+> = Record<
+  | {
+      [TKey in keyof TClient]: TPrefix extends undefined
+        ? never
+        : TKey extends `${TPrefix}${string}`
           ? TKey
-          : TKey extends `${TPrefix}${string}`
-            ? never
-            : TKey
-      }[keyof TServerSchema],
-    string | boolean | number | undefined
-  >
+          : never
+    }[keyof TClient]
+  | {
+      [TKey in keyof TServer]: TPrefix extends undefined
+        ? TKey
+        : TKey extends `${TPrefix}${string}`
+          ? never
+          : TKey
+    }[keyof TServer],
+  string | boolean | number | undefined
+>
+
+interface EnvOptions<
+  TServer extends ServerSchema = NonNullable<unknown>,
+  TClient extends ClientSchema = NonNullable<unknown>,
+> {
+  server: TServer
+  client: TClient
+  clientPrefix?: CLIENT_PREFIX
+  runtimeEnv: StrictRuntimeEnv<CLIENT_PREFIX, TServer, TClient>
   skipValidation?: boolean
 }
 
@@ -116,11 +124,10 @@ function parseWithDictionary<TDict extends StandardSchemaDictionary>(
  * Create a type-safe environment variables object that handles both client and server environments
  */
 export function createEnv<
-  TPrefix extends string | undefined,
-  TClientSchema extends ClientSchema,
-  TServerSchema extends ServerSchema,
+  TServerSchema extends ServerSchema = NonNullable<ServerSchema>,
+  TClientSchema extends ClientSchema = NonNullable<unknown>,
 >(
-  opts: EnvOptions<TPrefix, TClientSchema, TServerSchema>,
+  opts: EnvOptions<TServerSchema, TClientSchema>,
 ): CreateEnv<TServerSchema, TClientSchema> {
   if (opts.skipValidation) return opts.runtimeEnv as never
 
@@ -163,7 +170,10 @@ export function createEnv<
     get(target, prop) {
       if (typeof prop !== 'string') return undefined
       if (ignoreProp(prop)) return undefined
-      if (!isValidServerAccess(prop)) return onInvalidAccess()
+      if (!isValidServerAccess(prop)) {
+        onInvalidAccess()
+        return
+      }
       return Reflect.get(target, prop) as never
     },
   })

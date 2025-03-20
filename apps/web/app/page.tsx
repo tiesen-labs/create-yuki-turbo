@@ -5,14 +5,11 @@ import { auth } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
 
-import { getQueryClient, HydrateClient, trpc } from '@/lib/trpc/server'
+import { HydrateClient, prefetch, trpc } from '@/lib/trpc/server'
 import { CreatePost, PostCardSkeleton, PostList } from './page.client'
 
-export default async function HomePage() {
-  const [session] = await Promise.all([
-    auth(),
-    getQueryClient().prefetchQuery(trpc.post.all.queryOptions()),
-  ])
+export default function HomePage() {
+  prefetch(trpc.post.all.queryOptions())
 
   return (
     <HydrateClient>
@@ -27,29 +24,12 @@ export default async function HomePage() {
           A type-safe fullstack framework for building web applications.
         </Typography>
 
-        <section className="mx-auto mt-4 flex max-w-xl flex-col gap-4">
-          <h2 className="sr-only">Authenticating Section</h2>
-
-          {!session.user && (
-            <Button asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-          )}
-
-          {session.user && (
-            <div className="flex justify-between">
-              <Typography variant="h3">Welcome, {session.user.name}</Typography>
-              <form action="/api/auth/sign-out" method="POST">
-                <Button variant="secondary">Logout</Button>
-              </form>
-            </div>
-          )}
-        </section>
+        <AuthShowcase />
 
         <section className="mx-auto mt-4 flex max-w-xl flex-col gap-4">
           <h2 className="sr-only">Posts List Section</h2>
 
-          {session.user && <CreatePost />}
+          <CreatePost />
 
           <Suspense
             fallback={Array.from({ length: 5 }, (_, i) => (
@@ -61,5 +41,30 @@ export default async function HomePage() {
         </section>
       </main>
     </HydrateClient>
+  )
+}
+
+const AuthShowcase: React.FC = async () => {
+  const session = await auth()
+
+  return (
+    <section className="mx-auto mt-4 flex max-w-xl flex-col gap-4">
+      <h2 className="sr-only">Authenticating Section</h2>
+
+      {!session.user && (
+        <Button asChild>
+          <Link href="/login">Login</Link>
+        </Button>
+      )}
+
+      {session.user && (
+        <div className="flex justify-between">
+          <Typography variant="h3">Welcome, {session.user.name}</Typography>
+          <form action="/api/auth/sign-out" method="POST">
+            <Button variant="secondary">Logout</Button>
+          </form>
+        </div>
+      )}
+    </section>
   )
 }

@@ -23,7 +23,6 @@ export const env = createEnv({
     VERCEL_PROJECT_PRODUCTION_URL: z.string().optional(),
   },
 
-  clientPrefix: 'NEXT_PUBLIC_',
   client: {},
 
   runtimeEnv: {
