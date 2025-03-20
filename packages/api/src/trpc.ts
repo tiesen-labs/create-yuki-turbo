@@ -9,7 +9,6 @@
 
 import { initTRPC, TRPCError } from '@trpc/server'
 import superjson from 'superjson'
-import { ZodError } from 'zod'
 
 import type { SessionResult } from '@yuki/auth'
 import { auth, Session } from '@yuki/auth'
@@ -66,17 +65,9 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  */
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
-  errorFormatter: ({ shape, error }) => ({
+  errorFormatter: ({ shape }) => ({
     ...shape,
-    message:
-      error.cause instanceof ZodError ? 'Validation error' : error.message,
-    data: {
-      ...shape.data,
-      zodError:
-        error.cause instanceof ZodError
-          ? error.cause.flatten().fieldErrors
-          : null,
-    },
+    data: { ...shape.data },
   }),
 })
 
