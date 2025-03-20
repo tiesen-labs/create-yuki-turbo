@@ -1,27 +1,26 @@
-import './config'
+import { z } from 'zod'
 
-import { type } from 'arktype'
-
-export const signInSchema = type({
-  email: 'string.email',
-  password: type(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/,
-  ).describe('valid password'),
+export const signInSchema = z.object({
+  email: z.string().email(),
+  password: z
+    .string()
+    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/, {
+      message: 'Invalid password',
+    }),
 })
 
-export const signUpSchema = type({
-  name: 'string>=4',
-  email: 'string.email',
-  password: type(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/,
-  ).describe('valid password'),
-  confirmPassword: 'string>=8',
-}).narrow((data, ctx) => {
-  if (data.password !== data.confirmPassword)
-    return ctx.reject({
-      message: 'Passwords do not match',
-      path: ['confirmPassword'],
-    })
-
-  return true
-})
+export const signUpSchema = z
+  .object({
+    name: z.string().min(3),
+    email: z.string().email(),
+    password: z
+      .string()
+      .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/, {
+        message: 'Invalid password',
+      }),
+    confirmPassword: z.string().min(8),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })

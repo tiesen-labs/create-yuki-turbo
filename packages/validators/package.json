@@ -20,7 +20,7 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "arktype": "^2.1.9"
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@yuki/eslint-config": "workspace:*",

@@ -7,7 +7,6 @@ import { NextResponse } from 'next/server'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
 
 import { db } from '@yuki/db'
-import { signInSchema } from '@yuki/validators/auth'
 
 import type { SessionResult } from './session'
 import { env } from '../env'
@@ -37,16 +36,8 @@ class AuthClass {
   }
 
   public async auth(req?: NextRequest): Promise<SessionResult> {
-    let authToken: string | undefined
-
-    if (req)
-      authToken =
-        req.cookies.get(this.COOKIE_KEY)?.value ??
-        req.headers.get('Authorization')?.replace('Bearer ', '')
-    else authToken = (await cookies()).get(this.COOKIE_KEY)?.value
-
+    const authToken = await this.getTokenFromRequest(req)
     if (!authToken) return { expires: new Date() }
-
     return await this.session.validateSessionToken(authToken)
   }
 
@@ -58,162 +49,128 @@ class AuthClass {
       { status: 404 },
     )
 
-    switch (req.method) {
-      case 'OPTIONS':
+    try {
+      if (req.method === 'OPTIONS') {
         response = NextResponse.json('', { status: 204 })
-        break
-      case 'GET':
-        if (url.pathname === '/api/auth') {
-          const session = await this.auth(req)
-          response = NextResponse.json(session)
-        } else if (url.pathname.startsWith('/api/auth/oauth')) {
-          const isCallback = url.pathname.endsWith('/callback')
-
-          if (!isCallback) {
-            const provider =
-              this.providers[String(url.pathname.split('/').pop())]
-
-            if (!provider) {
-              response = NextResponse.json(
-                { error: 'Provider not supported' },
-                { status: 404 },
-              )
-              break
-            }
-            const state = generateState()
-            const codeVerifier = generateCodeVerifier()
-            const authorizationUrl = provider.createAuthorizationURL(
-              state,
-              codeVerifier,
-            )
-
-            response = NextResponse.redirect(
-              new URL(authorizationUrl, req.nextUrl),
-            )
-            response.cookies.set('code_verifier', codeVerifier)
-            response.cookies.set('oauth_state', state)
-          } else {
-            const provider =
-              this.providers[String(url.pathname.split('/').slice(-2)[0])]
-            if (!provider) {
-              response = NextResponse.json(
-                { error: 'Provider not supported' },
-                { status: 404 },
-              )
-              break
-            }
-
-            const code = url.searchParams.get('code')
-            const state = url.searchParams.get('state')
-            const storedState = req.cookies.get('oauth_state')?.value ?? ''
-            const codeVerifier = req.cookies.get('code_verifier')?.value ?? ''
-
-            try {
-              if (!code || !state || state !== storedState)
-                throw new Error('Invalid state')
-
-              const { validateAuthorizationCode, fetchUserUrl, mapUser } =
-                provider
-
-              const verifiedCode = await validateAuthorizationCode(
-                code,
-                codeVerifier,
-              )
-
-              const token = verifiedCode.accessToken()
-
-              const res = await fetch(fetchUserUrl, {
-                headers: { Authorization: `Bearer ${token}` },
-              })
-              if (!res.ok) throw new Error('Failed to fetch user data')
-
-              const user = await this.createUser(
-                mapUser((await res.json()) as never),
-              )
-              const session = await this.session.createSession(user.id)
-
-              response = NextResponse.redirect(new URL('/', req.nextUrl))
-              response.cookies.set(this.COOKIE_KEY, session.sessionToken, {
-                httpOnly: true,
-                path: '/',
-                secure: env.NODE_ENV === 'production',
-                sameSite: 'lax',
-                expires: session.expires,
-              })
-              response.cookies.delete('oauth_state')
-              response.cookies.delete('code_verifier')
-            } catch (error) {
-              if (error instanceof OAuth2RequestError) {
-                response = NextResponse.json(
-                  { error: error.message, description: error.description },
-                  { status: 400 },
-                )
-              } else if (error instanceof Error)
-                response = NextResponse.json(
-                  { error: error.message },
-                  { status: 400 },
-                )
-              else
-                response = NextResponse.json(
-                  { error: 'An unknown error occurred' },
-                  { status: 400 },
-                )
-            }
-          }
-        }
-        break
-      case 'POST':
-        if (url.pathname === '/api/auth/sign-out') {
-          await this.signOut(req)
-          response = NextResponse.redirect(new URL('/', req.url))
-          response.cookies.delete(this.COOKIE_KEY)
-        }
-        break
+      } else if (req.method === 'GET') {
+        response = await this.handleGetRequests(req, url)
+      } else if (
+        req.method === 'POST' &&
+        url.pathname === '/api/auth/sign-out'
+      ) {
+        await this.signOut(req)
+        response = NextResponse.redirect(new URL('/', req.url))
+        response.cookies.delete(this.COOKIE_KEY)
+      }
+    } catch (error) {
+      response = this.handleError(error)
     }
 
     this.setCorsHeaders(response)
     return response
   }
 
-  public async signIn(type: SignInType, values?: typeof signInSchema.infer) {
-    if (type === 'credentials') {
-      const parsed = await signInSchema['~standard'].validate(values)
-      if (parsed.issues) throw new Error('Invalid data')
-
-      const { email, password } = parsed.value
-      const user = await this.db.user.findUnique({ where: { email } })
-      if (!user) throw new Error('User not found')
-      if (!user.password) throw new Error('User has no password')
-
-      const passwordMatch = this.password.verify(password, user.password)
-      if (!passwordMatch) throw new Error('Invalid password')
-
-      const session = await this.session.createSession(user.id)
-      ;(await cookies()).set('auth_token', session.sessionToken, {
-        httpOnly: true,
-        path: '/',
-        secure: env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        expires: session.expires,
-      })
-    } else {
-      redirect(`/api/auth/oauth/${type}`)
-    }
+  public async signIn(
+    type: SignInType,
+    values?: { email: string; password: string },
+  ): Promise<void> {
+    if (type === 'credentials' && values)
+      await this.handleCredentialsSignIn(values.email, values.password)
+    else redirect(`/api/auth/oauth/${type}`)
   }
 
   public async signOut(req?: NextRequest): Promise<void> {
-    const token = await this.getToken(req)
-    await this.session.invalidateSessionToken(token)
+    const token = await this.getTokenFromRequest(req)
+    if (token) await this.session.invalidateSessionToken(token)
   }
 
-  private async getToken(req?: NextRequest): Promise<string> {
-    if (req)
+  private async getTokenFromRequest(
+    req?: NextRequest,
+  ): Promise<string | undefined> {
+    if (req) {
       return (
         req.cookies.get(this.COOKIE_KEY)?.value ??
-        req.headers.get('Authorization')?.replace('Bearer ', '') ??
-        ''
+        req.headers.get('Authorization')?.replace('Bearer ', '')
       )
-    return (await cookies()).get(this.COOKIE_KEY)?.value ?? ''
+    }
+    return (await cookies()).get(this.COOKIE_KEY)?.value
+  }
+
+  private async handleCredentialsSignIn(
+    email: string,
+    password: string,
+  ): Promise<void> {
+    const user = await this.db.user.findUnique({ where: { email } })
+    if (!user) throw new Error('User not found')
+    if (!user.password) throw new Error('User has no password')
+
+    const passwordMatch = this.password.verify(password, user.password)
+    if (!passwordMatch) throw new Error('Invalid password')
+
+    const session = await this.session.createSession(user.id)
+    ;(await cookies()).set(this.COOKIE_KEY, session.sessionToken, {
+      httpOnly: true,
+      path: '/',
+      secure: env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: session.expires,
+    })
+  }
+
+  private async handleGetRequests(
+    req: NextRequest,
+    url: URL,
+  ): Promise<NextResponse> {
+    if (url.pathname === '/api/auth') {
+      const session = await this.auth(req)
+      return NextResponse.json(session)
+    }
+
+    if (url.pathname.startsWith('/api/auth/oauth')) {
+      return await this.handleOAuthRequest(req, url)
+    }
+
+    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+  }
+
+  private async handleOAuthRequest(
+    req: NextRequest,
+    url: URL,
+  ): Promise<NextResponse> {
+    const isCallback = url.pathname.endsWith('/callback')
+
+    if (!isCallback) {
+      return this.handleOAuthStart(req, url)
+    } else {
+      return await this.handleOAuthCallback(req, url)
+    }
+  }
+
+  private handleOAuthStart(req: NextRequest, url: URL): NextResponse {
+    const providerName = String(url.pathname.split('/').pop())
+    const provider = this.providers[providerName]
+
+    if (!provider) {
+      return NextResponse.json(
+        { error: 'Provider not supported' },
+        { status: 404 },
+      )
+    }
+
+    const state = generateState()
+    const codeVerifier = generateCodeVerifier()
+    const authorizationUrl = provider.createAuthorizationURL(
+      state,
+      codeVerifier,
+    )
+
+    const response = NextResponse.redirect(
+      new URL(authorizationUrl, req.nextUrl),
+    )
+    response.cookies.set('code_verifier', codeVerifier)
+    response.cookies.set('oauth_state', state)
+
+    return response
   }
 
   private async createUser(data: {
@@ -256,6 +213,71 @@ class AuthClass {
     })
   }
 
+  private async handleOAuthCallback(
+    req: NextRequest,
+    url: URL,
+  ): Promise<NextResponse> {
+    const providerName = String(url.pathname.split('/').slice(-2)[0])
+    const provider = this.providers[providerName]
+
+    if (!provider) {
+      return NextResponse.json(
+        { error: 'Provider not supported' },
+        { status: 404 },
+      )
+    }
+
+    const code = url.searchParams.get('code')
+    const state = url.searchParams.get('state')
+    const storedState = req.cookies.get('oauth_state')?.value ?? ''
+    const codeVerifier = req.cookies.get('code_verifier')?.value ?? ''
+
+    if (!code || !state || state !== storedState) {
+      throw new Error('Invalid state')
+    }
+
+    const { validateAuthorizationCode, fetchUserUrl, mapUser } = provider
+    const verifiedCode = await validateAuthorizationCode(code, codeVerifier)
+    const token = verifiedCode.accessToken()
+
+    const res = await fetch(fetchUserUrl, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    if (!res.ok) throw new Error('Failed to fetch user data')
+
+    const user = await this.createUser(mapUser((await res.json()) as never))
+    const session = await this.session.createSession(user.id)
+
+    const response = NextResponse.redirect(new URL('/', req.nextUrl))
+    response.cookies.set(this.COOKIE_KEY, session.sessionToken, {
+      httpOnly: true,
+      path: '/',
+      secure: env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      expires: session.expires,
+    })
+    response.cookies.delete('oauth_state')
+    response.cookies.delete('code_verifier')
+
+    return response
+  }
+
+  private handleError(error: unknown): NextResponse {
+    if (error instanceof OAuth2RequestError)
+      return NextResponse.json(
+        { error: error.message, description: error.description },
+        { status: 400 },
+      )
+
+    if (error instanceof Error)
+      return NextResponse.json({ error: error.message }, { status: 400 })
+
+    return NextResponse.json(
+      { error: 'An unknown error occurred' },
+      { status: 400 },
+    )
+  }
+
   private setCorsHeaders(res: Response): void {
     res.headers.set('Access-Control-Allow-Origin', '*')
     res.headers.set('Access-Control-Request-Method', '*')
@@ -268,11 +290,10 @@ export const Auth = (options: AuthOptions) => {
   const authInstance = new AuthClass(options)
 
   return {
-    auth: (req?: NextRequest) => authInstance.auth(req),
-    signIn: (type: SignInType, values?: typeof signInSchema.infer) =>
-      authInstance.signIn(type, values),
-    signOut: (req?: NextRequest) => authInstance.signOut(req),
-    handlers: (req: NextRequest) => authInstance.handlers(req),
+    auth: authInstance.auth.bind(authInstance),
+    signIn: authInstance.signIn.bind(authInstance),
+    signOut: authInstance.signOut.bind(authInstance),
+    handlers: authInstance.handlers.bind(authInstance),
   }
 }
 

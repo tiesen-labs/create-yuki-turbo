@@ -1,12 +1,10 @@
-import './config'
+import { z } from 'zod'
 
-import { type } from 'arktype'
-
-export const byIdSchema = type({
-  id: 'string',
+export const byIdSchema = z.object({
+  id: z.string().cuid(),
 })
 
-export const createPostSchema = type({
-  title: 'string>=4',
-  content: 'string>=10',
+export const createPostSchema = z.object({
+  title: z.string().min(4),
+  content: z.string().min(10),
 })
