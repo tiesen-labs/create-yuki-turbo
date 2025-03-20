@@ -1,4 +1,4 @@
-import { env } from '@/env'
+import { env } from '@yuki/env'
 
 export const getBaseUrl = () => {
   if (typeof window !== 'undefined') return window.location.origin

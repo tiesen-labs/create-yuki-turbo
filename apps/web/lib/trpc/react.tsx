@@ -12,8 +12,8 @@ import { createTRPCContext } from '@trpc/tanstack-react-query'
 import SuperJSON from 'superjson'
 
 import type { AppRouter } from '@yuki/api'
+import { env } from '@yuki/env'
 
-import { env } from '@/env'
 import { createQueryClient } from '@/lib/trpc/query-client'
 import { getBaseUrl } from '@/lib/utils'
 

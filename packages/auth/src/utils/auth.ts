@@ -7,9 +7,9 @@ import { NextResponse } from 'next/server'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
 
 import { db } from '@yuki/db'
+import { env } from '@yuki/env'
 
 import type { SessionResult } from './session'
-import { env } from '../env'
 import { Password } from './password'
 import { Session } from './session'
 

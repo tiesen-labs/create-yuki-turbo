@@ -2,9 +2,11 @@ import { neonConfig, Pool } from '@neondatabase/serverless'
 import { PrismaNeon } from '@prisma/adapter-neon'
 import { PrismaClient } from '@prisma/client'
 
+import { env } from '@yuki/env'
+
 neonConfig.poolQueryViaFetch = true
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL })
+const pool = new Pool({ connectionString: env.DATABASE_URL })
 const adapter = new PrismaNeon(pool)
 
 const createPrismaClient = () =>

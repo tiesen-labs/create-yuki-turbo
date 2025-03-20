@@ -2,8 +2,9 @@
 
 import { Discord, Google } from 'arctic'
 
+import { env } from '@yuki/env'
+
 import type { AuthOptions } from './utils/auth'
-import { env } from './env'
 import { Auth } from './utils/auth'
 
 const getBaseUrl = () => {

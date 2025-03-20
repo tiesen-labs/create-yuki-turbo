@@ -15,7 +15,6 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@t3-oss/env-nextjs": "^0.12.0",
     "@tanstack/react-query": "^5.69.0",
     "@trpc/client": "^11.0.0-rc.833",
     "@trpc/server": "^11.0.0-rc.833",
@@ -23,6 +22,7 @@
     "@yuki/api": "workspace:*",
     "@yuki/auth": "workspace:*",
     "@yuki/db": "workspace:*",
+    "@yuki/env": "workspace:*",
     "@yuki/ui": "workspace:*",
     "@yuki/validators": "workspace:*",
     "next": "15.2.3",

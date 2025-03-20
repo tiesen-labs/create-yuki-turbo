@@ -1,7 +1,7 @@
 import { sha3_256 } from '@oslojs/crypto/sha3'
 import { encodeBase32LowerCase } from '@oslojs/encoding'
 
-import { env } from '../env'
+import { env } from '@yuki/env'
 
 export class Password {
   public hash(password: string): string {

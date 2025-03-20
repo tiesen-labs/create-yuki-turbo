@@ -39,8 +39,12 @@ packages
   |   └─ Authentication from scratch using arctic for OAuth.
   ├─ db
   |   └─ Typesafe db calls using Prisma & Neon
-  └─ ui
-      └─ Start of a UI package for the webapp using shadcn-ui
+  ├─ env
+  |   └─ Typesafe environment variables
+  ├─ ui
+  |   └─ Start of a UI package for the webapp using shadcn-ui
+  └─ validators
+      └─ Shared input validation schemas using zod
 tooling
   ├─ eslint
   |   └─ shared, fine-grained, eslint presets
