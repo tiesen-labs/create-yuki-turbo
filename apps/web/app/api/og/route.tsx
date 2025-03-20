@@ -1,13 +1,14 @@
 import type { NextRequest } from 'next/server'
 import { ImageResponse } from 'next/og'
 
+import { createMetadata } from '@/lib/metadata'
+
 export function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
 
-  const title = searchParams.get('title') ?? 'Tiesen'
-  const description =
-    searchParams.get('description') ??
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit.'
+  const defaultMeta = createMetadata({})
+  const title = searchParams.get('title') ?? defaultMeta.title
+  const description = searchParams.get('description') ?? defaultMeta.description
 
   return new ImageResponse(
     (
@@ -36,7 +37,7 @@ export function GET(req: NextRequest) {
             fontSize: '48px',
           }}
         >
-          {title}
+          {String(title)}
         </p>
         <p style={{ fontSize: '32px', color: 'rgba(240,240,240,0.8)' }}>
           {description}

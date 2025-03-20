@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
+import type { Metadata as NextMetadata } from 'next'
 
 import { getBaseUrl } from '@/lib/utils'
 
-export const createMetadata = (
-  override: Omit<Metadata, 'title'> & { title?: string },
-): Metadata => {
+type Metadata = NextMetadata & { title?: string }
+
+export const createMetadata = (override: Metadata): Metadata => {
   const siteName = 'Create Yuki Turbo'
   const description =
     'Clean and typesafe starter monorepo using Turborepo along with Next.js and tRPC '

@@ -34,9 +34,7 @@
     "@yuki/db": "workspace:*",
     "@yuki/env": "workspace:*",
     "@yuki/validators": "workspace:*",
-    "arctic": "^3.5.0",
-    "next": "15.2.3",
-    "react": "^19.0.0"
+    "arctic": "^3.5.0"
   },
   "devDependencies": {
     "@yuki/eslint-config": "workspace:*",

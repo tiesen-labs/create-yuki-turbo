@@ -1,7 +1,5 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec'
 
-type CLIENT_PREFIX = 'NEXT_PUBLIC_'
-
 type ErrorMessage<T extends string> = T
 type Simplify<T> = { [P in keyof T]: T[P] } & {}
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -79,7 +77,7 @@ type ServerClientOptions<
   | (ClientOptions<TPrefix, TClient> & Impossible<ServerOptions<never, never>>)
 
 type EnvOptions<
-  TPrefix extends string | undefined = CLIENT_PREFIX,
+  TPrefix extends string | undefined,
   TServer extends Record<string, StandardSchemaV1> = NonNullable<unknown>,
   TClient extends Record<string, StandardSchemaV1> = NonNullable<unknown>,
 > = StrictOptions<TPrefix, TServer, TClient> &
@@ -99,12 +97,12 @@ type CreateEnv<
  * Create a type-safe environment variables object that handles both client and server environments
  */
 export function createEnv<
-  TPrefix extends string | undefined = CLIENT_PREFIX,
+  TPrefix extends string | undefined,
   TServer extends Record<string, StandardSchemaV1> = NonNullable<unknown>,
-  TClient extends Record<
-    `${CLIENT_PREFIX}${string}`,
-    StandardSchemaV1
-  > = NonNullable<unknown>,
+  TClient extends Record<`${TPrefix}${string}`, StandardSchemaV1> = Record<
+    `${TPrefix}${string}`,
+    never
+  >,
 >(opts: EnvOptions<TPrefix, TServer, TClient>): CreateEnv<TServer, TClient> {
   const runtimeEnv = opts.runtimeEnv
   for (const [key, value] of Object.entries(runtimeEnv)) {
@@ -145,12 +143,10 @@ export function createEnv<
     if (!opts.clientPrefix) return true
     return !prop.startsWith(opts.clientPrefix)
   }
-  const isValidServerAccess = (prop: string) => {
-    return isServer || !isServerAccess(prop)
-  }
-  const ignoreProp = (prop: string) => {
-    return prop === '__esModule' || prop === '$$typeof'
-  }
+  const isValidServerAccess = (prop: string) =>
+    isServer || !isServerAccess(prop)
+  const ignoreProp = (prop: string) =>
+    prop === '__esModule' || prop === '$$typeof'
 
   const env = new Proxy(parsed.value, {
     get(target, prop) {
@@ -162,9 +158,9 @@ export function createEnv<
       }
       return Reflect.get(target, prop) as never
     },
-  })
+  }) as CreateEnv<TServer, TClient>
 
-  return env as never
+  return env
 }
 
 type StandardSchemaDictionary = Record<string, StandardSchemaV1>
