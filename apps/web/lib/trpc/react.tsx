@@ -12,7 +12,6 @@ import { createTRPCContext } from '@trpc/tanstack-react-query'
 import SuperJSON from 'superjson'
 
 import type { AppRouter } from '@yuki/api'
-import { env } from '@yuki/env'
 
 import { createQueryClient } from '@/lib/trpc/query-client'
 import { getBaseUrl } from '@/lib/utils'
@@ -36,7 +35,8 @@ export const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
       links: [
         loggerLink({
           enabled: (op) =>
-            env.NODE_ENV === 'development' ||
+            // eslint-disable-next-line no-restricted-properties
+            process.env.NODE_ENV === 'development' ||
             (op.direction === 'down' && op.result instanceof Error),
         }),
         unstable_httpBatchStreamLink({

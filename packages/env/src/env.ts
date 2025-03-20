@@ -134,7 +134,9 @@ export function createEnv<
   const onInvalidAccess =
     opts.onInvalidAccess ??
     (() => {
-      //throw new Error('❌ Attempted to access a server-side environment variable on the client')
+      throw new Error(
+        '❌ Attempted to access a server-side environment variable on the client',
+      )
     })
 
   if (parsed.issues) return onValidationError(parsed.issues)
