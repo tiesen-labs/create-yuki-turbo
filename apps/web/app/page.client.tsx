@@ -47,6 +47,9 @@ export const CreatePost: React.FC = () => {
       })
       form.reset()
     },
+    onError: (error) => {
+      toast.error(error)
+    },
   })
 
   return (
