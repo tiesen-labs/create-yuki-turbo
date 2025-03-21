@@ -311,7 +311,7 @@ function FormItem({ className, ...props }: React.ComponentProps<'fieldset'>) {
     <FormItemContext value={{ id }}>
       <fieldset
         data-slot="form-item"
-        className={cn('grid gap-2', className)}
+        className={cn('grid gap-1', className)}
         disabled={isPending}
         {...props}
       />
