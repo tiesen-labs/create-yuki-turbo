@@ -16,6 +16,7 @@ const nextConfig: NextConfig = {
     '@yuki/db',
     '@yuki/env',
     '@yuki/ui',
+    '@yuki/validators',
   ],
 
   /** We already do linting and typechecking as separate tasks in CI */
