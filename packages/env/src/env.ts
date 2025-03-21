@@ -115,8 +115,7 @@ export function createEnv<
 
   const _client = typeof opts.client === 'object' ? opts.client : {}
   const _server = typeof opts.server === 'object' ? opts.server : {}
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  const isServer = // @ts-ignore
+  const isServer =
     opts.isServer ?? (typeof window === 'undefined' || 'Deno' in window)
 
   const finalEnv = isServer ? { ..._server, ..._client } : { ..._client }

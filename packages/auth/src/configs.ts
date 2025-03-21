@@ -77,4 +77,9 @@ const authOptions = {
   },
 } satisfies AuthOptions
 
-export const { auth, signIn, signOut, handlers } = Auth(authOptions)
+const authInstance = new Auth(authOptions)
+
+export const handlers = authInstance.handlers.bind(authInstance)
+export const signIn = authInstance.signIn.bind(authInstance)
+export const signOut = authInstance.signOut.bind(authInstance)
+export const auth = authInstance.auth.bind(authInstance)

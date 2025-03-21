@@ -17,7 +17,6 @@
   "dependencies": {
     "@tanstack/react-query": "^5.69.0",
     "@trpc/client": "^11.0.0-rc.840",
-    "@trpc/server": "^11.0.0-rc.840",
     "@trpc/tanstack-react-query": "^11.0.0-rc.840",
     "@yuki/api": "workspace:*",
     "@yuki/auth": "workspace:*",

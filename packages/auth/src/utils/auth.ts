@@ -13,20 +13,39 @@ import type { SessionResult } from './session'
 import { Password } from './password'
 import { Session } from './session'
 
-export interface AuthOptions {
+type Providers = Record<
+  string,
+  {
+    createAuthorizationURL: (state: string, codeVerifier: string) => URL
+    validateAuthorizationCode: (
+      code: string,
+      codeVerifier: string,
+    ) => Promise<OAuth2Tokens>
+    fetchUserUrl: string
+    mapUser: (user: never) => {
+      provider: string
+      providerAccountId: string
+      providerAccountName: string
+      email: string
+      image: string
+    }
+  }
+>
+
+export interface AuthOptions<T extends Providers = Providers> {
   cookieKey: string
-  providers: Providers
+  providers: T
 }
 
-class AuthClass {
+export class Auth<TProviders extends Providers> {
   private readonly db: typeof db
   private readonly session: Session
   private readonly password: Password
 
   private readonly COOKIE_KEY: string
-  private readonly providers: Providers
+  private readonly providers: TProviders
 
-  constructor(options: AuthOptions) {
+  constructor(options: AuthOptions<TProviders>) {
     this.COOKIE_KEY = options.cookieKey
     this.providers = options.providers
 
@@ -70,13 +89,15 @@ class AuthClass {
     return response
   }
 
-  public async signIn(
-    type: SignInType,
-    values?: { email: string; password: string },
+  public async signIn<TProviderType extends keyof TProviders | 'credentials'>(
+    type: TProviderType,
+    values?: TProviderType extends 'credentials'
+      ? { email: string; password: string }
+      : never,
   ): Promise<void> {
     if (type === 'credentials' && values)
       await this.handleCredentialsSignIn(values.email, values.password)
-    else redirect(`/api/auth/oauth/${type}`)
+    else redirect(`/api/auth/oauth/${String(type)}`)
   }
 
   public async signOut(req?: NextRequest): Promise<void> {
@@ -87,12 +108,12 @@ class AuthClass {
   private async getTokenFromRequest(
     req?: NextRequest,
   ): Promise<string | undefined> {
-    if (req) {
+    if (req)
       return (
         req.cookies.get(this.COOKIE_KEY)?.value ??
         req.headers.get('Authorization')?.replace('Bearer ', '')
       )
-    }
+
     return (await cookies()).get(this.COOKIE_KEY)?.value
   }
 
@@ -285,34 +306,3 @@ class AuthClass {
     res.headers.set('Access-Control-Allow-Headers', '*')
   }
 }
-
-export const Auth = (options: AuthOptions) => {
-  const authInstance = new AuthClass(options)
-
-  return {
-    auth: authInstance.auth.bind(authInstance),
-    signIn: authInstance.signIn.bind(authInstance),
-    signOut: authInstance.signOut.bind(authInstance),
-    handlers: authInstance.handlers.bind(authInstance),
-  }
-}
-
-type SignInType = 'credentials' | 'discord' | 'google'
-type Providers = Record<
-  string,
-  {
-    createAuthorizationURL: (state: string, codeVerifier: string) => URL
-    validateAuthorizationCode: (
-      code: string,
-      codeVerifier: string,
-    ) => Promise<OAuth2Tokens>
-    fetchUserUrl: string
-    mapUser: (user: never) => {
-      provider: string
-      providerAccountId: string
-      providerAccountName: string
-      email: string
-      image: string
-    }
-  }
->
