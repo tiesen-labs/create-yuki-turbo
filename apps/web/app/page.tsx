@@ -13,7 +13,7 @@ export default function HomePage() {
 
   return (
     <HydrateClient>
-      <main className="container py-4">
+      <main className="container max-w-2xl py-4">
         <Typography variant="h1" className="text-center">
           Create
           <span className="text-[#78a9ff]"> Yuki </span>
@@ -26,7 +26,7 @@ export default function HomePage() {
 
         <AuthShowcase />
 
-        <section className="mx-auto mt-4 flex max-w-xl flex-col gap-4">
+        <section className="mt-4 flex flex-col gap-4">
           <h2 className="sr-only">Posts List Section</h2>
 
           <CreatePost />
@@ -48,7 +48,7 @@ const AuthShowcase: React.FC = async () => {
   const session = await auth()
 
   return (
-    <section className="mx-auto mt-4 flex max-w-xl flex-col gap-4">
+    <section className="mt-4 flex flex-col gap-4">
       <h2 className="sr-only">Authenticating Section</h2>
 
       {!session.user && (
