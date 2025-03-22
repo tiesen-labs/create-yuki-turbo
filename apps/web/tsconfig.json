@@ -4,6 +4,10 @@
     "baseUrl": ".",
     "paths": { "@/*": ["./*"], "@yuki/ui/*": ["../../packages/ui/src/*"] }
   },
-  "include": [".", ".next/types/**/*.ts"],
+  "include": [
+    ".",
+    ".next/types/**/*.ts",
+    "../../tooling/typescript/types.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
