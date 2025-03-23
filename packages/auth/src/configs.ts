@@ -7,23 +7,26 @@ import { env } from '@yuki/env'
 import type { AuthOptions } from './utils/auth'
 import { Auth } from './utils/auth'
 
-const getBaseUrl = () => {
-  if (env.VERCEL_PROJECT_PRODUCTION_URL)
-    return `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`
-  if (env.VERCEL_URL) return `https://${env.VERCEL_URL}`
-  return `http://localhost:${process.env.PORT ?? 3000}`
+const getCallbackUrl = (provider: string) => {
+  const baseUrl = env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : env.VERCEL_URL
+      ? `https://${env.VERCEL_URL}`
+      : `http://localhost:${process.env.PORT ?? 3000}`
+
+  return `${baseUrl}/api/auth/oauth/${provider}/callback`
 }
 
 const discord = new Discord(
   env.DISCORD_CLIENT_ID,
   env.DISCORD_CLIENT_SECRET,
-  `${getBaseUrl()}/api/auth/oauth/discord/callback`,
+  getCallbackUrl('discord'),
 )
 
 const google = new Google(
   env.GOOGLE_CLIENT_ID,
   env.GOOGLE_CLIENT_SECRET,
-  `${getBaseUrl()}/api/auth/oauth/google/callback`,
+  getCallbackUrl('google'),
 )
 
 const authOptions = {
