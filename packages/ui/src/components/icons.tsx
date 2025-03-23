@@ -1,7 +1,8 @@
 export * from 'lucide-react'
 
-export const DiscordIcon = (props: React.SVGProps<SVGSVGElement>) => (
+export const DiscordIcon = (props: React.ComponentProps<'svg'>) => (
   <svg
+    data-slot="discord-icon"
     role="img"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
@@ -13,8 +14,9 @@ export const DiscordIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 )
 
-export const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+export const GoogleIcon = (props: React.ComponentProps<'svg'>) => (
   <svg
+    data-slot="google-icon"
     role="img"
     viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
