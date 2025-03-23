@@ -8,7 +8,7 @@ import { handlers, signIn, signOut, auth as uncachedAuth } from './configs'
  */
 const auth = cache(uncachedAuth)
 
-export type { SessionResult } from './utils/session'
+export type { SessionResult } from './core/session'
 export { handlers, signIn, signOut, auth }
-export { Session } from './utils/session'
-export { Password } from './utils/password'
+export { Session } from './core/session'
+export { Password } from './core/password'

@@ -4,8 +4,8 @@ import { Discord, Google } from 'arctic'
 
 import { env } from '@yuki/env'
 
-import type { AuthOptions } from './utils/auth'
-import { Auth } from './utils/auth'
+import type { AuthOptions } from './core/auth'
+import { Auth } from './core/auth'
 
 const getCallbackUrl = (provider: string) => {
   const baseUrl = env.VERCEL_PROJECT_PRODUCTION_URL

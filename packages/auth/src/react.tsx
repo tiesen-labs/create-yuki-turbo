@@ -3,7 +3,7 @@
 import * as React from 'react'
 import { useQuery } from '@tanstack/react-query'
 
-import type { SessionResult } from './utils/session'
+import type { SessionResult } from './core/session'
 
 interface SessionContextValue {
   session: SessionResult
