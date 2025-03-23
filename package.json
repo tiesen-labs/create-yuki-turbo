@@ -1,6 +1,6 @@
 {
   "name": "create-yuki-turbo",
-  "version": "2.0.1",
+  "version": "1.0.0",
   "private": true,
   "description": "Turborepo template for doing stuff",
   "license": "MIT",
@@ -38,7 +38,7 @@
   },
   "packageManager": "bun@1.2.5",
   "engines": {
-    "bun": ">=1.2.2",
+    "bun": ">=1.2.5",
     "node": ">=20.18.1"
   }
 }
