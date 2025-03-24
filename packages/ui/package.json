@@ -15,10 +15,7 @@
     },
     "./hooks/*": {
       "types": "./dist/hooks/*.d.ts",
-      "default": [
-        "./src/hooks/*.ts",
-        "./src/hooks/*.tsx"
-      ]
+      "default": "./src/hooks/*.ts"
     },
     "./tailwind.css": "./src/tailwind.css"
   },
