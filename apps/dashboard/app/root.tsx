@@ -1,4 +1,4 @@
-import '@yuki/ui/tailwind.css'
+import '@/globals.css'
 
 import {
   isRouteErrorResponse,
