@@ -4,6 +4,6 @@
     "baseUrl": ".",
     "paths": { "@yuki/ui/*": ["./src/*"] }
   },
-  "include": ["src"],
+  "include": ["src", "lucide-react.d.ts"],
   "exclude": ["node_modules"]
 }

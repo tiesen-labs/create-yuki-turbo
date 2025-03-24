@@ -7,6 +7,10 @@
       "@yuki/ui/*": ["../../packages/ui/src/*"]
     }
   },
-  "include": [".", ".next/types/**/*.ts"],
+  "include": [
+    ".",
+    ".next/types/**/*.ts",
+    "../../packages/ui/lucide-react.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
