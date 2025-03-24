@@ -13,6 +13,7 @@ import { env } from '@yuki/env'
 import { ThemeProvider } from '@yuki/ui/utils'
 
 import type { Route } from './+types/root'
+import { SessionProvider } from '@/lib/auth'
 import { TRPCReactProvider } from '@/lib/trpc/react'
 
 export const links: Route.LinksFunction = () => [
@@ -57,7 +58,9 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+          <TRPCReactProvider>
+            <SessionProvider>{children}</SessionProvider>
+          </TRPCReactProvider>
         </ThemeProvider>
         <ScrollRestoration />
         <Scripts />
@@ -102,3 +105,12 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     </main>
   )
 }
+
+export const unstable_middleware = [
+  (async ({ request }, next) => {
+    const cookieHeader = request.headers.get('cookie')
+    const authToken = cookieHeader?.match(/auth_token=(.*?)(;|$)/)?.[1]
+    request.headers.set('Authorization', `Bearer ${authToken}`)
+    await next()
+  }) as Route.unstable_MiddlewareFunction,
+]
