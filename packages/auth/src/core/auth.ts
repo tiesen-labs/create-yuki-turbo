@@ -1,4 +1,3 @@
-import type { User } from '@prisma/client'
 import type { OAuth2Tokens } from 'arctic'
 import type { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
@@ -6,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
 
+import type { User } from '@yuki/db'
 import { db } from '@yuki/db'
 import { env } from '@yuki/env'
 

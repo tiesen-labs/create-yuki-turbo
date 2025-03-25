@@ -24,7 +24,7 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@neondatabase/serverless": "^0.10.4",
+    "@neondatabase/serverless": "^1.0.0",
     "@prisma/adapter-neon": "^6.5.0",
     "@prisma/client": "^6.5.0"
   },

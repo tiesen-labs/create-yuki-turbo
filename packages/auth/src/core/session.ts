@@ -1,10 +1,10 @@
-import type { User } from '@prisma/client'
 import { sha256 } from '@oslojs/crypto/sha2'
 import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase,
 } from '@oslojs/encoding'
 
+import type { User } from '@yuki/db'
 import { db } from '@yuki/db'
 
 export class Session {

@@ -32,13 +32,11 @@
     "@turbo/gen": "^2.4.4",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "prettier": "^3.5.3",
-    "turbo": "^2.4.4",
-    "typescript": "^5.8.2"
+    "turbo": "^2.4.4"
   },
-  "packageManager": "bun@1.2.5",
+  "packageManager": "bun@1.2.6",
   "engines": {
-    "bun": ">=1.2.5",
+    "bun": ">=1.2.6",
     "node": ">=20.18.1"
   }
 }
