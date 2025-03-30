@@ -1,4 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from '@tanstack/react-query'
 
 import type { Post } from '@yuki/db'
 import { Button } from '@yuki/ui/button'
@@ -85,11 +89,7 @@ export const CreatePost: React.FC = () => {
 
 export const PostList: React.FC = () => {
   const trpc = useTRPC()
-  const { data, isLoading } = useQuery(trpc.post.all.queryOptions())
-
-  if (isLoading || !data)
-    return Array.from({ length: 5 }, (_, i) => <PostCardSkeleton key={i} />)
-
+  const { data } = useSuspenseQuery(trpc.post.all.queryOptions())
   return data.map((post) => <PostCard key={post.id} post={post} />)
 }
 
