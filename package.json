@@ -34,7 +34,7 @@
     "@yuki/tsconfig": "workspace:*",
     "turbo": "^2.4.4"
   },
-  "packageManager": "bun@1.2.6",
+  "packageManager": "bun@1.2.7",
   "engines": {
     "bun": ">=1.2.6",
     "node": ">=20.18.1"
