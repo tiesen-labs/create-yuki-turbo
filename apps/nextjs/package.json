@@ -15,7 +15,7 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@tanstack/react-query": "^5.70.0",
+    "@tanstack/react-query": "^5.71.0",
     "@trpc/client": "^11.0.1",
     "@trpc/tanstack-react-query": "^11.0.1",
     "@yuki/api": "workspace:*",

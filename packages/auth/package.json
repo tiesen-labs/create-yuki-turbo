@@ -31,7 +31,7 @@
   "dependencies": {
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
-    "@tanstack/react-query": "^5.70.0",
+    "@tanstack/react-query": "^5.71.0",
     "@yuki/db": "workspace:*",
     "@yuki/env": "workspace:*",
     "arctic": "^3.6.0",

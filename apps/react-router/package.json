@@ -15,7 +15,7 @@
   "dependencies": {
     "@react-router/node": "^7.4.1",
     "@react-router/serve": "^7.4.1",
-    "@tanstack/react-query": "^5.70.0",
+    "@tanstack/react-query": "^5.71.0",
     "@trpc/client": "^11.0.1",
     "@trpc/tanstack-react-query": "^11.0.1",
     "@yuki/api": "workspace:*",
@@ -24,7 +24,7 @@
     "@yuki/env": "workspace:*",
     "@yuki/ui": "workspace:*",
     "@yuki/validators": "workspace:*",
-    "isbot": "^5.1.17",
+    "isbot": "^5.1.25",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.4.1",
@@ -33,7 +33,7 @@
   "devDependencies": {
     "@react-router/dev": "^7.4.1",
     "@react-router/fs-routes": "^7.4.1",
-    "@tailwindcss/vite": "^4.0.0",
+    "@tailwindcss/vite": "^4.0.17",
     "@types/node": "22.13.14",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
@@ -41,10 +41,9 @@
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "react-router-devtools": "^1.1.0",
     "tailwindcss": "^4.0.17",
-    "typescript": "^5.7.2",
-    "vite": "^5.4.11",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.3",
     "vite-tsconfig-paths": "^5.1.4"
   }
 }
