@@ -14,30 +14,33 @@ export const createMetadata = (override: Partial<Metadata> = {}): Metadata => {
     override.description ??
     'Clean and typesafe starter monorepo using Turborepo along with Next.js and tRPC '
 
-  const url = `${getBaseUrl()}${override.openGraph?.url ?? ''}`
+  const {
+    title: _,
+    description: __,
+    keywords = [],
+    openGraph,
+    ...restOverride
+  } = override
+  const { images: ogImages, url: ogUrl, ...restOpenGraph } = openGraph ?? {}
+  const url = `${getBaseUrl()}${ogUrl ?? ''}`
 
   return {
-    ...override,
     metadataBase: new URL(getBaseUrl()),
     applicationName: siteName,
     title,
     description,
-    keywords: [...(override.keywords ?? []), 'TypeScript', 'Turborepo'],
+    keywords: [...keywords, 'Turborepo'],
     openGraph: {
-      type: 'website',
       url,
       title,
       description,
       siteName,
+      type: 'website',
       images: [
-        { url: '/api/og', alt: title },
-        ...(Array.isArray(override.openGraph?.images)
-          ? override.openGraph.images
-          : override.openGraph?.images
-            ? [override.openGraph.images]
-            : []),
+        { url: '/api/og', alt: 'Yuki' },
+        ...(Array.isArray(ogImages) ? ogImages : ogImages ? [ogImages] : []),
       ],
-      ...override.openGraph,
+      ...restOpenGraph,
     },
     twitter: {
       card: 'summary_large_image',
@@ -53,5 +56,6 @@ export const createMetadata = (override: Partial<Metadata> = {}): Metadata => {
       ...override.alternates,
     },
     assets: '/assets',
+    ...restOverride,
   }
 }
