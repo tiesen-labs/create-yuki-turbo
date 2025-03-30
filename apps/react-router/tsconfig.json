@@ -1,0 +1,19 @@
+{
+  "extends": "@yuki/tsconfig/react-library.json",
+  "compilerOptions": {
+    "types": ["node", "vite/client"],
+    "rootDirs": [".", "./.react-router/types"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./app/*"]
+    }
+  },
+  "include": [
+    "**/*",
+    "**/.server/**/*",
+    "**/.client/**/*",
+    ".react-router/types/**/*",
+    "../../packages/ui/lucide-react.d.ts"
+  ],
+  "exclude": ["node_modules"]
+}

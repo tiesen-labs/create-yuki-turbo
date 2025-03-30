@@ -23,7 +23,7 @@ const isomorphicGetSession = async (
   headers: Headers,
 ): Promise<SessionResult> => {
   const session = new Session()
-  const authToken = headers.get('Authorization') ?? null
+  const authToken = headers.get('Authorization') ?? ''
 
   if (authToken)
     return session.validateSessionToken(authToken.replace('Bearer ', ''))

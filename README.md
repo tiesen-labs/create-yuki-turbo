@@ -27,7 +27,7 @@ It uses [Turborepo](https://turborepo.org) and contains:
   └─ workflows
         └─ CI to check the monorepo: format, lint, and typecheck
 apps
-  └─ web
+  └─ nextjs
       ├─ Next.js 15
       ├─ React 19
       ├─ Tailwind CSS

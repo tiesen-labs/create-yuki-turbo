@@ -96,11 +96,11 @@ export class Auth<TProviders extends Providers> {
   public async signIn<TProviderType extends keyof TProviders | 'credentials'>(
     type: TProviderType,
     values?: TProviderType extends 'credentials'
-      ? { email: string; password: string }
+      ? { email: string; password: string; isReturnData?: boolean }
       : never,
-  ): Promise<void> {
+  ): Promise<{ sessionToken: string; expires: Date } | undefined> {
     if (type === 'credentials' && values)
-      await this.handleCredentialsSignIn(values.email, values.password)
+      return await this.handleCredentialsSignIn(values)
     else redirect(`/api/auth/oauth/${String(type)}`)
   }
 
@@ -124,10 +124,15 @@ export class Auth<TProviders extends Providers> {
     return (await cookies()).get(key)?.value ?? ''
   }
 
-  private async handleCredentialsSignIn(
-    email: string,
-    password: string,
-  ): Promise<void> {
+  private async handleCredentialsSignIn({
+    email,
+    password,
+    isReturnData = false,
+  }: {
+    email: string
+    password: string
+    isReturnData?: boolean
+  }): Promise<{ sessionToken: string; expires: Date } | undefined> {
     const user = await this.db.user.findUnique({ where: { email } })
     if (!user) throw new Error('User not found')
     if (!user.password) throw new Error('User has no password')
@@ -136,13 +141,15 @@ export class Auth<TProviders extends Providers> {
     if (!passwordMatch) throw new Error('Invalid password')
 
     const session = await this.session.createSession(user.id)
-    ;(await cookies()).set(this.COOKIE_KEY, session.sessionToken, {
-      httpOnly: true,
-      path: '/',
-      secure: env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      expires: session.expires,
-    })
+    if (isReturnData) return session
+    else
+      (await cookies()).set(this.COOKIE_KEY, session.sessionToken, {
+        httpOnly: true,
+        path: '/',
+        secure: env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        expires: session.expires,
+      })
   }
 
   private async handleGetRequests(req: Request, url: URL): Promise<Response> {
