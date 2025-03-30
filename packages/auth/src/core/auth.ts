@@ -1,8 +1,6 @@
 import type { OAuth2Tokens } from 'arctic'
-import type { NextRequest } from 'next/server'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { NextResponse } from 'next/server'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
 
 import type { User } from '@yuki/db'
@@ -54,23 +52,23 @@ export class Auth<TProviders extends Providers> {
     this.password = new Password()
   }
 
-  public async auth(req?: NextRequest): Promise<SessionResult> {
-    const authToken = await this.getTokenFromRequest(req)
+  public async auth(req?: Request): Promise<SessionResult> {
+    const authToken = await this.getCookieValue(req)
     if (!authToken) return { expires: new Date() }
     return await this.session.validateSessionToken(authToken)
   }
 
-  public async handlers(req: NextRequest): Promise<Response> {
-    const url = new URL(req.nextUrl)
+  public async handlers(req: Request): Promise<Response> {
+    const url = new URL(req.url)
 
-    let response: NextResponse = NextResponse.json(
+    let response: Response = Response.json(
       { error: 'Not found' },
       { status: 404 },
     )
 
     try {
       if (req.method === 'OPTIONS') {
-        response = NextResponse.json('', { status: 204 })
+        response = Response.json('', { status: 204 })
       } else if (req.method === 'GET') {
         response = await this.handleGetRequests(req, url)
       } else if (
@@ -78,8 +76,14 @@ export class Auth<TProviders extends Providers> {
         url.pathname === '/api/auth/sign-out'
       ) {
         await this.signOut(req)
-        response = NextResponse.redirect(new URL('/', req.url))
-        response.cookies.delete(this.COOKIE_KEY)
+        response = new Response('', {
+          headers: new Headers({ Location: '/' }),
+          status: 302,
+        })
+        response.headers.set(
+          'Set-Cookie',
+          `${this.COOKIE_KEY}=; Path=/; Max-Age=0`,
+        )
       }
     } catch (error) {
       response = this.handleError(error)
@@ -100,21 +104,24 @@ export class Auth<TProviders extends Providers> {
     else redirect(`/api/auth/oauth/${String(type)}`)
   }
 
-  public async signOut(req?: NextRequest): Promise<void> {
-    const token = await this.getTokenFromRequest(req)
+  public async signOut(req?: Request): Promise<void> {
+    const token = await this.getCookieValue(req)
     if (token) await this.session.invalidateSessionToken(token)
   }
 
-  private async getTokenFromRequest(
-    req?: NextRequest,
-  ): Promise<string | undefined> {
+  private async getCookieValue(
+    req?: Request,
+    key: string = this.COOKIE_KEY,
+    isAuthHeader = true,
+  ): Promise<string> {
     if (req)
       return (
-        req.cookies.get(this.COOKIE_KEY)?.value ??
-        req.headers.get('Authorization')?.replace('Bearer ', '')
+        req.headers.get('cookie')?.match(new RegExp(`${key}=([^;]+)`))?.[1] ??
+        (isAuthHeader ? req.headers.get('Authorization') : '') ??
+        ''
       )
 
-    return (await cookies()).get(this.COOKIE_KEY)?.value
+    return (await cookies()).get(key)?.value ?? ''
   }
 
   private async handleCredentialsSignIn(
@@ -138,45 +145,31 @@ export class Auth<TProviders extends Providers> {
     })
   }
 
-  private async handleGetRequests(
-    req: NextRequest,
-    url: URL,
-  ): Promise<NextResponse> {
+  private async handleGetRequests(req: Request, url: URL): Promise<Response> {
     if (url.pathname === '/api/auth') {
       const session = await this.auth(req)
-      return NextResponse.json(session)
+      return Response.json(session)
     }
 
-    if (url.pathname.startsWith('/api/auth/oauth')) {
+    if (url.pathname.startsWith('/api/auth/oauth'))
       return await this.handleOAuthRequest(req, url)
-    }
 
-    return NextResponse.json({ error: 'Not found' }, { status: 404 })
+    return Response.json({ error: 'Not found' }, { status: 404 })
   }
 
-  private async handleOAuthRequest(
-    req: NextRequest,
-    url: URL,
-  ): Promise<NextResponse> {
+  private async handleOAuthRequest(req: Request, url: URL): Promise<Response> {
     const isCallback = url.pathname.endsWith('/callback')
 
-    if (!isCallback) {
-      return this.handleOAuthStart(req, url)
-    } else {
-      return await this.handleOAuthCallback(req, url)
-    }
+    if (!isCallback) return this.handleOAuthStart(url)
+    else return await this.handleOAuthCallback(req, url)
   }
 
-  private handleOAuthStart(req: NextRequest, url: URL): NextResponse {
+  private handleOAuthStart(url: URL): Response {
     const providerName = String(url.pathname.split('/').pop())
     const provider = this.providers[providerName]
 
-    if (!provider) {
-      return NextResponse.json(
-        { error: 'Provider not supported' },
-        { status: 404 },
-      )
-    }
+    if (!provider)
+      return Response.json({ error: 'Provider not supported' }, { status: 404 })
 
     const state = generateState()
     const codeVerifier = generateCodeVerifier()
@@ -185,11 +178,18 @@ export class Auth<TProviders extends Providers> {
       codeVerifier,
     )
 
-    const response = NextResponse.redirect(
-      new URL(authorizationUrl, req.nextUrl),
+    const response = new Response('', {
+      headers: new Headers({ Location: authorizationUrl.toString() }),
+      status: 302,
+    })
+    response.headers.append(
+      'Set-Cookie',
+      `oauth_state=${state}; Path=/; HttpOnly; SameSite=Lax`,
     )
-    response.cookies.set('code_verifier', codeVerifier)
-    response.cookies.set('oauth_state', state)
+    response.headers.append(
+      'Set-Cookie',
+      `code_verifier=${codeVerifier}; Path=/; HttpOnly; SameSite=Lax`,
+    )
 
     return response
   }
@@ -234,28 +234,20 @@ export class Auth<TProviders extends Providers> {
     })
   }
 
-  private async handleOAuthCallback(
-    req: NextRequest,
-    url: URL,
-  ): Promise<NextResponse> {
+  private async handleOAuthCallback(req: Request, url: URL): Promise<Response> {
     const providerName = String(url.pathname.split('/').slice(-2)[0])
     const provider = this.providers[providerName]
 
-    if (!provider) {
-      return NextResponse.json(
-        { error: 'Provider not supported' },
-        { status: 404 },
-      )
-    }
+    if (!provider)
+      return Response.json({ error: 'Provider not supported' }, { status: 404 })
 
     const code = url.searchParams.get('code')
     const state = url.searchParams.get('state')
-    const storedState = req.cookies.get('oauth_state')?.value ?? ''
-    const codeVerifier = req.cookies.get('code_verifier')?.value ?? ''
+    const storedState = await this.getCookieValue(req, 'oauth_state', false)
+    const codeVerifier = await this.getCookieValue(req, 'code_verifier', false)
 
-    if (!code || !state || state !== storedState) {
+    if (!code || !state || state !== storedState)
       throw new Error('Invalid state')
-    }
 
     const { validateAuthorizationCode, fetchUserUrl, mapUser } = provider
     const verifiedCode = await validateAuthorizationCode(code, codeVerifier)
@@ -269,31 +261,31 @@ export class Auth<TProviders extends Providers> {
     const user = await this.createUser(mapUser((await res.json()) as never))
     const session = await this.session.createSession(user.id)
 
-    const response = NextResponse.redirect(new URL('/', req.nextUrl))
-    response.cookies.set(this.COOKIE_KEY, session.sessionToken, {
-      httpOnly: true,
-      path: '/',
-      secure: env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      expires: session.expires,
+    const response = new Response('', {
+      headers: new Headers({ Location: '/' }),
+      status: 302,
     })
-    response.cookies.delete('oauth_state')
-    response.cookies.delete('code_verifier')
+    response.headers.set(
+      'Set-Cookie',
+      `${this.COOKIE_KEY}=${session.sessionToken}; HttpOnly; Path=/; ${env.NODE_ENV === 'production' ? 'Secure' : ''}; SameSite=Lax`,
+    )
+    response.headers.append('Set-Cookie', 'oauth_state=; Path=/; Max-Age=0')
+    response.headers.append('Set-Cookie', 'code_verifier=; Path=/; Max-Age=0')
 
     return response
   }
 
-  private handleError(error: unknown): NextResponse {
+  private handleError(error: unknown): Response {
     if (error instanceof OAuth2RequestError)
-      return NextResponse.json(
+      return Response.json(
         { error: error.message, description: error.description },
         { status: 400 },
       )
 
     if (error instanceof Error)
-      return NextResponse.json({ error: error.message }, { status: 400 })
+      return Response.json({ error: error.message }, { status: 400 })
 
-    return NextResponse.json(
+    return Response.json(
       { error: 'An unknown error occurred' },
       { status: 400 },
     )
