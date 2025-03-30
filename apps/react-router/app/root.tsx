@@ -9,6 +9,7 @@ import {
   ScrollRestoration,
 } from 'react-router'
 
+import { SessionProvider } from '@yuki/auth/react'
 import { env } from '@yuki/env'
 import { Toaster } from '@yuki/ui/sonner'
 import { ThemeProvider } from '@yuki/ui/utils'
@@ -27,8 +28,14 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
         <Links />
       </head>
       <body>
-        <ThemeProvider attribute="class">
-          <TRPCReactProvider>{children}</TRPCReactProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          disableTransitionOnChange
+        >
+          <TRPCReactProvider>
+            <SessionProvider>{children}</SessionProvider>
+          </TRPCReactProvider>
           <Toaster />
         </ThemeProvider>
         <ScrollRestoration />
