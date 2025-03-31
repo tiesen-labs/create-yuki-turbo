@@ -1,6 +1,5 @@
 import type { TRPCQueryOptions } from '@trpc/tanstack-react-query'
 import { cache } from 'react'
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
 
 import { appRouter, createCaller, createTRPCContext } from '@yuki/api'
@@ -28,16 +27,6 @@ const trpc = (headers: Headers) =>
     router: appRouter,
   })
 
-function HydrateClient({ children }: Readonly<{ children: React.ReactNode }>) {
-  const queryClient = getQueryClient()
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      {children}
-    </HydrationBoundary>
-  )
-}
-
 function prefetch(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   queryOptions: ReturnType<TRPCQueryOptions<any>>,
@@ -49,4 +38,4 @@ function prefetch(
   else void queryClient.prefetchQuery(queryOptions)
 }
 
-export { api, trpc, prefetch, HydrateClient }
+export { api, trpc, prefetch }

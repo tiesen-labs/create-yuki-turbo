@@ -1,4 +1,3 @@
-import { signIn } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
 import { Card, CardFooter } from '@yuki/ui/card'
 import { DiscordIcon, GoogleIcon } from '@yuki/ui/icons'
@@ -19,23 +18,11 @@ export default function AuthLayout({
           </div>
 
           <form className="grid grid-cols-2 gap-4">
-            <Button
-              variant="outline"
-              formAction={async () => {
-                'use server'
-                await signIn('discord')
-              }}
-            >
+            <Button variant="outline" formAction="/api/auth/oauth/discord">
               <DiscordIcon />
               <span className="sr-only md:not-sr-only">Discord</span>
             </Button>
-            <Button
-              variant="outline"
-              formAction={async () => {
-                'use server'
-                await signIn('google')
-              }}
-            >
+            <Button variant="outline" formAction="/api/auth/oauth/google">
               <GoogleIcon />
               <span className="sr-only md:not-sr-only">Google</span>
             </Button>
