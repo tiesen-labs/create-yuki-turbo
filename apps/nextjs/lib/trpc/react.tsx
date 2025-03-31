@@ -40,7 +40,7 @@ export const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
           url: getBaseUrl() + '/api/trpc',
           headers() {
             const headers = new Headers()
-            headers.set('x-trpc-source', 'nextjs-react')
+            headers.set('x-trpc-source', 'react-nextjs')
             return headers
           },
         }),

@@ -1,6 +1,10 @@
 import type { QueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
-import { QueryClientProvider } from '@tanstack/react-query'
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClientProvider,
+} from '@tanstack/react-query'
 import { createTRPCClient, httpBatchStreamLink, loggerLink } from '@trpc/client'
 import { createTRPCContext } from '@trpc/tanstack-react-query'
 import SuperJSON from 'superjson'
@@ -38,7 +42,7 @@ export const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
           url: getBaseUrl() + '/api/trpc',
           headers() {
             const headers = new Headers()
-            headers.set('x-trpc-source', 'nextjs-react')
+            headers.set('x-trpc-source', 'react-router')
             return headers
           },
         }),
@@ -52,5 +56,17 @@ export const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
         {children}
       </TRPCProvider>
     </QueryClientProvider>
+  )
+}
+
+export function HydrateClient({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  const queryClient = getQueryClient()
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      {children}
+    </HydrationBoundary>
   )
 }
