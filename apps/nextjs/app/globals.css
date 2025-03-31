@@ -1,6 +1,6 @@
 @import '@yuki/ui/tailwind.css';
 @source '../../../packages/ui/src/components/*.tsx';
 
-@theme {
+@theme inline {
   --font-sans: var(--font-geist-sans), sans-serif;
 }
