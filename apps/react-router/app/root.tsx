@@ -59,7 +59,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
     message = error.status === 404 ? '404' : 'Error'
     details =
       error.status === 404
-        ? 'The requested page could not be found.'
+        ? 'This page could not be found.'
         : error.statusText || details
   } else if (
     env.NODE_ENV === 'development' &&
@@ -71,11 +71,18 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
   }
 
   return (
-    <main className="container mx-auto p-4 pt-16">
-      <h1>{message}</h1>
-      <p>{details}</p>
+    <main className="flex min-h-dvh flex-col items-center justify-center">
+      <div>
+        <h1 className="mr-5 inline-block border-r pr-6 align-top text-2xl leading-12 font-medium">
+          {message}
+        </h1>
+        <div className="inline-block">
+          <p className="text-sm leading-12">{details}</p>
+        </div>
+      </div>
+
       {stack && (
-        <pre className="w-full overflow-x-auto p-4">
+        <pre className="bg-secondary container max-w-xl overflow-x-auto rounded-md p-4">
           <code>{stack}</code>
         </pre>
       )}
