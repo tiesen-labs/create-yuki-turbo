@@ -17,14 +17,17 @@ import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
+import { setSessionCookie } from './page.action'
+
 export const LoginForm: React.FC = () => {
   const router = useRouter()
 
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
-    submitFn: async (values) => signIn('credentials', values),
-    onSuccess: () => {
+    submitFn: async (values) => signIn(values),
+    onSuccess: async (session) => {
+      await setSessionCookie(session)
       toast.success('You have successfully logged in!')
       router.push('/')
     },

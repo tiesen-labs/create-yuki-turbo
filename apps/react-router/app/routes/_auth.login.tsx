@@ -27,13 +27,10 @@ export const action = async ({ request }: Route.ActionArgs) => {
   try {
     const formData = await request.formData()
 
-    const session = await signIn('credentials', {
+    const session = await signIn({
       email: formData.get('email') as string,
       password: formData.get('password') as string,
-      isReturnData: true,
     })
-
-    if (!session) return data({ error: 'Invalid credentials' })
 
     return redirect('/', {
       headers: {

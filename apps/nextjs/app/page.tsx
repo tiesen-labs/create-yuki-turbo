@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 
-import { auth } from '@yuki/auth'
+import { auth, signIn } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
 

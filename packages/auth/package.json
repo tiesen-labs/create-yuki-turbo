@@ -13,10 +13,6 @@
     "./react": {
       "types": "./dist/react.d.ts",
       "default": "./src/react.tsx"
-    },
-    "./env": {
-      "types": "./dist/env.d.ts",
-      "default": "./src/env.ts"
     }
   },
   "scripts": {

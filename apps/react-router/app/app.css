@@ -2,5 +2,5 @@
 @source '../../../packages/ui/src/components/*.tsx';
 
 @theme {
-  --font-sans: 'Inter', sans-serif;
+  --font-sans: 'Geist', sans-serif;
 }

@@ -16,6 +16,7 @@ export const loader = async ({ request }: Route.LoaderArgs) => {
 
   return { session }
 }
+
 export default function HomePage({
   loaderData: { session },
 }: Route.ComponentProps) {

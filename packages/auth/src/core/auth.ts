@@ -1,7 +1,8 @@
 import type { OAuth2Tokens } from 'arctic'
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
+import { redirect as nextRedirect } from 'next/navigation'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
+import { redirect as reactRouterRedirect } from 'react-router'
 
 import type { User } from '@yuki/db'
 import { db } from '@yuki/db'
@@ -93,15 +94,21 @@ export class Auth<TProviders extends Providers> {
     return response
   }
 
-  public async signIn<TProviderType extends keyof TProviders | 'credentials'>(
-    type: TProviderType,
-    values?: TProviderType extends 'credentials'
-      ? { email: string; password: string; isReturnData?: boolean }
-      : never,
-  ): Promise<{ sessionToken: string; expires: Date } | undefined> {
-    if (type === 'credentials' && values)
-      return await this.handleCredentialsSignIn(values)
-    else redirect(`/api/auth/oauth/${String(type)}`)
+  public async signIn({
+    email,
+    password,
+  }: {
+    email: string
+    password: string
+  }): Promise<{ sessionToken: string; expires: Date }> {
+    const user = await this.db.user.findUnique({ where: { email } })
+    if (!user) throw new Error('User not found')
+    if (!user.password) throw new Error('User has no password')
+
+    const passwordMatch = this.password.verify(password, user.password)
+    if (!passwordMatch) throw new Error('Invalid password')
+
+    return this.session.createSession(user.id)
   }
 
   public async signOut(req?: Request): Promise<void> {
@@ -112,44 +119,15 @@ export class Auth<TProviders extends Providers> {
   private async getCookieValue(
     req?: Request,
     key: string = this.COOKIE_KEY,
-    isAuthHeader = true,
   ): Promise<string> {
     if (req)
       return (
         req.headers.get('cookie')?.match(new RegExp(`${key}=([^;]+)`))?.[1] ??
-        (isAuthHeader ? req.headers.get('Authorization') : '') ??
+        (key === this.COOKIE_KEY ? req.headers.get('Authorization') : '') ??
         ''
       )
 
     return (await cookies()).get(key)?.value ?? ''
-  }
-
-  private async handleCredentialsSignIn({
-    email,
-    password,
-    isReturnData = false,
-  }: {
-    email: string
-    password: string
-    isReturnData?: boolean
-  }): Promise<{ sessionToken: string; expires: Date } | undefined> {
-    const user = await this.db.user.findUnique({ where: { email } })
-    if (!user) throw new Error('User not found')
-    if (!user.password) throw new Error('User has no password')
-
-    const passwordMatch = this.password.verify(password, user.password)
-    if (!passwordMatch) throw new Error('Invalid password')
-
-    const session = await this.session.createSession(user.id)
-    if (isReturnData) return session
-    else
-      (await cookies()).set(this.COOKIE_KEY, session.sessionToken, {
-        httpOnly: true,
-        path: '/',
-        secure: env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        expires: session.expires,
-      })
   }
 
   private async handleGetRequests(req: Request, url: URL): Promise<Response> {
@@ -250,8 +228,8 @@ export class Auth<TProviders extends Providers> {
 
     const code = url.searchParams.get('code')
     const state = url.searchParams.get('state')
-    const storedState = await this.getCookieValue(req, 'oauth_state', false)
-    const codeVerifier = await this.getCookieValue(req, 'code_verifier', false)
+    const storedState = await this.getCookieValue(req, 'oauth_state')
+    const codeVerifier = await this.getCookieValue(req, 'code_verifier')
 
     if (!code || !state || state !== storedState)
       throw new Error('Invalid state')
