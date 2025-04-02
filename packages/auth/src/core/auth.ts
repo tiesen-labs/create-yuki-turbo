@@ -76,15 +76,7 @@ export class Auth<TProviders extends Providers> {
           headers: new Headers({ Location: '/' }),
           status: 302,
         })
-        response.headers.set(
-          'Set-Cookie',
-          this.setCookie(this.COOKIE_KEY, '', {
-            Path: '/',
-            MaxAge: '0',
-            HttpOnly: '',
-            SameSite: 'Lax',
-          }),
-        )
+        response.headers.set('Set-Cookie', this.deleteCookie(this.COOKIE_KEY))
       }
     } catch (error) {
       response = this.handleError(error)
@@ -194,28 +186,11 @@ export class Auth<TProviders extends Providers> {
         HttpOnly: '',
         SameSite: 'Lax',
         Secure: env.NODE_ENV === 'production' ? 'true' : 'false',
-        MaxAge:
-          Math.floor(session.expires.getTime() - new Date().getTime()) / 1000,
+        Expires: session.expires.toUTCString(),
       }),
     )
-    response.headers.append(
-      'Set-Cookie',
-      this.setCookie('oauth_state', '', {
-        Path: '/',
-        MaxAge: '0',
-        HttpOnly: '',
-        SameSite: 'Lax',
-      }),
-    )
-    response.headers.append(
-      'Set-Cookie',
-      this.setCookie('code_verifier', '', {
-        Path: '/',
-        MaxAge: '0',
-        HttpOnly: '',
-        SameSite: 'Lax',
-      }),
-    )
+    response.headers.append('Set-Cookie', this.deleteCookie('oauth_state'))
+    response.headers.append('Set-Cookie', this.deleteCookie('code_verifier'))
 
     return response
   }
@@ -299,6 +274,10 @@ export class Auth<TProviders extends Providers> {
       .map(([k, v]) => `${k}=${v}`)
       .join('; ')}`
     return cookie
+  }
+
+  private deleteCookie(key: string): string {
+    return `${key}=; Path=/; Max-Age=0`
   }
 
   private setCorsHeaders(res: Response): void {

@@ -9,9 +9,8 @@
     }
   },
   "include": [
-    "**/*",
-    "**/.server/**/*",
-    "**/.client/**/*",
+    "**/*.ts",
+    "**/*.tsx",
     ".react-router/types/**/*",
     "../../packages/ui/lucide-react.d.ts"
   ],

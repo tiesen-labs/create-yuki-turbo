@@ -24,9 +24,13 @@ apps/expo/.gitignore
 apps/expo/ios
 apps/expo/android
 
-# React Router
+# react router
 .react-router/
-build/
+
+# tanstack start
+.vinxi/
+dist-ssr/
+routeTree.gen.ts
 
 # production
 build
