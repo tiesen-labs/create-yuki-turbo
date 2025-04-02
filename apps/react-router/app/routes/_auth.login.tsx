@@ -1,6 +1,5 @@
-import { data, redirect, useFetcher } from 'react-router'
+import { data, redirect, useSubmit } from 'react-router'
 
-import { signIn } from '@yuki/auth'
 import { env } from '@yuki/env'
 import { Button } from '@yuki/ui/button'
 import {
@@ -19,22 +18,23 @@ import {
   useForm,
 } from '@yuki/ui/form'
 import { Input } from '@yuki/ui/input'
+import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
 import type { Route } from './+types/_auth.login'
+import { useTRPCClient } from '@/lib/trpc/react'
 
-export const action = async ({ request }: Route.ActionArgs) => {
+export const action = ({ request }: Route.ActionArgs) => {
   try {
-    const formData = await request.formData()
-
-    const session = await signIn({
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
-    })
+    const searchParams = new URLSearchParams(new URL(request.url).searchParams)
+    const sessionToken = String(searchParams.get('sessionToken'))
+    const expires = new Date(searchParams.get('expires') ?? '').toISOString()
 
     return redirect('/', {
       headers: {
-        'Set-Cookie': `auth_token=${session.sessionToken}; Path=/; HttpOnly; ${env.NODE_ENV === 'production' ? 'Secure; ' : ''}SameSite=Lax; Max-Age=${session.expires}`,
+        'Set-Cookie': `auth_token=${sessionToken}; Path=/; HttpOnly; ${env.NODE_ENV === 'production' ? 'Secure; ' : ''}SameSite=Lax; Max-Age=${Math.floor(
+          (new Date(expires).getTime() - new Date().getTime()) / 1000,
+        )}`,
       },
     })
   } catch (error) {
@@ -61,13 +61,25 @@ export default function LoginPage(_: Route.ComponentProps) {
 }
 
 const LoginForm: React.FC = () => {
-  const { submit, state } = useFetcher<typeof action>()
+  const trpcClient = useTRPCClient()
+  const submit = useSubmit()
 
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
-    submitFn: async (values) => {
-      await submit(values, { method: 'POST' })
+    submitFn: trpcClient.auth.signIn.mutate,
+    onSuccess: async (data) => {
+      toast.success('You have successfully logged in!')
+      await submit(
+        {},
+        {
+          action: `/login?sessionToken=${data.sessionToken}&expires=${data.expires}`,
+          method: 'POST',
+        },
+      )
+    },
+    onError: (error) => {
+      toast.error(error)
     },
   })
 
@@ -99,7 +111,7 @@ const LoginForm: React.FC = () => {
         )}
       />
 
-      <Button disabled={state === 'submitting'}>Login</Button>
+      <Button disabled={form.isPending}>Login</Button>
     </Form>
   )
 }

@@ -18,7 +18,7 @@
     "gnr": "bun with-env prisma generate",
     "lint": "eslint",
     "push": "bun with-env prisma db push",
-    "studio": "bun with-env prisma studio",
+    "studio": "bun with-env prisma studio -b none",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },

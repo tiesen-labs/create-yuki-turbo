@@ -1,15 +1,12 @@
 import type { OAuth2Tokens } from 'arctic'
 import { cookies } from 'next/headers'
-import { redirect as nextRedirect } from 'next/navigation'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
-import { redirect as reactRouterRedirect } from 'react-router'
 
 import type { User } from '@yuki/db'
 import { db } from '@yuki/db'
 import { env } from '@yuki/env'
 
 import type { SessionResult } from './session'
-import { Password } from './password'
 import { Session } from './session'
 
 type Providers = Record<
@@ -39,7 +36,6 @@ export interface AuthOptions<T extends Providers = Providers> {
 export class Auth<TProviders extends Providers> {
   private readonly db: typeof db
   private readonly session: Session
-  private readonly password: Password
 
   private readonly COOKIE_KEY: string
   private readonly providers: TProviders
@@ -50,11 +46,10 @@ export class Auth<TProviders extends Providers> {
 
     this.db = db
     this.session = new Session()
-    this.password = new Password()
   }
 
   public async auth(req?: Request): Promise<SessionResult> {
-    const authToken = await this.getCookieValue(req)
+    const authToken = await this.getCookie(req)
     if (!authToken) return { expires: new Date() }
     return await this.session.validateSessionToken(authToken)
   }
@@ -83,7 +78,12 @@ export class Auth<TProviders extends Providers> {
         })
         response.headers.set(
           'Set-Cookie',
-          `${this.COOKIE_KEY}=; Path=/; Max-Age=0`,
+          this.setCookie(this.COOKIE_KEY, '', {
+            Path: '/',
+            MaxAge: '0',
+            HttpOnly: '',
+            SameSite: 'Lax',
+          }),
         )
       }
     } catch (error) {
@@ -94,40 +94,9 @@ export class Auth<TProviders extends Providers> {
     return response
   }
 
-  public async signIn({
-    email,
-    password,
-  }: {
-    email: string
-    password: string
-  }): Promise<{ sessionToken: string; expires: Date }> {
-    const user = await this.db.user.findUnique({ where: { email } })
-    if (!user) throw new Error('User not found')
-    if (!user.password) throw new Error('User has no password')
-
-    const passwordMatch = this.password.verify(password, user.password)
-    if (!passwordMatch) throw new Error('Invalid password')
-
-    return this.session.createSession(user.id)
-  }
-
   public async signOut(req?: Request): Promise<void> {
-    const token = await this.getCookieValue(req)
+    const token = await this.getCookie(req)
     if (token) await this.session.invalidateSessionToken(token)
-  }
-
-  private async getCookieValue(
-    req?: Request,
-    key: string = this.COOKIE_KEY,
-  ): Promise<string> {
-    if (req)
-      return (
-        req.headers.get('cookie')?.match(new RegExp(`${key}=([^;]+)`))?.[1] ??
-        (key === this.COOKIE_KEY ? req.headers.get('Authorization') : '') ??
-        ''
-      )
-
-    return (await cookies()).get(key)?.value ?? ''
   }
 
   private async handleGetRequests(req: Request, url: URL): Promise<Response> {
@@ -169,54 +138,22 @@ export class Auth<TProviders extends Providers> {
     })
     response.headers.append(
       'Set-Cookie',
-      `oauth_state=${state}; Path=/; HttpOnly; SameSite=Lax`,
+      this.setCookie('oauth_state', state, {
+        Path: '/',
+        HttpOnly: '',
+        SameSite: 'Lax',
+      }),
     )
     response.headers.append(
       'Set-Cookie',
-      `code_verifier=${codeVerifier}; Path=/; HttpOnly; SameSite=Lax`,
+      this.setCookie('code_verifier', codeVerifier, {
+        Path: '/',
+        HttpOnly: '',
+        SameSite: 'Lax',
+      }),
     )
 
     return response
-  }
-
-  private async createUser(data: {
-    provider: string
-    providerAccountId: string
-    providerAccountName: string
-    email: string
-    image: string
-  }): Promise<User> {
-    const { provider, providerAccountId, providerAccountName, email, image } =
-      data
-
-    const existingAccount = await db.account.findUnique({
-      where: { provider_providerAccountId: { provider, providerAccountId } },
-    })
-
-    if (existingAccount) {
-      const user = await db.user.findUnique({
-        where: { id: existingAccount.userId },
-      })
-      if (!user) throw new Error(`Failed to sign in with ${provider}`)
-      return user
-    }
-
-    const accountData = {
-      provider,
-      providerAccountId,
-      providerAccountName,
-    }
-
-    return await db.user.upsert({
-      where: { email },
-      update: { accounts: { create: accountData } },
-      create: {
-        email,
-        name: providerAccountName,
-        image,
-        accounts: { create: accountData },
-      },
-    })
   }
 
   private async handleOAuthCallback(req: Request, url: URL): Promise<Response> {
@@ -228,8 +165,8 @@ export class Auth<TProviders extends Providers> {
 
     const code = url.searchParams.get('code')
     const state = url.searchParams.get('state')
-    const storedState = await this.getCookieValue(req, 'oauth_state')
-    const codeVerifier = await this.getCookieValue(req, 'code_verifier')
+    const storedState = await this.getCookie(req, 'oauth_state')
+    const codeVerifier = await this.getCookie(req, 'code_verifier')
 
     if (!code || !state || state !== storedState)
       throw new Error('Invalid state')
@@ -252,10 +189,33 @@ export class Auth<TProviders extends Providers> {
     })
     response.headers.set(
       'Set-Cookie',
-      `${this.COOKIE_KEY}=${session.sessionToken}; HttpOnly; Path=/; ${env.NODE_ENV === 'production' ? 'Secure' : ''}; SameSite=Lax`,
+      this.setCookie(this.COOKIE_KEY, session.sessionToken, {
+        Path: '/',
+        HttpOnly: '',
+        SameSite: 'Lax',
+        Secure: env.NODE_ENV === 'production' ? 'true' : 'false',
+        MaxAge:
+          Math.floor(session.expires.getTime() - new Date().getTime()) / 1000,
+      }),
     )
-    response.headers.append('Set-Cookie', 'oauth_state=; Path=/; Max-Age=0')
-    response.headers.append('Set-Cookie', 'code_verifier=; Path=/; Max-Age=0')
+    response.headers.append(
+      'Set-Cookie',
+      this.setCookie('oauth_state', '', {
+        Path: '/',
+        MaxAge: '0',
+        HttpOnly: '',
+        SameSite: 'Lax',
+      }),
+    )
+    response.headers.append(
+      'Set-Cookie',
+      this.setCookie('code_verifier', '', {
+        Path: '/',
+        MaxAge: '0',
+        HttpOnly: '',
+        SameSite: 'Lax',
+      }),
+    )
 
     return response
   }
@@ -274,6 +234,71 @@ export class Auth<TProviders extends Providers> {
       { error: 'An unknown error occurred' },
       { status: 400 },
     )
+  }
+
+  private async createUser(data: {
+    provider: string
+    providerAccountId: string
+    providerAccountName: string
+    email: string
+    image: string
+  }): Promise<User> {
+    const { provider, providerAccountId, providerAccountName, email, image } =
+      data
+
+    const existingAccount = await this.db.account.findUnique({
+      where: { provider_providerAccountId: { provider, providerAccountId } },
+    })
+
+    if (existingAccount) {
+      const user = await this.db.user.findUnique({
+        where: { id: existingAccount.userId },
+      })
+      if (!user) throw new Error(`Failed to sign in with ${provider}`)
+      return user
+    }
+
+    const accountData = {
+      provider,
+      providerAccountId,
+      providerAccountName,
+    }
+
+    return await this.db.user.upsert({
+      where: { email },
+      update: { accounts: { create: accountData } },
+      create: {
+        email,
+        name: providerAccountName,
+        image,
+        accounts: { create: accountData },
+      },
+    })
+  }
+
+  private async getCookie(
+    req?: Request,
+    key: string = this.COOKIE_KEY,
+  ): Promise<string> {
+    if (req)
+      return (
+        req.headers.get('cookie')?.match(new RegExp(`${key}=([^;]+)`))?.[1] ??
+        (key === this.COOKIE_KEY ? req.headers.get('Authorization') : '') ??
+        ''
+      )
+
+    return (await cookies()).get(key)?.value ?? ''
+  }
+
+  private setCookie(
+    key: string,
+    value: string,
+    attributes: Record<string, string | number>,
+  ): string {
+    const cookie = `${key}=${value}; ${Object.entries(attributes)
+      .map(([k, v]) => `${k}=${v}`)
+      .join('; ')}`
+    return cookie
   }
 
   private setCorsHeaders(res: Response): void {

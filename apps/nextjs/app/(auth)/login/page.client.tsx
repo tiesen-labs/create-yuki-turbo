@@ -1,8 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-
-import { signIn } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
 import {
   Form,
@@ -17,19 +14,19 @@ import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
+import { useTRPCClient } from '@/lib/trpc/react'
 import { setSessionCookie } from './page.action'
 
 export const LoginForm: React.FC = () => {
-  const router = useRouter()
+  const trpcClient = useTRPCClient()
 
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
-    submitFn: async (values) => signIn(values),
+    submitFn: trpcClient.auth.signIn.mutate,
     onSuccess: async (session) => {
-      await setSessionCookie(session)
       toast.success('You have successfully logged in!')
-      router.push('/')
+      await setSessionCookie(session)
     },
     onError: (error) => {
       toast.error(error)

@@ -1,6 +1,6 @@
 import { cache } from 'react'
 
-import { handlers, signIn, signOut, auth as uncachedAuth } from './config'
+import { handlers, signOut, auth as uncachedAuth } from './config'
 
 /**
  * This is the main way to get session data for your RSCs.
@@ -9,6 +9,6 @@ import { handlers, signIn, signOut, auth as uncachedAuth } from './config'
 const auth = cache(uncachedAuth)
 
 export type { SessionResult } from './core/session'
-export { handlers, signIn, signOut, auth }
+export { handlers, signOut, auth }
 export { Session } from './core/session'
 export { Password } from './core/password'

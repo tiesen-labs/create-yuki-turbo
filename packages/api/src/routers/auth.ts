@@ -1,8 +1,8 @@
 import type { TRPCRouterRecord } from '@trpc/server'
 import { TRPCError } from '@trpc/server'
 
-import { Password } from '@yuki/auth'
-import { signUpSchema } from '@yuki/validators/auth'
+import { Password, Session } from '@yuki/auth'
+import { signInSchema, signUpSchema } from '@yuki/validators/auth'
 
 import { publicProcedure } from '../trpc'
 
@@ -10,6 +10,27 @@ export const authRouter = {
   getSession: publicProcedure.query(({ ctx }) => {
     return ctx.session
   }),
+
+  signIn: publicProcedure
+    .input(signInSchema)
+    .mutation(async ({ ctx, input: { email, password } }) => {
+      const user = await ctx.db.user.findUnique({ where: { email } })
+      if (!user) throw new Error('User not found')
+      if (!user.password)
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'User has no password',
+        })
+
+      const passwordMatch = new Password().verify(password, user.password)
+      if (!passwordMatch)
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Invalid password',
+        })
+
+      return new Session().createSession(user.id)
+    }),
 
   signUp: publicProcedure
     .input(signUpSchema)
