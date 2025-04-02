@@ -1,4 +1,4 @@
-import { data, useSubmit } from 'react-router'
+import { data, redirect, useSubmit } from 'react-router'
 
 import { env } from '@yuki/env'
 import { Button } from '@yuki/ui/button'
@@ -30,16 +30,13 @@ export const action = ({ request }: Route.ActionArgs) => {
     const sessionToken = String(searchParams.get('sessionToken'))
     const expires = new Date(searchParams.get('expires') ?? '').toISOString()
 
-    return data(
-      {},
-      {
-        headers: {
-          'Set-Cookie': `auth_token=${sessionToken}; Path=/; HttpOnly; ${env.NODE_ENV === 'production' ? 'Secure; ' : ''}SameSite=Lax; Max-Age=${Math.floor(
-            (new Date(expires).getTime() - new Date().getTime()) / 1000,
-          )}`,
-        },
+    return redirect('/', {
+      headers: {
+        'Set-Cookie': `auth_token=${sessionToken}; Path=/; HttpOnly; ${env.NODE_ENV === 'production' ? 'Secure; ' : ''}SameSite=Lax; Max-Age=${Math.floor(
+          (new Date(expires).getTime() - new Date().getTime()) / 1000,
+        )}`,
       },
-    )
+    })
   } catch (error) {
     if (error instanceof Error) return data({ error: error.message })
     return data({ error: 'An unknown error occurred' })
@@ -81,7 +78,7 @@ const LoginForm: React.FC = () => {
           navigate: false,
         },
       )
-      window.location.href = '/'
+      window.location.reload()
     },
     onError: (error) => {
       toast.error(error)
