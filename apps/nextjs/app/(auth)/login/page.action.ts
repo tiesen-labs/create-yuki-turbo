@@ -12,10 +12,10 @@ export const setSessionCookie = async (session: {
   const nextCookies = await cookies()
 
   nextCookies.set('auth_token', session.sessionToken, {
-    httpOnly: true,
     path: '/',
-    secure: env.NODE_ENV === 'production',
+    httpOnly: true,
     sameSite: 'lax',
+    secure: env.NODE_ENV === 'production',
     expires: session.expires,
   })
 

@@ -183,7 +183,7 @@ export class Auth<TProviders extends Providers> {
       'Set-Cookie',
       this.setCookie(this.COOKIE_KEY, session.sessionToken, {
         Path: '/',
-        HttpOnly: '',
+        HttpOnly: 'true',
         SameSite: 'Lax',
         Secure: env.NODE_ENV === 'production' ? 'true' : 'false',
         Expires: session.expires.toUTCString(),
@@ -277,7 +277,7 @@ export class Auth<TProviders extends Providers> {
   }
 
   private deleteCookie(key: string): string {
-    return `${key}=; Path=/; Max-Age=0`
+    return `${key}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; ${env.NODE_ENV === 'production' ? 'Secure;' : ''}`
   }
 
   private setCorsHeaders(res: Response): void {
