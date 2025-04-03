@@ -12,7 +12,8 @@ const getCallbackUrl = (provider: string) => {
     ? `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`
     : env.VERCEL_URL
       ? `https://${env.VERCEL_URL}`
-      : `http://localhost:${process.env.PORT ?? 3000}`
+      : // eslint-disable-next-line no-restricted-properties
+        `http://localhost:${process.env.PORT ?? 3000}`
 
   return `${baseUrl}/api/auth/oauth/${provider}/callback`
 }

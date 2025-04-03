@@ -18,7 +18,7 @@ bunx --bun create-turbo@latest -e https://github.com/tiesen243/create-yuki-turbo
 
 ## About
 
-This template is forked from [create-t3-turbo](https://github.com/t3-oss/create-t3-turbo) with some modifications to fit my personal preferences. It is a monorepos template for building full-stack applications with [Turborepo](https://turbo.build), [Next.js](https://nextjs.org), [tRPC](https://trpc.io) and more.
+This template is forked from [create-t3-turbo](https://github.com/t3-oss/create-t3-turbo) with some modifications to fit my personal preferences. It is a monorepos template for building full-stack applications with [Turborepo](https://turbo.build), [Next.js](https://nextjs.org), [React Router](https://reactrouter.com), [tRPC](https://trpc.io) and more.
 
 It uses [Turborepo](https://turborepo.org) and contains:
 
@@ -112,7 +112,7 @@ This will update all the dependencies in the monorepos to the latest version.
 
 Let's deploy the Next.js application to [Vercel](https://vercel.com). If you've never deployed a Turborepo app there, don't worry, the steps are quite straightforward. You can also read the [official Turborepo guide](https://vercel.com/docs/concepts/monorepos/turborepo) on deploying to Vercel.
 
-1. Create a new project on Vercel, select the `apps/web` folder as the root directory. Vercel's zero-config system should handle all configurations for you.
+1. Create a new project on Vercel, select the `apps/nextjs` or `apps/react-router` folder as the root directory. Vercel's zero-config system should handle all configurations for you.
 
 2. Add your environment variable.
 

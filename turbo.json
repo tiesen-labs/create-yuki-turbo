@@ -18,16 +18,19 @@
       "persistent": false
     },
     "format": {
+      "dependsOn": ["^format"],
       "outputs": [".cache/.prettiercache"],
       "outputLogs": "new-only"
     },
     "lint": {
       "dependsOn": ["^gnr", "^lint"],
-      "outputs": [".cache/.eslintcache"]
+      "outputs": [".cache/.eslintcache"],
+      "outputLogs": "new-only"
     },
     "typecheck": {
       "dependsOn": ["^gnr", "^typecheck"],
-      "outputs": [".cache/tsbuildinfo.json"]
+      "outputs": [".cache/tsbuildinfo.json"],
+      "outputLogs": "new-only"
     },
     "push": {
       "cache": false,
@@ -38,8 +41,8 @@
       "persistent": false
     },
     "gnr": {
-      "cache": true,
-      "interactive": false
+      "cache": false,
+      "interactive": true
     },
     "ui-add": {
       "cache": false,

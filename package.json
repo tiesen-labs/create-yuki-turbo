@@ -2,7 +2,7 @@
   "name": "create-yuki-turbo",
   "version": "1.0.0",
   "private": true,
-  "description": "Turborepo template for doing stuff",
+  "description": "Clean and typesafe starter monorepo using Turborepo along with React and tRPC ",
   "license": "MIT",
   "workspaces": [
     "apps/*",
