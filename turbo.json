@@ -22,11 +22,11 @@
       "outputLogs": "new-only"
     },
     "lint": {
-      "dependsOn": ["^lint"],
+      "dependsOn": ["^gnr", "^lint"],
       "outputs": [".cache/.eslintcache"]
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
+      "dependsOn": ["^gnr", "^typecheck"],
       "outputs": [".cache/tsbuildinfo.json"]
     },
     "push": {
@@ -38,7 +38,7 @@
       "persistent": false
     },
     "gnr": {
-      "cache": false,
+      "cache": true,
       "interactive": false
     },
     "ui-add": {

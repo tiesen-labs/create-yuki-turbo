@@ -1,11 +1,13 @@
 {
-  "$schema": "https://turborepo.org/schema.json",
+  "$schema": "../../node_modules/turbo/schema.json",
   "extends": ["//"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
       "outputs": [".react-router/**", "build/**"]
     },
-    "dev": { "persistent": true }
+    "dev": {
+      "persistent": true
+    }
   }
 }
