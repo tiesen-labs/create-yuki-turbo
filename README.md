@@ -4,7 +4,7 @@
 
 > [!NOTE]
 >
-> Make sure to follow the system requirements specified in [`package.json#engines`](./package.json#L40) before proceeding.
+> Make sure to follow the system requirements specified in [`package.json#engines`](./package.json#L38) before proceeding.
 
 There are two ways of initializing an app using the `create-yuki-turbo` starter. You can either use this repository as a template:
 
