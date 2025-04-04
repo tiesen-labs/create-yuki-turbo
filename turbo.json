@@ -3,7 +3,7 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^gnr", "^build"],
       "outputs": [".cache/tsbuildinfo.json", "dist/**"]
     },
     "clean": {
@@ -23,12 +23,12 @@
       "outputLogs": "new-only"
     },
     "lint": {
-      "dependsOn": ["^lint"],
+      "dependsOn": ["^gnr", "^lint"],
       "outputs": [".cache/.eslintcache"],
       "outputLogs": "new-only"
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
+      "dependsOn": ["^gnr", "^typecheck"],
       "outputs": [".cache/tsbuildinfo.json"],
       "outputLogs": "new-only"
     },
