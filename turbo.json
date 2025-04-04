@@ -42,7 +42,7 @@
     },
     "gnr": {
       "cache": false,
-      "interactive": true
+      "interactive": false
     },
     "ui-add": {
       "cache": false,
