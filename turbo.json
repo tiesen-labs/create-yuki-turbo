@@ -32,20 +32,19 @@
       "outputs": [".cache/tsbuildinfo.json"],
       "outputLogs": "new-only"
     },
-    "migrate": {
-      "cache": false,
-      "persistent": true
-    },
     "gnr": {
       "cache": false
+    },
+    "migrate": {
+      "cache": false,
+      "interactive": true
     },
     "push": {
       "cache": false,
       "interactive": true
     },
     "studio": {
-      "cache": false,
-      "persistent": false
+      "cache": false
     },
     "ui-add": {
       "cache": false,
@@ -62,8 +61,9 @@
     "PORT"
   ],
   "globalPassThroughEnv": [
-    "NODE_ENV",
     "CI",
+    "NODE_ENV",
+    "SKIP_ENV_VALIDATION",
     "VERCEL",
     "VERCEL_ENV",
     "VERCEL_URL",
