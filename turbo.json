@@ -13,7 +13,7 @@
       "cache": false
     },
     "dev": {
-      "dependsOn": ["^dev"],
+      "dependsOn": ["^gnr", "^dev"],
       "cache": false,
       "persistent": false
     },
@@ -32,6 +32,13 @@
       "outputs": [".cache/tsbuildinfo.json"],
       "outputLogs": "new-only"
     },
+    "migrate": {
+      "cache": false,
+      "persistent": true
+    },
+    "gnr": {
+      "cache": false
+    },
     "push": {
       "cache": false,
       "interactive": true
@@ -39,10 +46,6 @@
     "studio": {
       "cache": false,
       "persistent": false
-    },
-    "gnr": {
-      "cache": false,
-      "interactive": false
     },
     "ui-add": {
       "cache": false,

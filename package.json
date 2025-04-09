@@ -15,6 +15,7 @@
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo run clean",
     "db:generate": "turbo -F @yuki/db gnr",
+    "db:migrate": "turbo -F @yuki/db migrate",
     "db:push": "turbo -F @yuki/db push",
     "db:studio": "turbo -F @yuki/db studio",
     "dev": "turbo watch dev --continue",
@@ -34,7 +35,7 @@
     "@yuki/tsconfig": "workspace:*",
     "turbo": "^2.5.0"
   },
-  "packageManager": "bun@1.2.8",
+  "packageManager": "bun@1.2.9",
   "engines": {
     "bun": ">=1.2.8",
     "node": ">=20.18.1"

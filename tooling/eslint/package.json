@@ -16,12 +16,12 @@
   "prettier": "@yuki/prettier-config",
   "dependencies": {
     "@eslint/compat": "^1.2.8",
-    "@next/eslint-plugin-next": "^15.2.4",
+    "@next/eslint-plugin-next": "^15.2.5",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-turbo": "^2.5.0",
-    "typescript-eslint": "^8.29.0"
+    "typescript-eslint": "^8.29.1"
   },
   "devDependencies": {
     "@yuki/prettier-config": "workspace:*",

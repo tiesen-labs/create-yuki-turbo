@@ -17,6 +17,7 @@
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "gnr": "bun with-env prisma generate",
     "lint": "eslint",
+    "migrate": "bun with-env prisma migrate dev --skip-generate",
     "push": "bun with-env prisma db push",
     "studio": "bun with-env prisma studio -b none",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
@@ -25,8 +26,8 @@
   "prettier": "@yuki/prettier-config",
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
-    "@prisma/adapter-neon": "^6.5.0",
-    "@prisma/client": "^6.5.0"
+    "@prisma/adapter-neon": "^6.6.0",
+    "@prisma/client": "^6.6.0"
   },
   "devDependencies": {
     "@yuki/eslint-config": "workspace:*",
@@ -35,7 +36,7 @@
     "dotenv-cli": "^8.0.0",
     "eslint": "latest",
     "prettier": "latest",
-    "prisma": "^6.5.0",
+    "prisma": "^6.6.0",
     "typescript": "latest"
   }
 }
