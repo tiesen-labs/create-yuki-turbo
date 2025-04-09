@@ -1,14 +1,19 @@
-import { PrismaClient } from '@prisma/client'
+import { neonConfig } from '@neondatabase/serverless'
+import { PrismaNeon } from '@prisma/adapter-neon'
+import ws from 'ws'
 
-// neonConfig.poolQueryViaFetch = true
-// const pool = new Pool({
-//   connectionString: process.env.DATABASE_URL,
-// }) as unknown as PoolConfig
-// const adapter = new PrismaNeon(pool)
+import { PrismaClient } from '../generated/client'
+
+neonConfig.webSocketConstructor = ws
+neonConfig.poolQueryViaFetch = true
+
+const adapter = new PrismaNeon({
+  connectionString: process.env.DATABASE_URL,
+})
 
 const createPrismaClient = () =>
   new PrismaClient({
-    // adapter,
+    adapter,
     log:
       process.env.NODE_ENV === 'development'
         ? ['query', 'error', 'warn']
@@ -22,4 +27,4 @@ const globalForPrisma = globalThis as unknown as {
 export const db = globalForPrisma.prisma ?? createPrismaClient()
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 
-export type * from '@prisma/client'
+export type * from '../generated/client'
