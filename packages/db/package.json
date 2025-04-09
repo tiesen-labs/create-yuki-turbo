@@ -27,7 +27,6 @@
   "dependencies": {
     "@neondatabase/serverless": "^1.0.0",
     "@prisma/adapter-neon": "^6.6.0",
-    "@prisma/client": "^6.6.0",
     "ws": "^8.18.1"
   },
   "devDependencies": {
