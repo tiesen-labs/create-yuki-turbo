@@ -1,6 +1,6 @@
 import { z } from 'zod'
 
-import { createEnv } from './env'
+import { createEnv } from './core'
 
 export const env = createEnv({
   /**
