@@ -8,15 +8,11 @@
     ".": {
       "type": "./dist/index.d.ts",
       "default": "./src/index.ts"
-    },
-    "./prisma": {
-      "types": "./src/generated/client/index.d.ts",
-      "default": "./src/generated/client/index.js"
     }
   },
   "scripts": {
     "build": "bun gnr && tsc",
-    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "clean": "git clean -xdf .cache .turbo dist generated node_modules",
     "dev": "tsc --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "gnr": "bun with-env prisma generate",
