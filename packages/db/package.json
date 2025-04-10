@@ -8,6 +8,10 @@
     ".": {
       "type": "./dist/index.d.ts",
       "default": "./src/index.ts"
+    },
+    "./prisma": {
+      "types": "./src/generated/client/index.d.ts",
+      "default": "./src/generated/client/index.js"
     }
   },
   "scripts": {
