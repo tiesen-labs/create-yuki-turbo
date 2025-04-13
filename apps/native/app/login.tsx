@@ -12,22 +12,25 @@ import { useRouter } from 'expo-router'
 import { useTheme } from '@react-navigation/native'
 import { useMutation } from '@tanstack/react-query'
 
+import { useSession } from '@/hooks/use-session'
 import { setToken } from '@/lib/session'
 import { trpc } from '@/lib/trpc'
 import { getBaseUrl } from '@/lib/utils'
 
 export default function LoginPage() {
   const { fonts, colors } = useTheme()
+  const { refresh } = useSession()
   const router = useRouter()
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   })
 
-  const { mutate, isPending } = useMutation(
+  const { mutate, isPending, error } = useMutation(
     trpc.auth.signIn.mutationOptions({
       onSuccess: (data) => {
         setToken(data.sessionToken)
+        void refresh()
         router.push('/')
       },
     }),
@@ -106,6 +109,8 @@ export default function LoginPage() {
         >
           <Text>Login</Text>
         </Pressable>
+
+        {error && <Text style={{ color: '#ff0000' }}>{error.message}</Text>}
       </View>
     </SafeAreaView>
   )
