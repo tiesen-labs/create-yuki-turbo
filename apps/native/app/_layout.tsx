@@ -30,7 +30,9 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <SessionProvider>
           <SafeAreaProvider>
-            <Stack />
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            </Stack>
             <StatusBar />
           </SafeAreaProvider>
         </SessionProvider>
