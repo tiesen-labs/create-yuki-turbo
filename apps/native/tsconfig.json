@@ -1,0 +1,14 @@
+{
+  "extends": "@yuki/tsconfig/base.json",
+  "compilerOptions": {
+    "jsx": "react-native",
+    "checkJs": true,
+    "moduleSuffixes": [".ios", ".android", ".native", ""],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
+  "exclude": ["node_modules"]
+}

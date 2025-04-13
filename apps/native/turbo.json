@@ -1,0 +1,14 @@
+{
+  "$schema": "../../node_modules/turbo/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "next-env.d.ts"]
+    },
+    "dev": {
+      "with": ["@yuki/api#dev"],
+      "persistent": true
+    }
+  }
+}

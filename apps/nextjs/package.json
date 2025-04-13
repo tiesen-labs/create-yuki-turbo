@@ -25,14 +25,14 @@
     "@yuki/ui": "workspace:*",
     "@yuki/validators": "workspace:*",
     "next": "15.3.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
     "superjson": "^2.2.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.3",
     "@types/node": "22.14.1",
-    "@types/react": "^19.1.1",
+    "@types/react": "~19.0.10",
     "@types/react-dom": "^19.1.2",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",

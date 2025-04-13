@@ -10,6 +10,8 @@
   },
   "include": [
     "src",
+    "vite.config.ts",
+    "react-router.config.ts",
     ".react-router/types/**/*",
     "../../packages/ui/lucide-react.d.ts"
   ],
