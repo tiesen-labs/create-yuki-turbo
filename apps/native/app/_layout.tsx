@@ -6,7 +6,7 @@ import {
   Geist_400Regular,
   Geist_500Medium,
   Geist_700Bold,
-  Geist_800ExtraBold,
+  Geist_900Black,
   useFonts,
 } from '@expo-google-fonts/geist'
 import { ThemeProvider } from '@react-navigation/native'
@@ -18,12 +18,7 @@ import { queryClient } from '@/lib/trpc'
 
 export default function RootLayout() {
   const colorScheme = useColorScheme()
-  useFonts([
-    Geist_400Regular,
-    Geist_500Medium,
-    Geist_700Bold,
-    Geist_800ExtraBold,
-  ])
+  useFonts([Geist_400Regular, Geist_500Medium, Geist_700Bold, Geist_900Black])
 
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : LightTheme}>

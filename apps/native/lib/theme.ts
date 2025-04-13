@@ -4,7 +4,7 @@ const fonts = {
   regular: { fontFamily: 'Geist_400Regular', fontWeight: '400' },
   medium: { fontFamily: 'Geist_500Medium', fontWeight: '500' },
   bold: { fontFamily: 'Geist_700Bold', fontWeight: '700' },
-  heavy: { fontFamily: 'Geist_800ExtraBold', fontWeight: '800' },
+  heavy: { fontFamily: ' Geist_900Black', fontWeight: '900' },
 } satisfies (typeof DefaultTheme)['fonts']
 
 export const LightTheme = {

@@ -16,8 +16,13 @@ import type { RouterOutputs } from '@yuki/api'
 import { trpc } from '@/lib/trpc'
 
 export default function HomePage() {
+  const { fonts, colors } = useTheme()
+
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={{ ...styles.title, ...fonts.heavy, color: colors.text }}>
+        Create <Text style={{ color: '#78a9ff' }}>Yuki</Text> Turbo
+      </Text>
       <CreatePost />
       <PostList />
     </SafeAreaView>
@@ -178,6 +183,11 @@ const styles = StyleSheet.create({
     marginTop: 40,
     padding: 16,
   },
+  title: {
+    fontSize: 32,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
   card: {
     borderRadius: 8,
     padding: 16,
@@ -205,11 +215,15 @@ const styles = StyleSheet.create({
   form_input: {
     borderWidth: 1,
     borderRadius: 6,
-    padding: 8,
+    fontSize: 16,
   },
   form_button: {
-    padding: 10,
-    borderRadius: 5,
+    display: 'flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    borderRadius: 6,
+    fontSize: 12,
+    height: 36,
   },
 })
