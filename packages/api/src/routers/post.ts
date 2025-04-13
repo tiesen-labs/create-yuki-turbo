@@ -6,7 +6,10 @@ import { protectedProcedure, publicProcedure } from '../trpc'
 
 export const postRouter = {
   all: publicProcedure.query(({ ctx }) => {
-    return ctx.db.post.findMany({ orderBy: { createdAt: 'desc' } })
+    return ctx.db.post.findMany({
+      include: { author: true },
+      orderBy: { createdAt: 'desc' },
+    })
   }),
 
   byId: publicProcedure.input(byIdSchema).query(({ ctx, input }) => {

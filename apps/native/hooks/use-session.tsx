@@ -8,6 +8,7 @@ import { getBaseUrl } from '@/lib/utils'
 
 const SessionContext = React.createContext<{
   session: SessionResult
+  refresh: () => Promise<void>
   isLoading: boolean
 } | null>(null)
 
@@ -16,7 +17,11 @@ export const SessionProvider = ({
 }: {
   children: React.ReactNode
 }) => {
-  const { data: session = { expires: new Date() }, isLoading } = useQuery({
+  const {
+    data: session = { expires: new Date() },
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ['session'],
     queryFn: async () => {
       const res = await fetch(`${getBaseUrl()}/api/auth`, {
@@ -33,8 +38,11 @@ export const SessionProvider = ({
     () => ({
       session,
       isLoading,
+      refresh: async () => {
+        await refetch()
+      },
     }),
-    [session, isLoading],
+    [session, isLoading, refetch],
   )
 
   return (

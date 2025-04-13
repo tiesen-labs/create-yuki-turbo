@@ -1,15 +1,28 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
+  Image,
   Pressable,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from 'react-native'
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withTiming,
+} from 'react-native-reanimated'
 import { useTheme } from '@react-navigation/native'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { XIcon } from 'lucide-react-native'
+import {
+  MessageCircleIcon,
+  ShareIcon,
+  ThumbsUpIcon,
+  XIcon,
+} from 'lucide-react-native'
 
 import type { RouterOutputs } from '@yuki/api'
 
@@ -33,10 +46,11 @@ const PostList: React.FC = () => {
   const { data = [], isLoading } = useQuery(trpc.post.all.queryOptions())
 
   return (
-    <View className="flex-1">
-      {isLoading && <Text>Loading...</Text>}
+    <ScrollView>
+      {isLoading &&
+        Array.from({ length: 5 }).map((_, i) => <PostCardSkeleton key={i} />)}
       {!isLoading && data.map((post) => <PostCard key={post.id} post={post} />)}
-    </View>
+    </ScrollView>
   )
 }
 
@@ -55,50 +69,213 @@ const PostCard: React.FC<{
 
   return (
     <View style={{ ...styles.card, backgroundColor: colors.card }}>
+      <View style={styles.card_header}>
+        <Image src={post.author.image} style={styles.user_avatar} />
+
+        <View>
+          <Text style={{ ...fonts.bold, color: colors.text }}>
+            {post.author.name}
+          </Text>
+          <Text
+            style={{
+              ...fonts.regular,
+              fontSize: 12,
+              color: colors.text + '80',
+            }}
+          >
+            {post.createdAt.toDateString()}
+          </Text>
+        </View>
+
+        <Pressable
+          style={styles.card_action}
+          onPress={() => {
+            mutate(post)
+          }}
+          disabled={isPending}
+        >
+          <XIcon size={18} color={colors.text + '80'} />
+        </Pressable>
+      </View>
+
       <Text
         style={{
           ...styles.card_title,
           ...fonts.bold,
           color: colors.text,
+          marginTop: 12,
         }}
       >
         {post.title}
       </Text>
-
       <Text
         style={{
           ...styles.card_content,
           ...fonts.regular,
-          fontSize: 12,
-          color: colors.text + '50',
-        }}
-      >
-        {post.createdAt.toDateString()}
-      </Text>
-
-      <Text
-        style={{
-          ...styles.card_content,
-          ...fonts.regular,
-          marginTop: 8,
           color: colors.text,
         }}
       >
         {post.content}
       </Text>
 
-      <Pressable
-        style={{
-          ...styles.card_action,
-          backgroundColor: colors.card,
-        }}
-        onPress={() => {
-          mutate(post)
-        }}
-        disabled={isPending}
+      <View
+        style={{ ...styles.post_engagement_bar, borderColor: colors.border }}
       >
-        <XIcon size={20} color={colors.primary} />
-      </Pressable>
+        <Pressable style={styles.post_engagement_button}>
+          <ThumbsUpIcon size={18} color={colors.text + '80'} />
+          <Text
+            style={{
+              ...fonts.medium,
+              fontSize: 13,
+              color: colors.text + '80',
+              marginLeft: 4,
+            }}
+          >
+            Like
+          </Text>
+        </Pressable>
+
+        <Pressable style={styles.post_engagement_button}>
+          <MessageCircleIcon size={18} color={colors.text + '80'} />
+          <Text
+            style={{
+              ...fonts.medium,
+              fontSize: 13,
+              color: colors.text + '80',
+              marginLeft: 4,
+            }}
+          >
+            Comment
+          </Text>
+        </Pressable>
+
+        <Pressable style={styles.post_engagement_button}>
+          <ShareIcon size={18} color={colors.text + '80'} />
+          <Text
+            style={{
+              ...fonts.medium,
+              fontSize: 13,
+              color: colors.text + '80',
+              marginLeft: 4,
+            }}
+          >
+            Share
+          </Text>
+        </Pressable>
+      </View>
+    </View>
+  )
+}
+
+const PostCardSkeleton: React.FC = () => {
+  const { colors } = useTheme()
+  const opacity = useSharedValue(0.3)
+
+  useEffect(() => {
+    opacity.value = withRepeat(withTiming(0.8, { duration: 1000 }), -1, true)
+  }, [opacity])
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }))
+
+  return (
+    <View style={{ ...styles.card, backgroundColor: colors.card }}>
+      <View style={styles.card_header}>
+        <Animated.View
+          style={[
+            styles.user_avatar,
+            { backgroundColor: colors.border },
+            animatedStyle,
+          ]}
+        />
+
+        <View style={{ flex: 1 }}>
+          <Animated.View
+            style={[
+              {
+                height: 14,
+                width: '40%',
+                backgroundColor: colors.border,
+                borderRadius: 4,
+                marginBottom: 8,
+              },
+              animatedStyle,
+            ]}
+          />
+          <Animated.View
+            style={[
+              {
+                height: 10,
+                width: '25%',
+                backgroundColor: colors.border,
+                borderRadius: 4,
+              },
+              animatedStyle,
+            ]}
+          />
+        </View>
+      </View>
+
+      <Animated.View
+        style={[
+          {
+            height: 18,
+            width: '70%',
+            backgroundColor: colors.border,
+            borderRadius: 4,
+            marginTop: 16,
+            marginBottom: 8,
+          },
+          animatedStyle,
+        ]}
+      />
+      <Animated.View
+        style={[
+          {
+            height: 14,
+            width: '90%',
+            backgroundColor: colors.border,
+            borderRadius: 4,
+            marginBottom: 6,
+          },
+          animatedStyle,
+        ]}
+      />
+      <Animated.View
+        style={[
+          {
+            height: 14,
+            width: '80%',
+            backgroundColor: colors.border,
+            borderRadius: 4,
+          },
+          animatedStyle,
+        ]}
+      />
+
+      <View
+        style={{
+          ...styles.post_engagement_bar,
+          borderTopColor: colors.border,
+        }}
+      >
+        {[1, 2, 3].map((i) => (
+          <Animated.View
+            key={i}
+            style={[
+              {
+                height: 20,
+                width: '20%',
+                backgroundColor: colors.border,
+                borderRadius: 4,
+                marginInline: 'auto',
+              },
+              animatedStyle,
+            ]}
+          />
+        ))}
+      </View>
     </View>
   )
 }
@@ -189,9 +366,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   card: {
-    borderRadius: 8,
+    borderRadius: 12,
     padding: 16,
     marginBottom: 16,
+    elevation: 2, // Android shadow
+    shadowColor: '#000', // iOS shadow
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+  },
+  card_header: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   card_title: {
     fontSize: 20,
@@ -204,6 +390,28 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 8,
+  },
+  user_avatar: {
+    width: 40,
+    height: 40,
+    marginRight: 12,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  post_engagement_bar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderTopWidth: 1,
+    marginTop: 16,
+    paddingTop: 12,
+  },
+  post_engagement_button: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 6,
+    width: '33%',
   },
   form: {
     flexDirection: 'column',
