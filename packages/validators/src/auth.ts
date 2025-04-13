@@ -22,3 +22,21 @@ export const signUpSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
+
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .regex(passwordRegex, { message: 'Invalid password' })
+      .optional(),
+    newPassword: z
+      .string()
+      .regex(passwordRegex, { message: 'Invalid password' }),
+    confirmPassword: z
+      .string()
+      .regex(passwordRegex, { message: 'Invalid password' }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })

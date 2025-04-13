@@ -49,7 +49,10 @@ export class Auth<TProviders extends Providers> {
   }
 
   public async auth(req?: Request): Promise<SessionResult> {
-    const authToken = await this.getCookie(req)
+    const authToken =
+      (await this.getCookie(req)) ||
+      req?.headers.get('Authorization')?.split(' ')[1]
+
     if (!authToken) return { expires: new Date() }
     return await this.session.validateSessionToken(authToken)
   }
@@ -258,7 +261,6 @@ export class Auth<TProviders extends Providers> {
     if (req)
       return (
         req.headers.get('cookie')?.match(new RegExp(`${key}=([^;]+)`))?.[1] ??
-        (key === this.COOKIE_KEY ? req.headers.get('Authorization') : '') ??
         ''
       )
 

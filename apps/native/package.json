@@ -18,32 +18,39 @@
     "@react-navigation/bottom-tabs": "^7.3.10",
     "@react-navigation/elements": "^2.3.8",
     "@react-navigation/native": "^7.1.6",
+    "@tanstack/react-query": "^5.73.3",
+    "@trpc/client": "^11.1.0",
+    "@trpc/tanstack-react-query": "^11.1.0",
+    "@yuki/api": "workspace:*",
+    "@yuki/auth": "workspace:*",
     "expo": "~53.0.0-preview.5",
     "expo-blur": "~14.1.1",
     "expo-constants": "~17.1.1",
     "expo-haptics": "~14.1.1",
     "expo-linking": "~7.1.1",
     "expo-router": "~5.0.2-preview.3",
+    "expo-secure-store": "~14.2.0",
+    "expo-splash-screen": "~0.30.2",
     "expo-status-bar": "~2.2.0",
     "expo-symbols": "~0.4.1",
     "expo-system-ui": "~5.0.2",
     "expo-web-browser": "~14.1.2",
+    "lucide-react-native": "^0.487.0",
     "react": "19.0.0",
     "react-native": "0.79.0",
     "react-native-gesture-handler": "~2.24.0",
     "react-native-reanimated": "~3.17.3",
     "react-native-safe-area-context": "5.3.0",
-    "react-native-screens": "~4.10.0"
+    "react-native-screens": "~4.10.0",
+    "superjson": "^2.2.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
     "@types/react": "~19.0.10",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "typescript": "~5.8.3"
-  },
-  "overrides": {
-    "react": "19.0.0"
+    "eslint": "latest",
+    "prettier": "latest",
+    "typescript": "latest"
   }
 }

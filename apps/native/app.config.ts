@@ -20,21 +20,22 @@ const configs = ({ config }: ConfigContext) =>
     android: {
       package: 'com.yuki.native',
       adaptiveIcon: {
-        foregroundImage: './assets/images/adaptive-icon.png',
+        foregroundImage: './assets/images/icon.png',
         backgroundColor: '#ffffff',
       },
       edgeToEdgeEnabled: true,
     },
+    web: { bundler: 'metro' },
     plugins: [
       'expo-router',
       [
         'expo-splash-screen',
         {
           backgroundColor: '#ffffff',
-          image: './assets/images/splash-icon.png',
+          image: './assets/images/icon.png',
           dark: {
             backgroundColor: '#000000',
-            image: './assets/images/splash-icon.png',
+            image: './assets/images/icon.png',
           },
         },
       ],
