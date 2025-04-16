@@ -43,7 +43,7 @@ export default function ProfilePage() {
             }}
             onPress={async () => {
               const token = await signIn()
-              refresh(token)
+              await refresh(token)
             }}
           >
             <Text
