@@ -1,7 +1,7 @@
 {
   "extends": "@yuki/tsconfig/internal-package.json",
   "compilerOptions": {
-    "lib": ["DOM"]
+    "lib": ["dom"]
   },
   "include": ["src"],
   "exclude": ["node_modules"]
