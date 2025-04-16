@@ -6,11 +6,12 @@ import {
   Text,
   View,
 } from 'react-native'
-import { router } from 'expo-router'
 import { useTheme } from '@react-navigation/native'
 import { Loader2Icon } from 'lucide-react-native'
 
-import { useSession } from '@/hooks/use-session'
+import { useSession } from '@yuki/auth/react'
+
+import { signIn } from '@/lib/auth'
 import { deleteToken } from '@/lib/session'
 
 export default function ProfilePage() {
@@ -41,7 +42,8 @@ export default function ProfilePage() {
               backgroundColor: colors.primary,
             }}
             onPress={() => {
-              router.push('/login')
+              // router.push('/login')
+              void signIn('google')
             }}
           >
             <Text

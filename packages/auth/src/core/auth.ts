@@ -173,8 +173,7 @@ export class Auth<TProviders extends Providers> {
     if (redirectUri && redirectUri !== '/') {
       const redirectUrl = new URL(redirectUri, req.url)
       redirectUrl.searchParams.set('token', session.sessionToken)
-      redirectLocation =
-        redirectUrl.pathname + redirectUrl.search + redirectUrl.hash
+      redirectLocation = redirectUrl.href
     }
 
     const response = new Response('', {

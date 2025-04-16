@@ -6,7 +6,7 @@ import type { SessionResult } from './core/session'
 
 interface SessionContextValue {
   session: SessionResult
-  status: 'loading' | 'authenticated' | 'unauthenticated'
+  isLoading: boolean
   refresh: () => Promise<void>
 }
 
@@ -24,6 +24,8 @@ export function SessionProvider(
   props: Readonly<{
     children: React.ReactNode
     session?: SessionResult
+    baseUrl?: string
+    sessionToken?: string
   }>,
 ) {
   const hasInitialSession = props.session !== undefined
@@ -36,7 +38,7 @@ export function SessionProvider(
 
   React.useEffect(() => {
     if (hasInitialSession) return
-    fetchSession()
+    fetchSession(props.baseUrl, props.sessionToken)
       .then((session) => {
         setSession(session)
       })
@@ -46,28 +48,24 @@ export function SessionProvider(
       .finally(() => {
         setIsLoading(false)
       })
-  }, [hasInitialSession])
+  }, [hasInitialSession, props.baseUrl, props.sessionToken])
 
   const refresh = React.useCallback(async () => {
     setIsLoading(true)
     try {
-      const session = await fetchSession()
+      const session = await fetchSession(props.baseUrl, props.sessionToken)
       setSession(session)
     } catch (error) {
       console.error('Error refreshing session:', error)
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [props.baseUrl, props.sessionToken])
 
   const value = React.useMemo(() => {
     return {
       session,
-      status: isLoading
-        ? ('loading' as const)
-        : session.user
-          ? ('authenticated' as const)
-          : ('unauthenticated' as const),
+      isLoading,
       refresh,
     }
   }, [session, isLoading, refresh])
@@ -75,9 +73,19 @@ export function SessionProvider(
   return <SessionContext value={value}>{props.children}</SessionContext>
 }
 
-export async function fetchSession(): Promise<SessionResult> {
+export async function fetchSession(
+  baseUrl?: string,
+  sessionToken?: string,
+): Promise<SessionResult> {
   try {
-    const res = await fetch('/api/auth')
+    const res = await fetch(`${baseUrl ?? ''}/api/auth`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(sessionToken ? { Authorization: `Bearer ${sessionToken}` } : {}),
+      },
+    })
+
     if (!res.ok) throw new Error('Failed to fetch session')
     return (await res.json()) as SessionResult
   } catch (error) {

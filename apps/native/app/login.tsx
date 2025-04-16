@@ -12,7 +12,8 @@ import { useRouter } from 'expo-router'
 import { useTheme } from '@react-navigation/native'
 import { useMutation } from '@tanstack/react-query'
 
-import { useSession } from '@/hooks/use-session'
+import { useSession } from '@yuki/auth/react'
+
 import { setToken } from '@/lib/session'
 import { trpc } from '@/lib/trpc'
 import { getBaseUrl } from '@/lib/utils'
