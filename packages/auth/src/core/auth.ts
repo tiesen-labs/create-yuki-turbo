@@ -1,4 +1,3 @@
-import type { OAuth2Tokens } from 'arctic'
 import { cookies } from 'next/headers'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
 
@@ -6,27 +5,11 @@ import type { User } from '@yuki/db'
 import { db } from '@yuki/db'
 import { env } from '@yuki/env'
 
+import type { BaseProvider } from '../providers/base'
 import type { SessionResult } from './session'
 import { Session } from './session'
 
-type Providers = Record<
-  string,
-  {
-    createAuthorizationURL: (state: string, codeVerifier: string) => URL
-    validateAuthorizationCode: (
-      code: string,
-      codeVerifier: string,
-    ) => Promise<OAuth2Tokens>
-    fetchUserUrl: string
-    mapUser: (user: never) => {
-      provider: string
-      providerAccountId: string
-      providerAccountName: string
-      email: string
-      image: string
-    }
-  }
->
+type Providers = Record<string, BaseProvider>
 
 export interface AuthOptions<T extends Providers = Providers> {
   cookieKey: string
@@ -69,7 +52,7 @@ export class Auth<TProviders extends Providers> {
       if (req.method === 'OPTIONS') {
         response = Response.json('', { status: 204 })
       } else if (req.method === 'GET') {
-        response = await this.handleGetRequests(req, url)
+        response = await this.handleGetRequests(req)
       } else if (
         req.method === 'POST' &&
         url.pathname === '/api/auth/sign-out'
@@ -94,23 +77,26 @@ export class Auth<TProviders extends Providers> {
     if (token) await this.session.invalidateSessionToken(token)
   }
 
-  private async handleGetRequests(req: Request, url: URL): Promise<Response> {
+  private async handleGetRequests(req: Request): Promise<Response> {
+    const url = new URL(req.url)
+
     if (url.pathname === '/api/auth') {
       const session = await this.auth(req)
       return Response.json(session)
     }
 
     if (url.pathname.startsWith('/api/auth/oauth'))
-      return await this.handleOAuthRequest(req, url)
+      return await this.handleOAuthRequest(req)
 
     return Response.json({ error: 'Not found' }, { status: 404 })
   }
 
-  private async handleOAuthRequest(req: Request, url: URL): Promise<Response> {
+  private async handleOAuthRequest(req: Request): Promise<Response> {
+    const url = new URL(req.url)
     const isCallback = url.pathname.endsWith('/callback')
 
     if (!isCallback) return this.handleOAuthStart(url)
-    else return await this.handleOAuthCallback(req, url)
+    else return await this.handleOAuthCallback(req)
   }
 
   private handleOAuthStart(url: URL): Response {
@@ -126,6 +112,7 @@ export class Auth<TProviders extends Providers> {
       state,
       codeVerifier,
     )
+    const redirectUri = url.searchParams.get('redirect_uri') ?? '/'
 
     const response = new Response('', {
       headers: new Headers({ Location: authorizationUrl.toString() }),
@@ -147,11 +134,21 @@ export class Auth<TProviders extends Providers> {
         SameSite: 'Lax',
       }),
     )
+    response.headers.append(
+      'Set-Cookie',
+      this.setCookie('redirect_uri', redirectUri, {
+        Path: '/',
+        HttpOnly: '',
+        SameSite: 'Lax',
+        Expires: new Date(Date.now() + 60 * 1000).toUTCString(),
+      }),
+    )
 
     return response
   }
 
-  private async handleOAuthCallback(req: Request, url: URL): Promise<Response> {
+  private async handleOAuthCallback(req: Request): Promise<Response> {
+    const url = new URL(req.url)
     const providerName = String(url.pathname.split('/').slice(-2)[0])
     const provider = this.providers[providerName]
 
@@ -162,24 +159,26 @@ export class Auth<TProviders extends Providers> {
     const state = url.searchParams.get('state')
     const storedState = await this.getCookie(req, 'oauth_state')
     const codeVerifier = await this.getCookie(req, 'code_verifier')
+    const redirectUri = await this.getCookie(req, 'redirect_uri')
 
     if (!code || !state || state !== storedState)
       throw new Error('Invalid state')
 
-    const { validateAuthorizationCode, fetchUserUrl, mapUser } = provider
-    const verifiedCode = await validateAuthorizationCode(code, codeVerifier)
-    const token = verifiedCode.accessToken()
+    const userData = await provider.fetchUserData(code, codeVerifier)
 
-    const res = await fetch(fetchUserUrl, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    if (!res.ok) throw new Error('Failed to fetch user data')
-
-    const user = await this.createUser(mapUser((await res.json()) as never))
+    const user = await this.createUser({ ...userData, provider: providerName })
     const session = await this.session.createSession(user.id)
 
+    let redirectLocation = redirectUri
+    if (redirectUri && redirectUri !== '/') {
+      const redirectUrl = new URL(redirectUri, req.url)
+      redirectUrl.searchParams.set('token', session.sessionToken)
+      redirectLocation =
+        redirectUrl.pathname + redirectUrl.search + redirectUrl.hash
+    }
+
     const response = new Response('', {
-      headers: new Headers({ Location: '/' }),
+      headers: new Headers({ Location: redirectLocation }),
       status: 302,
     })
     response.headers.set(
@@ -194,6 +193,7 @@ export class Auth<TProviders extends Providers> {
     )
     response.headers.append('Set-Cookie', this.deleteCookie('oauth_state'))
     response.headers.append('Set-Cookie', this.deleteCookie('code_verifier'))
+    response.headers.append('Set-Cookie', this.deleteCookie('redirect_uri'))
 
     return response
   }
