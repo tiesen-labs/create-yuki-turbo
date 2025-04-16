@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const byIdSchema = z.object({
-  id: z.string().cuid(),
+  id: z.cuid(),
 })
 
 export const createPostSchema = z.object({
