@@ -18,7 +18,7 @@ bunx --bun create-turbo@latest -e https://github.com/tiesen243/create-yuki-turbo
 
 ## About
 
-This template is forked from [create-t3-turbo](https://github.com/t3-oss/create-t3-turbo) with some modifications to fit my personal preferences. It is a monorepos template for building full-stack applications with [Turborepo](https://turbo.build), [Next.js](https://nextjs.org), [React Router](https://reactrouter.com), [tRPC](https://trpc.io) and more.
+This template is based on [create-t3-turbo](https://github.com/t3-oss/create-t3-turbo) by @t3-oss with some modifications to fit my personal preferences.
 
 It uses [Turborepo](https://turborepo.org) and contains:
 
@@ -34,6 +34,11 @@ apps
   |   └─ E2E Typesafe API Server & Client
   ├─ react-router
   |   ├─ React Router 7
+  |   ├─ React 19
+  |   ├─ Tailwind CSS
+  |   └─ E2E Typesafe API Server & Client
+  ├─ tanstack-start (COMING SOON)
+  |   ├─ TanStack Start 1
   |   ├─ React 19
   |   ├─ Tailwind CSS
   |   └─ E2E Typesafe API Server & Client

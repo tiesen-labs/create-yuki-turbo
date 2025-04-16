@@ -32,7 +32,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.4",
     "@types/node": "22.14.1",
-    "@types/react": "~19.0.10",
+    "@types/react": "19.0.10",
     "@types/react-dom": "^19.1.2",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
