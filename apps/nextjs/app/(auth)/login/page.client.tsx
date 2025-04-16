@@ -32,7 +32,9 @@ export const LoginForm: React.FC<{ redirect_uri?: string }> = ({
     onSuccess: async (session) => {
       toast.success('You have successfully logged in!')
       await setSessionCookie(session)
-      router.push(redirect_uri ?? '/')
+      router.push(
+        redirect_uri ? `${redirect_uri}?token=${session.sessionToken}` : '/',
+      )
     },
     onError: (error) => {
       toast.error(error)

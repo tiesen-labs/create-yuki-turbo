@@ -41,8 +41,9 @@ export default function ProfilePage() {
               marginTop: 20,
               backgroundColor: colors.primary,
             }}
-            onPress={() => {
-              void signIn()
+            onPress={async () => {
+              const token = await signIn()
+              refresh(token)
             }}
           >
             <Text
@@ -101,7 +102,7 @@ export default function ProfilePage() {
         }}
         onPress={async () => {
           await deleteToken()
-          await refresh()
+          await refresh('')
         }}
       >
         <Text

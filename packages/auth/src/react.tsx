@@ -7,7 +7,7 @@ import type { SessionResult } from './core/session'
 interface SessionContextValue {
   session: SessionResult
   isLoading: boolean
-  refresh: () => Promise<void>
+  refresh: (token?: string) => Promise<void>
 }
 
 const SessionContext = React.createContext<SessionContextValue | undefined>(
@@ -50,17 +50,23 @@ export function SessionProvider(
       })
   }, [hasInitialSession, props.baseUrl, props.sessionToken])
 
-  const refresh = React.useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const session = await fetchSession(props.baseUrl, props.sessionToken)
-      setSession(session)
-    } catch (error) {
-      console.error('Error refreshing session:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [props.baseUrl, props.sessionToken])
+  const refresh = React.useCallback(
+    async (token?: string) => {
+      setIsLoading(true)
+      try {
+        const session = await fetchSession(
+          props.baseUrl,
+          token ?? props.sessionToken,
+        )
+        setSession(session)
+      } catch (error) {
+        console.error('Error refreshing session:', error)
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [props.baseUrl, props.sessionToken],
+  )
 
   const value = React.useMemo(() => {
     return {

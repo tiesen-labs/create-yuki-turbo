@@ -5,6 +5,7 @@ import {
   CardTitle,
 } from '@yuki/ui/card'
 
+import { OauthButtons } from '../_oauth-buttons'
 import { RegisterForm } from './page.client'
 
 export default function RegisterPage() {
@@ -20,6 +21,8 @@ export default function RegisterPage() {
       <CardContent>
         <RegisterForm />
       </CardContent>
+
+      <OauthButtons />
     </>
   )
 }
