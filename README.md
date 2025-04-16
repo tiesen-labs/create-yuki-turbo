@@ -32,10 +32,14 @@ apps
   |   ├─ React 19
   |   ├─ Tailwind CSS
   |   └─ E2E Typesafe API Server & Client
-  └─ react-router
-      ├─ React Router 7
+  ├─ react-router
+  |   ├─ React Router 7
+  |   ├─ React 19
+  |   ├─ Tailwind CSS
+  |   └─ E2E Typesafe API Server & Client
+  └─ native
+      ├─ Expo 53
       ├─ React 19
-      ├─ Tailwind CSS
       └─ E2E Typesafe API Server & Client
 packages
   ├─ api
