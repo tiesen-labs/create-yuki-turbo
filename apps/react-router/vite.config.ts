@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     envDir: path.resolve(__dirname, '../../'),
-    define: { 'process.env': JSON.stringify(process.env) },
+    define: { 'process.env': process.env },
     plugins: [tailwindcss(), reactRouter(), tsconfigPaths()],
   }
 })

@@ -2,10 +2,9 @@ import * as Linking from 'expo-linking'
 import * as Browser from 'expo-web-browser'
 
 import { setToken } from './session'
-import { getBaseUrl } from './utils'
 
-export const signIn = async (provider: string) => {
-  const signInUrl = `${getBaseUrl()}/api/auth/oauth/${provider}`
+export const signIn = async () => {
+  const signInUrl = `https://yuki-dev.vercel.app/login`
   const redirectTo = Linking.createURL('/login')
   const result = await Browser.openAuthSessionAsync(
     `${signInUrl}?redirect_uri=${encodeURIComponent(redirectTo)}`,

@@ -1,7 +1,6 @@
 'use server'
 
 import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
 
 import { env } from '@yuki/env'
 
@@ -18,6 +17,4 @@ export const setSessionCookie = async (session: {
     secure: env.NODE_ENV === 'production',
     expires: session.expires,
   })
-
-  redirect('/')
 }

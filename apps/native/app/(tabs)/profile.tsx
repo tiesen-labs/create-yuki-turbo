@@ -42,8 +42,7 @@ export default function ProfilePage() {
               backgroundColor: colors.primary,
             }}
             onPress={() => {
-              // router.push('/login')
-              void signIn('google')
+              void signIn()
             }}
           >
             <Text
