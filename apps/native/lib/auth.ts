@@ -2,13 +2,12 @@ import * as Linking from 'expo-linking'
 import * as Browser from 'expo-web-browser'
 
 import { deleteToken, getToken, setToken } from '@/lib/session'
-
-const BASE_URL = 'https://yuki-dev.vercel.app'
+import { getBaseUrl } from '@/lib/utils'
 
 export const signIn = async () => {
   const redirectTo = Linking.createURL('/')
   const result = await Browser.openAuthSessionAsync(
-    `${BASE_URL}/login?redirect_uri=${encodeURIComponent(redirectTo)}`,
+    `https://yuki-dev.vercel.app/login?redirect_uri=${encodeURIComponent(redirectTo)}`,
     redirectTo,
   )
 
@@ -22,12 +21,12 @@ export const signIn = async () => {
 }
 
 export const signOut = async () => {
-  await deleteToken()
-  await fetch(`${BASE_URL}/api/auth/sign-out`, {
+  await fetch(`${getBaseUrl()}/api/auth/sign-out`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${getToken()}`,
     },
   })
+  await deleteToken()
 }
