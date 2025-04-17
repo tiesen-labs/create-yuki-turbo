@@ -73,7 +73,9 @@ export class Auth<TProviders extends Providers> {
   }
 
   public async signOut(req?: Request): Promise<void> {
-    const token = await this.getCookie(req)
+    const token =
+      (await this.getCookie(req)) ||
+      req?.headers.get('Authorization')?.split(' ')[1]
     if (token) await this.session.invalidateSessionToken(token)
   }
 

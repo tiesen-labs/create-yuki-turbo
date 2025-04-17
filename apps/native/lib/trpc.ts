@@ -5,8 +5,8 @@ import SuperJSON from 'superjson'
 
 import type { AppRouter } from '@yuki/api'
 
+import { getToken } from '@/lib/session'
 import { getBaseUrl } from '@/lib/utils'
-import { getToken } from './session'
 
 const queryClient = new QueryClient({
   defaultOptions: {

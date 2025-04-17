@@ -11,8 +11,7 @@ import { Loader2Icon } from 'lucide-react-native'
 
 import { useSession } from '@yuki/auth/react'
 
-import { signIn } from '@/lib/auth'
-import { deleteToken } from '@/lib/session'
+import { signIn, signOut } from '@/lib/auth'
 
 export default function ProfilePage() {
   const { fonts, colors } = useTheme()
@@ -101,7 +100,7 @@ export default function ProfilePage() {
           marginTop: 20,
         }}
         onPress={async () => {
-          await deleteToken()
+          await signOut()
           await refresh('')
         }}
       >
