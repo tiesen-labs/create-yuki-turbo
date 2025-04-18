@@ -43,9 +43,9 @@ apps
   |   ├─ Tailwind CSS
   |   └─ E2E Typesafe API Server & Client
   └─ native
-      ├─ Expo 53
-      ├─ React 19
-      └─ E2E Typesafe API Server & Client
+      ├─ Expo 53 (EXPERIMENTAL)
+      ├─ React Native using React 19
+      └─ Typesafe API calls using tRPC
 packages
   ├─ api
   |   └─ tRPC v11 router definition
