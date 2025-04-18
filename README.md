@@ -97,7 +97,7 @@ bun db:push
 
 1. Make sure you have XCode and XCommand Line Tools installed [as shown on expo docs](https://docs.expo.dev/workflow/ios-simulator).
 
-   > **NOTE:** If you just installed XCode, or if you have updated it, you need to open the simulator manually once. Run `npx expo start` from `apps/expo`, and then enter `I` to launch Expo Go. After the manual launch, you can run `bun dev` in the root directory.
+   > **NOTE:** If you just installed XCode, or if you have updated it, you need to open the simulator manually once. Run `npx expo start` from `apps/native`, and then enter `I` to launch Expo Go. After the manual launch, you can run `bun dev` in the root directory.
 
    ```diff
    +  "dev": "expo start --ios",
@@ -121,7 +121,7 @@ bun db:push
 
 In order to get Auth to work with Expo, you must:
 
-The [./packages/auth](./packages/auth/src/core/auth.ts#L105) directory contains an OAuth proxy server. Deploy this server and set the `NEXT_PUBLIC_WEB_URL` environment variable to the proxy's URL to enable OAuth for Expo apps in both preview deployments and development environments.
+The [packages/auth](./packages/auth/src/core/auth.ts#L105) directory contains an OAuth proxy server. Deploy `nextjs` app and set the `NEXT_PUBLIC_WEB_URL` environment variable to the proxy's URL to enable OAuth for Expo apps in both preview deployments and development environments.
 
 This proxy server approach forwards authentication requests from Next.js apps to handle the OAuth flow, then redirects back to your app. The advantage is maintaining a stable, publicly accessible URL that works regardless of deployment changes or local port assignments (e.g., if your Next.js app runs on port 3001 instead of 3000, authentication still functions without reconfiguring OAuth providers).
 
@@ -153,11 +153,11 @@ This will update all the dependencies in the monorepos to the latest version.
 
 ## Deployment
 
-### Next.js
+### Web
 
 Let's deploy the Next.js application to [Vercel](https://vercel.com). If you've never deployed a Turborepo app there, don't worry, the steps are quite straightforward. You can also read the [official Turborepo guide](https://vercel.com/docs/concepts/monorepos/turborepo) on deploying to Vercel.
 
-1. Create a new project on Vercel, select the `apps/nextjs` or `apps/react-router` folder as the root directory. Vercel's zero-config system should handle all configurations for you.
+1. Create a new project on Vercel, select the `apps/nextjs` or `apps/react-router` or `apps/tanstack-start` folder as the root directory. Vercel's zero-config system should handle all configurations for you.
 
 2. Add your environment variable. See `.env.example` for required variables.
 
