@@ -91,7 +91,41 @@ cp .env.example .env
 bun db:push
 ```
 
-### 2a. When it's time to add a new UI component
+### 2. Configure Expo `dev`-script
+
+#### Use iOS Simulator
+
+1. Make sure you have XCode and XCommand Line Tools installed [as shown on expo docs](https://docs.expo.dev/workflow/ios-simulator).
+
+   > **NOTE:** If you just installed XCode, or if you have updated it, you need to open the simulator manually once. Run `npx expo start` from `apps/expo`, and then enter `I` to launch Expo Go. After the manual launch, you can run `pnpm dev` in the root directory.
+
+   ```diff
+   +  "dev:ios": "expo start --ios",
+   ```
+
+2. Run `pnpm dev` at the project root folder.
+
+#### Use Android Emulator
+
+1. Install Android Studio tools [as shown on expo docs](https://docs.expo.dev/workflow/android-studio-emulator).
+
+2. Change the `dev` script at `apps/expo/package.json` to open the Android emulator.
+
+   ```diff
+   +  "dev:android": "expo start --android",
+   ```
+
+3. Run `pnpm dev` at the project root folder.
+
+### 3. Configuring Auth to work with Expo
+
+In order to get Auth to work with Expo, you must:
+
+The [./packages/auth](./packages/auth/src/core/auth.ts#L105) directory contains an OAuth proxy server. Deploy this server and set the `NEXT_PUBLIC_WEB_URL` environment variable to the proxy's URL to enable OAuth for Expo apps in both preview deployments and development environments.
+
+This proxy server approach forwards authentication requests from Next.js apps to handle the OAuth flow, then redirects back to your app. The advantage is maintaining a stable, publicly accessible URL that works regardless of deployment changes or local port assignments (e.g., if your Next.js app runs on port 3001 instead of 3000, authentication still functions without reconfiguring OAuth providers).
+
+### 4a. When it's time to add a new UI component
 
 Run the `ui-add` script to add a new UI component using the interactive `shadcn/ui` CLI:
 
@@ -101,13 +135,13 @@ bun ui-add
 
 When the component(s) has been installed, you should be good to go and start using it in your app.
 
-### 2b. When it's time to add a new package
+### 4b. When it's time to add a new package
 
 To add a new package, simply run `bun turbo gen init` in the monorepo root. This will prompt you for a package name as well as if you want to install any dependencies to the new package (of course you can also do this yourself later).
 
 The generator sets up the `package.json`, `tsconfig.json` and a `index.ts`, as well as configures all the necessary configurations for tooling around your package such as formatting, linting and typechecking. When the package is created, you're ready to go build out the package.
 
-### 2c. When it's time to update the dependencies
+### 4c. When it's time to update the dependencies
 
 To update the dependencies, run the following command:
 
