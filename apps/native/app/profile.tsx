@@ -1,7 +1,7 @@
 import {
   Image,
   Pressable,
-  ScrollView,
+  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -13,21 +13,21 @@ import { useSession } from '@yuki/auth/react'
 
 import { signIn, signOut } from '@/lib/auth'
 
-export default function ProfilePage() {
+export default function ProfileScreen() {
   const { fonts, colors } = useTheme()
   const { session, isLoading, refresh } = useSession()
 
   if (isLoading) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Loader2Icon size={32} color="#78a9ff" />
-      </View>
+      </SafeAreaView>
     )
   }
 
   if (!session.user) {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={{ ...fonts.bold, color: colors.text }}>
           No session found
         </Text>
@@ -55,12 +55,12 @@ export default function ProfilePage() {
             </Text>
           </Pressable>
         </View>
-      </View>
+      </SafeAreaView>
     )
   }
 
   return (
-    <ScrollView style={styles.scrollContainer}>
+    <SafeAreaView style={styles.scrollContainer}>
       <View style={styles.coverContainer}>
         <View
           style={{ ...styles.coverImage, backgroundColor: colors.primary }}
@@ -113,7 +113,7 @@ export default function ProfilePage() {
           Sign out
         </Text>
       </Pressable>
-    </ScrollView>
+    </SafeAreaView>
   )
 }
 const styles = StyleSheet.create({

@@ -33,7 +33,9 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   clientPrefix: 'NEXT_PUBLIC_',
-  client: {},
+  client: {
+    NEXT_PUBLIC_WEB_URL: z.string().optional(),
+  },
 
   /**
    * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
@@ -51,6 +53,7 @@ export const env = createEnv({
     VERCEL_ENV: process.env.VERCEL_ENV,
     VERCEL_URL: process.env.VERCEL_URL,
     VERCEL_PROJECT_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL,
+    NEXT_PUBLIC_WEB_URL: process.env.NEXT_PUBLIC_WEB_URL,
   },
 
   /**

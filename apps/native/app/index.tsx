@@ -28,14 +28,9 @@ import type { RouterOutputs } from '@yuki/api'
 
 import { trpc } from '@/lib/trpc'
 
-export default function HomePage() {
-  const { fonts, colors } = useTheme()
-
+export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{ ...styles.title, ...fonts.heavy, color: colors.text }}>
-        Create <Text style={{ color: '#78a9ff' }}>Yuki</Text> Turbo
-      </Text>
       <CreatePost />
       <PostList />
     </SafeAreaView>
@@ -361,7 +356,6 @@ const CreatePost: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 40,
     padding: 16,
   },
   title: {

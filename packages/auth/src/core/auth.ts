@@ -102,6 +102,16 @@ export class Auth<TProviders extends Providers> {
   }
 
   private handleOAuthStart(url: URL): Response {
+    const redirectUri = url.searchParams.get('redirect_uri') ?? '/'
+    if (redirectUri.startsWith('http://') && env.NEXT_PUBLIC_WEB_URL) {
+      const redirectUrl = new URL(env.NEXT_PUBLIC_WEB_URL)
+      redirectUrl.searchParams.set('redirect_uri', redirectUri)
+      return new Response('', {
+        headers: new Headers({ Location: redirectUrl.href }),
+        status: 302,
+      })
+    }
+
     const providerName = String(url.pathname.split('/').pop())
     const provider = this.providers[providerName]
 
@@ -114,7 +124,6 @@ export class Auth<TProviders extends Providers> {
       state,
       codeVerifier,
     )
-    const redirectUri = url.searchParams.get('redirect_uri') ?? '/'
 
     const response = new Response('', {
       headers: new Headers({ Location: authorizationUrl.toString() }),

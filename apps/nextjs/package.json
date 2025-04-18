@@ -15,7 +15,7 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@tanstack/react-query": "^5.74.3",
+    "@tanstack/react-query": "^5.74.4",
     "@trpc/client": "^11.1.0",
     "@trpc/tanstack-react-query": "^11.1.0",
     "@yuki/api": "workspace:*",
@@ -24,7 +24,7 @@
     "@yuki/env": "workspace:*",
     "@yuki/ui": "workspace:*",
     "@yuki/validators": "workspace:*",
-    "next": "15.3.0",
+    "next": "15.3.1",
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "superjson": "^2.2.2"

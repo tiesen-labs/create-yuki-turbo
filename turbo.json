@@ -58,6 +58,7 @@
     "DISCORD_CLIENT_SECRET",
     "GOOGLE_CLIENT_ID",
     "GOOGLE_CLIENT_SECRET",
+    "NEXT_PUBLIC_WEB_URL",
     "PORT"
   ],
   "globalPassThroughEnv": [
