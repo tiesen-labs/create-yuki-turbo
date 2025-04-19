@@ -2,7 +2,6 @@ import { Suspense } from 'react'
 import { Link } from 'react-router'
 
 import { auth } from '@yuki/auth'
-import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
 
@@ -13,17 +12,14 @@ import { prefetch, trpc } from '@/lib/trpc/server'
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   prefetch(trpc(request.headers).post.all.queryOptions())
-  const session = await auth(request)
 
+  const session = await auth(request)
   return { session }
 }
 
 export default function HomePage({
   loaderData: { session },
 }: Route.ComponentProps) {
-  const d = useSession()
-  console.log(d)
-
   return (
     <HydrateClient>
       <main className="container max-w-2xl py-4">

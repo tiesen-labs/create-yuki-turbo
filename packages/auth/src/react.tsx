@@ -55,11 +55,12 @@ export function SessionProvider(
   }, [])
 
   const value = React.useMemo(
-    () => ({
-      session,
-      isLoading,
-      signOut,
-    }),
+    () =>
+      ({
+        session,
+        isLoading,
+        signOut,
+      }) satisfies SessionContextValue,
     [session, isLoading, signOut],
   )
 
