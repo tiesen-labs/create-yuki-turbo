@@ -9,13 +9,11 @@ import {
 import { useTheme } from '@react-navigation/native'
 import { Loader2Icon } from 'lucide-react-native'
 
-import { useSession } from '@yuki/auth/react'
-
-import { signIn, signOut } from '@/lib/auth'
+import { useSession } from '@/hooks/use-session'
 
 export default function ProfileScreen() {
   const { fonts, colors } = useTheme()
-  const { session, isLoading, refresh } = useSession()
+  const { session, isLoading, signIn, signOut } = useSession()
 
   if (isLoading) {
     return (
@@ -40,10 +38,7 @@ export default function ProfileScreen() {
               marginTop: 20,
               backgroundColor: colors.primary,
             }}
-            onPress={async () => {
-              const token = await signIn()
-              await refresh(token)
-            }}
+            onPress={signIn}
           >
             <Text
               style={{
@@ -99,10 +94,7 @@ export default function ProfileScreen() {
           backgroundColor: colors.card,
           marginTop: 20,
         }}
-        onPress={async () => {
-          await signOut()
-          await refresh('')
-        }}
+        onPress={signOut}
       >
         <Text
           style={{

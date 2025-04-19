@@ -82,7 +82,7 @@ export class Auth<TProviders extends Providers> {
   private async handleGetRequests(req: Request): Promise<Response> {
     const url = new URL(req.url)
 
-    if (url.pathname === '/api/auth') {
+    if (url.pathname === '/api/auth' || url.pathname === '/api/auth/') {
       const session = await this.auth(req)
       return Response.json(session)
     }
@@ -103,8 +103,9 @@ export class Auth<TProviders extends Providers> {
 
   private handleOAuthStart(url: URL): Response {
     const redirectUri = url.searchParams.get('redirect_uri') ?? '/'
-    if (redirectUri.startsWith('http://') && env.NEXT_PUBLIC_WEB_URL) {
-      const redirectUrl = new URL(env.NEXT_PUBLIC_WEB_URL)
+
+    if (redirectUri.startsWith('exp://') && env.NEXT_PUBLIC_WEB_URL) {
+      const redirectUrl = new URL(`https://${env.NEXT_PUBLIC_WEB_URL}`)
       redirectUrl.searchParams.set('redirect_uri', redirectUri)
       return new Response('', {
         headers: new Headers({ Location: redirectUrl.href }),

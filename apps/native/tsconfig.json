@@ -2,7 +2,6 @@
   "extends": "@yuki/tsconfig/base.json",
   "compilerOptions": {
     "jsx": "react-native",
-    "lib": ["dom"],
     "checkJs": true,
     "moduleSuffixes": [".ios", ".android", ".native", ""],
     "baseUrl": ".",

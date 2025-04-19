@@ -25,7 +25,7 @@ export const getCallbackUrl = (provider: string) => {
     : env.VERCEL_URL
       ? `https://${env.VERCEL_URL}`
       : // eslint-disable-next-line no-restricted-properties
-        `http://localhost:${process.env.PORT ?? 3000}`
+        `http://localhost:${process.env.PORT ?? 5173}`
 
   return `${baseUrl}/api/auth/oauth/${provider}/callback`
 }
