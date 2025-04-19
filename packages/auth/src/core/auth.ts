@@ -33,7 +33,7 @@ export class Auth<TProviders extends Providers> {
 
   public async auth(req?: Request): Promise<SessionResult> {
     const authToken =
-      (await this.getCookie(req)) ||
+      (await this.getCookie(req)) ??
       req?.headers.get('Authorization')?.split(' ')[1]
 
     if (!authToken) return { expires: new Date() }
@@ -74,7 +74,7 @@ export class Auth<TProviders extends Providers> {
 
   public async signOut(req?: Request): Promise<void> {
     const token =
-      (await this.getCookie(req)) ||
+      (await this.getCookie(req)) ??
       req?.headers.get('Authorization')?.split(' ')[1]
     if (token) await this.session.invalidateSessionToken(token)
   }
@@ -158,7 +158,6 @@ export class Auth<TProviders extends Providers> {
         Path: '/',
         HttpOnly: '',
         SameSite: 'Lax',
-        Expires: new Date(Date.now() + 60 * 1000).toUTCString(),
       }),
     )
 
@@ -175,9 +174,9 @@ export class Auth<TProviders extends Providers> {
 
     const code = url.searchParams.get('code')
     const state = url.searchParams.get('state')
-    const storedState = await this.getCookie(req, 'oauth_state')
-    const codeVerifier = await this.getCookie(req, 'code_verifier')
-    const redirectUri = await this.getCookie(req, 'redirect_uri')
+    const storedState = (await this.getCookie(req, 'oauth_state')) ?? ''
+    const codeVerifier = (await this.getCookie(req, 'code_verifier')) ?? ''
+    const redirectUri = (await this.getCookie(req, 'redirect_uri')) ?? '/'
 
     if (!code || !state || state !== storedState)
       throw new Error('Invalid state')
@@ -274,14 +273,10 @@ export class Auth<TProviders extends Providers> {
   private async getCookie(
     req?: Request,
     key: string = this.COOKIE_KEY,
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     if (req)
-      return (
-        req.headers.get('cookie')?.match(new RegExp(`${key}=([^;]+)`))?.[1] ??
-        ''
-      )
-
-    return (await cookies()).get(key)?.value ?? ''
+      return req.headers.get('cookie')?.match(new RegExp(`${key}=([^;]+)`))?.[1]
+    return (await cookies()).get(key)?.value
   }
 
   private setCookie(
