@@ -8,7 +8,6 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "bun db:generate",
     "clean": "git clean -xdf .cache .turbo dist generated node_modules",
     "db:deploy": "bun with-env prisma migrate deploy",
     "db:generate": "bun with-env prisma generate",
