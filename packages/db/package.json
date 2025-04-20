@@ -5,22 +5,17 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": {
-      "type": "./dist/index.d.ts",
-      "default": "./src/index.ts"
-    }
+    ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "bun gnr && tsc",
+    "build": "bun gnr",
     "clean": "git clean -xdf .cache .turbo dist generated node_modules",
-    "dev": "tsc --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "gnr": "bun with-env prisma generate",
     "lint": "eslint",
     "migrate": "bun with-env prisma migrate dev --skip-generate",
     "push": "bun with-env prisma db push",
     "studio": "bun with-env prisma studio -b none",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@yuki/prettier-config",

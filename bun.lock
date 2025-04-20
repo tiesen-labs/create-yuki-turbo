@@ -187,7 +187,6 @@
       "name": "@yuki/env",
       "version": "1.0.0",
       "dependencies": {
-        "@standard-schema/spec": "^1.0.0",
         "@t3-oss/env-core": "^0.12.0",
         "zod": "^4.0.0-beta.20250415T232143",
       },
