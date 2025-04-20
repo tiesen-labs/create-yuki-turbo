@@ -1,13 +1,19 @@
 import { Google } from 'arctic'
 
-import { BaseProvider, getCallbackUrl } from './base'
+import { env } from '@yuki/env'
+
+import { BaseProvider } from './base'
 
 export class GoogleProvider extends BaseProvider {
   protected provider: Google
 
-  constructor(clientId: string, clientSecret: string) {
+  constructor() {
     super()
-    this.provider = new Google(clientId, clientSecret, getCallbackUrl('google'))
+    this.provider = new Google(
+      env.GOOGLE_CLIENT_ID,
+      env.GOOGLE_CLIENT_SECRET,
+      this.getCallbackUrl('google'),
+    )
   }
 
   public createAuthorizationURL(state: string, codeVerifier: string | null) {

@@ -84,11 +84,17 @@ export class Auth<TProviders extends Providers> {
 
     if (url.pathname === '/api/auth' || url.pathname === '/api/auth/') {
       const session = await this.auth(req)
+      if (session.user) session.user.password = undefined as unknown as null
       return Response.json(session)
     }
 
-    if (url.pathname.startsWith('/api/auth/oauth'))
+    if (
+      url.pathname.startsWith('/api/auth/') &&
+      url.pathname !== '/api/auth' &&
+      url.pathname !== '/api/auth/'
+    ) {
       return await this.handleOAuthRequest(req)
+    }
 
     return Response.json({ error: 'Not found' }, { status: 404 })
   }
@@ -98,7 +104,7 @@ export class Auth<TProviders extends Providers> {
     const isCallback = url.pathname.endsWith('/callback')
 
     if (!isCallback) return this.handleOAuthStart(url)
-    else return await this.handleOAuthCallback(req)
+    else return this.handleOAuthCallback(req)
   }
 
   private handleOAuthStart(url: URL): Response {

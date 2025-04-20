@@ -17,15 +17,14 @@ export abstract class BaseProvider {
     email: string
     image: string
   }>
-}
 
-export const getCallbackUrl = (provider: string) => {
-  const baseUrl = env.VERCEL_PROJECT_PRODUCTION_URL
-    ? `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`
-    : env.VERCEL_URL
-      ? `https://${env.VERCEL_URL}`
-      : // eslint-disable-next-line no-restricted-properties
-        `http://localhost:${process.env.PORT ?? 5173}`
-
-  return `${baseUrl}/api/auth/oauth/${provider}/callback`
+  protected getCallbackUrl(provider: string) {
+    const baseUrl = env.VERCEL_PROJECT_PRODUCTION_URL
+      ? `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`
+      : env.VERCEL_URL
+        ? `https://${env.VERCEL_URL}`
+        : // eslint-disable-next-line no-restricted-properties
+          `http://localhost:${process.env.PORT ?? 5173}`
+    return `${baseUrl}/api/auth/${provider}/callback`
+  }
 }

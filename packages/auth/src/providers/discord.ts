@@ -1,16 +1,18 @@
 import { Discord } from 'arctic'
 
-import { BaseProvider, getCallbackUrl } from './base'
+import { env } from '@yuki/env'
+
+import { BaseProvider } from './base'
 
 export class DiscordProvider extends BaseProvider {
   protected provider: Discord
 
-  constructor(clientId: string, clientSecret: string) {
+  constructor() {
     super()
     this.provider = new Discord(
-      clientId,
-      clientSecret,
-      getCallbackUrl('discord'),
+      env.DISCORD_CLIENT_ID,
+      env.DISCORD_CLIENT_SECRET,
+      this.getCallbackUrl('discord'),
     )
   }
 

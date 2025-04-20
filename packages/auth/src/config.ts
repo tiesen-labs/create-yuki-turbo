@@ -1,7 +1,5 @@
 'use server'
 
-import { env } from '@yuki/env'
-
 import type { AuthOptions } from './core/auth'
 import { Auth } from './core/auth'
 import { DiscordProvider } from './providers/discord'
@@ -10,11 +8,19 @@ import { GoogleProvider } from './providers/google'
 const authOptions = {
   cookieKey: 'auth_token',
   providers: {
-    discord: new DiscordProvider(
-      env.DISCORD_CLIENT_ID,
-      env.DISCORD_CLIENT_SECRET,
-    ),
-    google: new GoogleProvider(env.GOOGLE_CLIENT_ID, env.GOOGLE_CLIENT_SECRET),
+    /**
+     * OAuth2 provider configuration
+     *
+     * Requirements:
+     * - Each provider requires CLIENT_ID and CLIENT_SECRET environment variables
+     *   (e.g., DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET)
+     *
+     * Callback URL:
+     * - Set the callback URL for each provider to: {{ BASE_URL }}/api/auth/:provider/callback
+     *   (e.g., https://yourdomain.com/api/auth/discord/callback)
+     */
+    discord: new DiscordProvider(),
+    google: new GoogleProvider(),
   },
 } satisfies AuthOptions
 
