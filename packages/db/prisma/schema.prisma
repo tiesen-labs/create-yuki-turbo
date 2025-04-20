@@ -6,10 +6,7 @@ generator client {
   previewFeatures = ["prismaSchemaFolder", "driverAdapters"]
   output          = "../src/generated"
 
-  runtime                = "bun"
-  moduleFormat           = "esm"
-  generatedFileExtension = "ts"
-  importFileExtension    = "ts"
+  importFileExtension = "ts"
 }
 
 datasource db {

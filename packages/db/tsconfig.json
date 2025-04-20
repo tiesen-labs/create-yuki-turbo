@@ -1,8 +1,6 @@
 {
   "extends": "@yuki/tsconfig/internal-package.json",
-  "compilerOptions": {
-    "allowImportingTsExtensions": true
-  },
-  "include": ["src"],
+  "compilerOptions": {},
+  "include": ["src", "prisma.config.ts"],
   "exclude": ["node_modules"]
 }
