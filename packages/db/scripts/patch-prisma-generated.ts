@@ -17,6 +17,7 @@ const regex = /(from\s+['"])([^'"]+\.ts)(['"])/g
 const updatedIndexContent = indexContent.replace(
   regex,
   (_match, prefix, importPath, suffix) =>
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     `${prefix}${importPath.replace(/\.ts$/, '')}${suffix}`,
 )
 
