@@ -24,7 +24,6 @@
     "@prisma/client": "^6.6.0"
   },
   "devDependencies": {
-    "@types/ws": "^8.18.1",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
