@@ -220,7 +220,7 @@
         "eslint": "latest",
         "prettier": "latest",
         "tailwindcss": "^4.1.4",
-        "tw-animate-css": "^1.2.5",
+        "tw-animate-css": "^1.2.6",
         "typescript": "latest",
       },
     },
@@ -2446,7 +2446,7 @@
 
     "turbo-windows-arm64": ["turbo-windows-arm64@2.5.0", "", { "os": "win32", "cpu": "arm64" }, "sha512-OUHCV+ueXa3UzfZ4co/ueIHgeq9B2K48pZwIxKSm5VaLVuv8M13MhM7unukW09g++dpdrrE1w4IOVgxKZ0/exg=="],
 
-    "tw-animate-css": ["tw-animate-css@1.2.5", "", {}, "sha512-ABzjfgVo+fDbhRREGL4KQZUqqdPgvc5zVrLyeW9/6mVqvaDepXc7EvedA+pYmMnIOsUAQMwcWzNvom26J2qYvQ=="],
+    "tw-animate-css": ["tw-animate-css@1.2.6", "", {}, "sha512-/DSl24Y1WNdtEWA187h3M5ixwvucje2DH2/Qi8N1plNn0Mb0O1E6F9trXknwzZbtVJCdnogaWLt45xQZOrKtpw=="],
 
     "type-check": ["type-check@0.4.0", "", { "dependencies": { "prelude-ls": "^1.2.1" } }, "sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew=="],
 
