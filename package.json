@@ -24,7 +24,7 @@
     "postinstall": "bun lint:ws",
     "lint": "turbo run lint --continue -- --cache --cache-location .cache/.eslintcache",
     "lint:fix": "turbo run lint --continue -- --fix --cache --cache-location .cache/.eslintcache",
-    "lint:ws": "bunx --bun sherif@latest",
+    "lint:ws": "bun x --bun sherif@latest",
     "typecheck": "turbo run typecheck",
     "ui-add": "turbo run ui-add"
   },
@@ -37,7 +37,7 @@
   },
   "packageManager": "bun@1.2.10",
   "engines": {
-    "bun": ">=1.2.9",
+    "bun": ">=1.2.10",
     "node": ">=22.14.0"
   }
 }

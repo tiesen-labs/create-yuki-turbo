@@ -11,39 +11,33 @@ const configs = ({ config }: ConfigContext) =>
     icon: './assets/images/icon.png',
     userInterfaceStyle: 'automatic',
     updates: { fallbackToCacheTimeout: 0 },
-    assetBundlePatterns: ['assets/**/*'],
-    newArchEnabled: true,
+    assetBundlePatterns: ['**/*'],
     ios: {
-      bundleIdentifier: 'com.yuki.native',
+      bundleIdentifier: 'com.yuki.nativeapp',
       supportsTablet: true,
+      icon: './assets/images/icon.png',
     },
     android: {
-      package: 'com.yuki.native',
+      package: 'com.yuki.nativeapp',
       adaptiveIcon: {
         foregroundImage: './assets/images/icon.png',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#0a0a0a',
       },
-      edgeToEdgeEnabled: true,
     },
-    web: { bundler: 'metro' },
-    plugins: [
-      'expo-router',
-      [
-        'expo-splash-screen',
-        {
-          backgroundColor: '#ffffff',
-          image: './assets/images/icon.png',
-          dark: {
-            backgroundColor: '#000000',
-            image: './assets/images/icon.png',
-          },
-        },
-      ],
-    ],
+    // extra: { eas: { projectId: 'your-project-id' } },
     experiments: {
       tsconfigPaths: true,
       typedRoutes: true,
     },
+    plugins: [
+      'expo-router',
+      'expo-secure-store',
+      'expo-web-browser',
+      [
+        'expo-splash-screen',
+        { backgroundColor: '#0a0a0a', image: './assets/images/icon.png' },
+      ],
+    ],
   }) satisfies ExpoConfig
 
 export default configs

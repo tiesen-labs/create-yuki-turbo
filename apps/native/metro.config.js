@@ -1,6 +1,6 @@
 const { getDefaultConfig } = require('expo/metro-config')
 const { FileStore } = require('metro-cache')
-const path = require('path')
+const path = require('node:path')
 
 // Find the project and workspace directories
 const projectRoot = __dirname

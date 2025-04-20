@@ -17,12 +17,8 @@ export const getBaseUrl = () => {
   const localhost = debuggerHost?.split(':')[0]
 
   if (!localhost) {
-    if (process.env.NEXT_PUBLIC_WEB_URL)
-      return `https://${process.env.NEXT_PUBLIC_WEB_URL}`
-    else
-      throw new Error(
-        'Unable to find localhost. Please set the NEXT_PUBLIC_WEB_URL environment variable.',
-      )
+    return 'https://yuki-dev.vercel.app'
   }
+
   return `http://${localhost}:3000`
 }
