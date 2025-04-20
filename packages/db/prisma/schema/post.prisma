@@ -1,8 +1,7 @@
 model Post {
-  id        String  @id @default(cuid())
-  title     String
-  content   String
-  published Boolean @default(false)
+  id      String @id @default(cuid())
+  title   String
+  content String
 
   author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId String
