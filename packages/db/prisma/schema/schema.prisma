@@ -1,9 +1,11 @@
 generator client {
   provider        = "prisma-client"
   previewFeatures = ["prismaSchemaFolder", "driverAdapters"]
-  output          = "../generated"
-  moduleFormat    = "esm"
   binaryTargets   = ["native", "rhel-openssl-3.0.x"]
+
+  output              = "../generated"
+  moduleFormat        = "esm"
+  importFileExtension = ""
 }
 
 datasource db {
