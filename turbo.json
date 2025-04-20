@@ -3,7 +3,6 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
       "outputs": [".cache/tsbuildinfo.json", "dist/**"]
     },
     "clean": {
@@ -13,38 +12,40 @@
       "cache": false
     },
     "dev": {
-      "dependsOn": ["^dev"],
       "cache": false,
       "persistent": false
     },
     "format": {
-      "dependsOn": ["^format"],
       "outputs": [".cache/.prettiercache"],
       "outputLogs": "new-only"
     },
     "lint": {
-      "dependsOn": ["^gnr", "^lint"],
+      "dependsOn": ["^lint", "^db:generate"],
       "outputs": [".cache/.eslintcache"],
       "outputLogs": "new-only"
     },
     "typecheck": {
-      "dependsOn": ["^gnr", "^typecheck"],
+      "dependsOn": ["^typecheck", "^db:generate"],
       "outputs": [".cache/tsbuildinfo.json"],
       "outputLogs": "new-only"
     },
-    "gnr": {
+    "db:deploy": {
       "cache": false
     },
-    "migrate": {
-      "cache": false,
-      "interactive": true
-    },
-    "push": {
-      "cache": false,
-      "interactive": true
-    },
-    "studio": {
+    "db:generate": {
       "cache": false
+    },
+    "db:migrate": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:push": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:studio": {
+      "cache": false,
+      "persistent": true
     },
     "ui-add": {
       "cache": false,

@@ -8,16 +8,15 @@
     ".": "./src/index.ts"
   },
   "scripts": {
-    "build": "bun gnr",
+    "build": "bun db:generate",
     "clean": "git clean -xdf .cache .turbo dist generated node_modules",
-    "dev": "",
+    "db:deploy": "bun with-env prisma migrate deploy",
+    "db:generate": "bun with-env prisma generate",
+    "db:migrate": "bun with-env prisma migrate dev --skip-generate",
+    "db:push": "bun with-env prisma db push",
+    "db:studio": "bun with-env prisma studio -b none",
     "format": "prettier --check . --ignore-path ../../.gitignore",
-    "gnr": "bun with-env prisma generate",
     "lint": "eslint",
-    "migrate": "bun with-env prisma migrate dev --skip-generate",
-    "push": "bun with-env prisma db push",
-    "studio": "bun with-env prisma studio -b none",
-    "typecheck": "",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@yuki/prettier-config",

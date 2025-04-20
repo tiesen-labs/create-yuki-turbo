@@ -4,12 +4,9 @@
 generator client {
   provider        = "prisma-client"
   previewFeatures = ["prismaSchemaFolder", "driverAdapters"]
-  output          = "../src/generated/client"
+  output          = "../generated/prisma"
 
-  runtime                = "nodejs"
-  moduleFormat           = "esm"
-  generatedFileExtension = "ts"
-  importFileExtension    = ""
+  importFileExtension = ""
 }
 
 datasource db {
