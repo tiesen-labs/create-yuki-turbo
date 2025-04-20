@@ -12,7 +12,7 @@
     "clean": "git clean -xdf .cache .turbo dist generated node_modules",
     "dev": "",
     "format": "prettier --check . --ignore-path ../../.gitignore",
-    "gnr": "bun with-env prisma generate && bun scripts/patch-prisma-generated.ts",
+    "gnr": "bun with-env prisma generate",
     "lint": "eslint",
     "migrate": "bun with-env prisma migrate dev --skip-generate",
     "push": "bun with-env prisma db push",
