@@ -1,11 +1,8 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider            = "prisma-client"
-  previewFeatures     = ["prismaSchemaFolder", "driverAdapters"]
-  output              = "../generated/prisma"
-  importFileExtension = ""
+  provider        = "prisma-client"
+  previewFeatures = ["prismaSchemaFolder", "driverAdapters"]
+  output          = "../generated"
+  moduleFormat    = "esm"
 }
 
 datasource db {
