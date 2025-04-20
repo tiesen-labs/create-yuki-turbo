@@ -16,6 +16,7 @@
     "migrate": "bun with-env prisma migrate dev --skip-generate",
     "push": "bun with-env prisma db push",
     "studio": "bun with-env prisma studio -b none",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@yuki/prettier-config",
