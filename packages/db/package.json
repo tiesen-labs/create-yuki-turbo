@@ -5,11 +5,15 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./src/index.ts"
+    }
   },
   "scripts": {
-    "build": "bun gnr",
+    "build": "bun gnr && tsc",
     "clean": "git clean -xdf .cache .turbo dist generated node_modules",
+    "dev": "tsc",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "gnr": "bun with-env prisma generate",
     "lint": "eslint",
