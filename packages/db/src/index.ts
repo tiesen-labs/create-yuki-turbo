@@ -1,5 +1,6 @@
 import { PrismaNeon } from '@prisma/adapter-neon'
-import { PrismaClient } from '@prisma/client'
+
+import { PrismaClient } from '../prisma/generated/client'
 
 const createPrismaClient = () =>
   new PrismaClient({
@@ -17,4 +18,4 @@ const globalForPrisma = globalThis as unknown as {
 export const db = globalForPrisma.prisma ?? createPrismaClient()
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = db
 
-export * from '@prisma/client'
+export * from '../prisma/generated/client'
