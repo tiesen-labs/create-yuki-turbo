@@ -2,8 +2,11 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider        = "prisma-client-js"
+  provider        = "prisma-client"
   previewFeatures = ["prismaSchemaFolder", "driverAdapters"]
+  output          = "../generated/client"
+
+  importFileExtension = "ts"
 }
 
 datasource db {
