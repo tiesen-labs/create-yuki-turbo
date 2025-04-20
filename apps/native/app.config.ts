@@ -12,6 +12,7 @@ const configs = ({ config }: ConfigContext) =>
     userInterfaceStyle: 'automatic',
     updates: { fallbackToCacheTimeout: 0 },
     assetBundlePatterns: ['**/*'],
+    newArchEnabled: true,
     ios: {
       bundleIdentifier: 'com.yuki.nativeapp',
       supportsTablet: true,
