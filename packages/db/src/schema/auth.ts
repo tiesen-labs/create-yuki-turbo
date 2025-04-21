@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm'
-import { pgTable, primaryKey } from 'drizzle-orm/pg-core'
+import { pgTable, primaryKey, uniqueIndex } from 'drizzle-orm/pg-core'
 
 import { Post } from './post'
 
@@ -8,7 +8,7 @@ export const User = pgTable(
   (t) => ({
     id: t.uuid().notNull().defaultRandom(),
     name: t.varchar({ length: 255 }).notNull(),
-    email: t.varchar({ length: 255 }).notNull().unique(),
+    email: t.varchar({ length: 255 }).notNull(),
     password: t.varchar({ length: 255 }),
     image: t.varchar({ length: 255 }).notNull(),
     createdAt: t.timestamp().defaultNow().notNull(),
@@ -16,7 +16,10 @@ export const User = pgTable(
       .timestamp({ mode: 'date', withTimezone: true })
       .$onUpdateFn(() => new Date()),
   }),
-  (table) => [primaryKey({ name: 'User_pkey', columns: [table.id] })],
+  (table) => [
+    primaryKey({ name: 'User_pkey', columns: [table.id] }),
+    uniqueIndex('User_email_unique').on(table.email),
+  ],
 )
 
 export const userRelations = relations(User, ({ many }) => ({
@@ -50,7 +53,7 @@ export const accountRelations = relations(Account, ({ one }) => ({
 export const Session = pgTable(
   'Session',
   (t) => ({
-    sessionToken: t.varchar({ length: 255 }).notNull().primaryKey(),
+    sessionToken: t.varchar({ length: 255 }).notNull(),
     expires: t.timestamp({ mode: 'date', withTimezone: true }).notNull(),
     userId: t
       .uuid()
