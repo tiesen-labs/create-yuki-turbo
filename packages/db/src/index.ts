@@ -10,6 +10,11 @@ export const schema = {
   ...post,
 }
 
-export const db = drizzle(env.DATABASE_URL, { schema })
+const createDrizzleClient = () => drizzle(env.DATABASE_URL, { schema })
+const globalForDrizzle = globalThis as unknown as {
+  db: ReturnType<typeof createDrizzleClient> | undefined
+}
+export const db = globalForDrizzle.db ?? createDrizzleClient()
+if (env.NODE_ENV !== 'production') globalForDrizzle.db = db
 
 export * from 'drizzle-orm/sql'
