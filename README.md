@@ -52,7 +52,7 @@ packages
   ├─ auth
   |   └─ Authentication from scratch using arctic for OAuth.
   ├─ db
-  |   └─ Typesafe db calls using Prisma & Neon
+  |   └─ Typesafe db calls using Drizzle ORM
   ├─ env
   |   └─ Typesafe environment variables
   ├─ ui

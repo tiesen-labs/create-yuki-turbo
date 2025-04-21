@@ -8,5 +8,4 @@ export default {
   schema: './src/schema',
   dialect: 'postgresql',
   dbCredentials: { url: nonPoolingUrl },
-  casing: 'camelCase',
 } satisfies Config
