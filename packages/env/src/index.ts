@@ -16,7 +16,10 @@ export const env = createEnv({
     DATABASE_URL: z.string(),
 
     // Auth
+    AUTH_PROXY_URL: z.string().optional(),
     AUTH_SECRET: z.string(),
+
+    // OAuth providers
     DISCORD_CLIENT_ID: z.string(),
     DISCORD_CLIENT_SECRET: z.string(),
     GOOGLE_CLIENT_ID: z.string(),
@@ -29,9 +32,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   clientPrefix: 'NEXT_PUBLIC_',
-  client: {
-    NEXT_PUBLIC_WEB_URL: z.string().optional(),
-  },
+  client: {},
 
   /**
    * You can't destruct `process.env` as a regular object in the Next.js edge runtimes (e.g.
@@ -39,13 +40,16 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
+
     DATABASE_URL: process.env.DATABASE_URL,
+
+    AUTH_PROXY_URL: process.env.AUTH_PROXY_URL,
     AUTH_SECRET: process.env.AUTH_SECRET,
+
     DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
-    NEXT_PUBLIC_WEB_URL: process.env.NEXT_PUBLIC_WEB_URL,
   },
 
   /**

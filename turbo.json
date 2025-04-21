@@ -44,13 +44,13 @@
     }
   },
   "globalEnv": [
+    "AUTH_PROXY_URL",
     "AUTH_SECRET",
     "DATABASE_URL",
     "DISCORD_CLIENT_ID",
     "DISCORD_CLIENT_SECRET",
     "GOOGLE_CLIENT_ID",
     "GOOGLE_CLIENT_SECRET",
-    "NEXT_PUBLIC_WEB_URL",
     "PORT"
   ],
   "globalPassThroughEnv": [

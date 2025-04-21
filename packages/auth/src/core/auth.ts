@@ -112,10 +112,10 @@ export class Auth<TProviders extends Providers> {
     if (
       redirectUri.startsWith('exp://') &&
       env.NODE_ENV === 'development' &&
-      env.NEXT_PUBLIC_WEB_URL
+      env.AUTH_PROXY_URL
     ) {
       const redirectUrl = new URL(
-        `https://${env.NEXT_PUBLIC_WEB_URL}${url.pathname}`,
+        `https://${env.AUTH_PROXY_URL}${url.pathname}`,
       )
       redirectUrl.searchParams.set('redirect_uri', redirectUri)
       return new Response('', {
@@ -192,7 +192,11 @@ export class Auth<TProviders extends Providers> {
     const session = await this.session.createSession(user.id)
 
     let redirectLocation = redirectUri
-    if (redirectUri && redirectUri !== '/') {
+    if (
+      redirectUri.startsWith('https://') ||
+      redirectUri.startsWith('http://') ||
+      redirectUri.startsWith('exp://')
+    ) {
       const redirectUrl = new URL(redirectUri, req.url)
       redirectUrl.searchParams.set('token', session.sessionToken)
       redirectLocation = redirectUrl.href
