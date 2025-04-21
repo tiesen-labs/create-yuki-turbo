@@ -24,7 +24,7 @@ export abstract class BaseProvider {
       : env.VERCEL_URL
         ? `https://${env.VERCEL_URL}`
         : // eslint-disable-next-line no-restricted-properties
-          `http://localhost:${process.env.PORT ?? 5173}`
+          `http://localhost:${process.env.PORT ?? 3000}`
     return `${baseUrl}/api/auth/${provider}/callback`
   }
 }
