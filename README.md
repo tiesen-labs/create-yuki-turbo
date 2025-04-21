@@ -121,7 +121,7 @@ bun db:push
 
 In order to get Auth to work with Expo, you must:
 
-The [packages/auth](./packages/auth/src/core/auth.ts#L105) directory contains an OAuth proxy server. Deploy `nextjs` app and set the `NEXT_PUBLIC_WEB_URL` environment variable to the proxy's URL to enable OAuth for Expo apps in both preview deployments and development environments.
+The [packages/auth](./packages/auth/src/core/auth.ts#L105) directory contains an OAuth proxy server. Deploy `nextjs` app and set the `AUTH_PROXY_URL` environment variable to the proxy's URL to enable OAuth for Expo apps in both preview deployments and development environments.
 
 This proxy server approach forwards authentication requests from Next.js apps to handle the OAuth flow, then redirects back to your app. The advantage is maintaining a stable, publicly accessible URL that works regardless of deployment changes or local port assignments (e.g., if your Next.js app runs on port 3001 instead of 3000, authentication still functions without reconfiguring OAuth providers).
 
