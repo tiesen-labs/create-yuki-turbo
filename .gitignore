@@ -8,8 +8,12 @@ node_modules
 # testing
 coverage
 
+# drizzle
+drizzle/
+
 # prisma
 generated/
+migrations/
 
 # next.js
 .next/
