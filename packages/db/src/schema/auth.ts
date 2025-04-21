@@ -6,7 +6,7 @@ import { Post } from './post'
 export const User = pgTable(
   'User',
   (t) => ({
-    id: t.uuid().notNull().defaultRandom(),
+    id: t.uuid().defaultRandom().notNull(),
     name: t.varchar({ length: 255 }).notNull(),
     email: t.varchar({ length: 255 }).notNull(),
     password: t.varchar({ length: 255 }),

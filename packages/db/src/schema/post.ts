@@ -6,7 +6,7 @@ import { User } from './auth'
 export const Post = pgTable(
   'Post',
   (t) => ({
-    id: t.uuid().notNull().primaryKey().defaultRandom(),
+    id: t.uuid().defaultRandom().notNull(),
     title: t.varchar({ length: 255 }).notNull(),
     content: t.text().notNull(),
     authorId: t
@@ -15,7 +15,7 @@ export const Post = pgTable(
       .references(() => User.id, { onDelete: 'cascade' }),
     createdAt: t.timestamp().defaultNow().notNull(),
   }),
-  // (table) => [primaryKey({ name: 'Post_pkey', columns: [table.id] })],
+  (table) => [primaryKey({ name: 'Post_pkey', columns: [table.id] })],
 )
 
 export const postRelations = relations(Post, ({ one }) => ({
