@@ -3,9 +3,6 @@
   "workspaces": {
     "": {
       "name": "create-yuki-turbo",
-      "dependencies": {
-        "@neondatabase/serverless": "^1.0.0",
-      },
       "devDependencies": {
         "@turbo/gen": "^2.5.0",
         "@yuki/prettier-config": "workspace:*",
@@ -172,6 +169,7 @@
       "name": "@yuki/db",
       "version": "1.0.0",
       "dependencies": {
+        "@neondatabase/serverless": "^1.0.0",
         "drizzle-orm": "^0.42.0",
       },
       "devDependencies": {

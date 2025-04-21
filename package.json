@@ -40,8 +40,5 @@
   "engines": {
     "bun": ">=1.2.10",
     "node": ">=22.14.0"
-  },
-  "dependencies": {
-    "@neondatabase/serverless": "^1.0.0"
   }
 }
