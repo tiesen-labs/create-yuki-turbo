@@ -5,7 +5,7 @@ import { env } from '@yuki/env'
 import * as auth from './schema/auth'
 import * as post from './schema/post'
 
-export const schema = {
+const schema = {
   ...auth,
   ...post,
 }
@@ -18,3 +18,5 @@ export const db = globalForDrizzle.db ?? createDrizzleClient()
 if (env.NODE_ENV !== 'production') globalForDrizzle.db = db
 
 export * from 'drizzle-orm/sql'
+export * from './schema/auth'
+export * from './schema/post'

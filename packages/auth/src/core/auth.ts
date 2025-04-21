@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
 
-import { db, schema } from '@yuki/db'
+import { Account, db, User } from '@yuki/db'
 import { env } from '@yuki/env'
 
 import type { BaseProvider } from '../providers/base'
@@ -245,7 +245,7 @@ export class Auth<TProviders extends Providers> {
     name: string
     email: string
     image: string
-  }): Promise<typeof schema.User.$inferSelect> {
+  }): Promise<typeof User.$inferSelect> {
     const { provider, providerAccountId, name, email, image } = data
 
     const existingAccount = await this.db.query.Account.findFirst({
@@ -262,7 +262,7 @@ export class Auth<TProviders extends Providers> {
       where: (user, { eq }) => eq(user.email, email),
     })
     if (existingUser) {
-      await this.db.insert(schema.Account).values({
+      await this.db.insert(Account).values({
         provider,
         providerAccountId,
         userId: existingUser.id,
@@ -272,12 +272,12 @@ export class Auth<TProviders extends Providers> {
 
     return await this.db.transaction(async (tx) => {
       const [newUser] = await tx
-        .insert(schema.User)
+        .insert(User)
         .values({ email, name, image })
         .returning()
       if (!newUser) throw new Error('Failed to create user')
 
-      await tx.insert(schema.Account).values({
+      await tx.insert(Account).values({
         provider,
         providerAccountId,
         userId: newUser.id,

@@ -2,7 +2,7 @@ import type { TRPCRouterRecord } from '@trpc/server'
 import { TRPCError } from '@trpc/server'
 
 import { Password, Session } from '@yuki/auth'
-import { eq, schema } from '@yuki/db'
+import { eq, User } from '@yuki/db'
 import {
   changePasswordSchema,
   signInSchema,
@@ -49,7 +49,7 @@ export const authRouter = {
           message: 'User already exists',
         })
 
-      return ctx.db.insert(schema.User).values({
+      return ctx.db.insert(User).values({
         name: input.name,
         email: input.email,
         image: '',
@@ -73,8 +73,8 @@ export const authRouter = {
       }
 
       return ctx.db
-        .update(schema.User)
+        .update(User)
         .set({ password: pass.hash(input.newPassword) })
-        .where(eq(schema.User.id, ctx.session.user.id))
+        .where(eq(User.id, ctx.session.user.id))
     }),
 } satisfies TRPCRouterRecord

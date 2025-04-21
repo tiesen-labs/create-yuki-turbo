@@ -1,6 +1,6 @@
 import type { TRPCRouterRecord } from '@trpc/server'
 
-import { desc, eq, schema } from '@yuki/db'
+import { desc, eq, Post } from '@yuki/db'
 import { byIdSchema, createPostSchema } from '@yuki/validators/post'
 
 import { protectedProcedure, publicProcedure } from '../trpc'
@@ -8,14 +8,14 @@ import { protectedProcedure, publicProcedure } from '../trpc'
 export const postRouter = {
   all: publicProcedure.query(({ ctx }) => {
     return ctx.db.query.Post.findMany({
-      orderBy: desc(schema.Post.createdAt),
+      orderBy: desc(Post.createdAt),
       with: { author: true },
     })
   }),
 
   byId: publicProcedure.input(byIdSchema).query(({ ctx, input }) => {
     return ctx.db.query.Post.findFirst({
-      where: eq(schema.Post.id, input.id),
+      where: eq(Post.id, input.id),
     })
   }),
 
@@ -23,7 +23,7 @@ export const postRouter = {
     .input(createPostSchema)
     .mutation(({ ctx, input }) => {
       return ctx.db
-        .insert(schema.Post)
+        .insert(Post)
         .values({
           ...input,
           authorId: ctx.session.user.id,
@@ -32,6 +32,6 @@ export const postRouter = {
     }),
 
   delete: protectedProcedure.input(byIdSchema).mutation(({ ctx, input }) => {
-    return ctx.db.delete(schema.Post).where(eq(schema.Post.id, input.id))
+    return ctx.db.delete(Post).where(eq(Post.id, input.id))
   }),
 } satisfies TRPCRouterRecord
