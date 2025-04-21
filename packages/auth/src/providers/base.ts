@@ -13,7 +13,7 @@ export abstract class BaseProvider {
     codeVerifier: string | null,
   ): Promise<{
     providerAccountId: string
-    providerAccountName: string
+    name: string
     email: string
     image: string
   }>

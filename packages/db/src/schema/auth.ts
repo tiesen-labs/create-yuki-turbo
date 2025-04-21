@@ -1,28 +1,23 @@
 import { relations, sql } from 'drizzle-orm'
-import { pgTable, primaryKey, uniqueIndex } from 'drizzle-orm/pg-core'
+import { pgTable, primaryKey } from 'drizzle-orm/pg-core'
 
 import { Post } from './post'
 
-export const User = pgTable(
-  'User',
-  (t) => ({
-    id: t.uuid().notNull().primaryKey().defaultRandom(),
-    name: t.varchar({ length: 255 }).notNull(),
-    email: t.varchar({ length: 255 }).notNull(),
-    password: t.varchar({ length: 255 }),
-    image: t.varchar({ length: 255 }).notNull(),
-    createdAt: t.timestamp().defaultNow().notNull(),
-    updatedAt: t
-      .timestamp({ mode: 'date', withTimezone: true })
-      .$onUpdateFn(() => sql`now()`),
-  }),
-  (user) => [uniqueIndex().on(user.email)],
-)
+export const User = pgTable('User', (t) => ({
+  id: t.uuid().notNull().primaryKey().defaultRandom(),
+  name: t.varchar({ length: 255 }).notNull(),
+  email: t.varchar({ length: 255 }).notNull().unique(),
+  password: t.varchar({ length: 255 }),
+  image: t.varchar({ length: 255 }).notNull(),
+  createdAt: t.timestamp().defaultNow().notNull(),
+  updatedAt: t
+    .timestamp({ mode: 'date', withTimezone: true })
+    .$onUpdateFn(() => sql`now()`),
+}))
 
 export const userRelations = relations(User, ({ many }) => ({
   accounts: many(Account),
   sessions: many(Session),
-
   posts: many(Post),
 }))
 

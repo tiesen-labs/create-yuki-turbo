@@ -238,15 +238,14 @@ export class Auth<TProviders extends Providers> {
   private async createUser(data: {
     provider: string
     providerAccountId: string
-    providerAccountName: string
+    name: string
     email: string
     image: string
   }): Promise<typeof schema.User.$inferSelect> {
-    const { provider, providerAccountId, providerAccountName, email, image } =
-      data
+    const { provider, providerAccountId, name, email, image } = data
 
     const existingAccount = await this.db.query.Account.findFirst({
-      where: (account, { and, eq }) =>
+      where: (account, { eq, and }) =>
         and(
           eq(account.provider, provider),
           eq(account.providerAccountId, providerAccountId),
@@ -267,23 +266,21 @@ export class Auth<TProviders extends Providers> {
       return existingUser
     }
 
-    const [newUser] = await this.db
-      .insert(schema.User)
-      .values({
-        email,
-        name: providerAccountName,
-        image,
+    return await this.db.transaction(async (tx) => {
+      const [newUser] = await tx
+        .insert(schema.User)
+        .values({ email, name, image })
+        .returning()
+      if (!newUser) throw new Error('Failed to create user')
+
+      await tx.insert(schema.Account).values({
+        provider,
+        providerAccountId,
+        userId: newUser.id,
       })
-      .returning()
-    if (!newUser) throw new Error('Failed to create user')
 
-    await this.db.insert(schema.Account).values({
-      provider,
-      providerAccountId,
-      userId: newUser.id,
+      return newUser
     })
-
-    return newUser
   }
 
   private async getCookie(

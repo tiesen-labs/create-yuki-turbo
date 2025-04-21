@@ -29,7 +29,7 @@ export class GoogleProvider extends BaseProvider {
     codeVerifier: string | null,
   ): Promise<{
     providerAccountId: string
-    providerAccountName: string
+    name: string
     email: string
     image: string
   }> {
@@ -55,7 +55,7 @@ export class GoogleProvider extends BaseProvider {
 
     return {
       providerAccountId: user.sub,
-      providerAccountName: user.name,
+      name: user.name,
       email: user.email,
       image: user.picture,
     }

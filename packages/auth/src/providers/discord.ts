@@ -28,7 +28,7 @@ export class DiscordProvider extends BaseProvider {
     codeVerifier: string | null,
   ): Promise<{
     providerAccountId: string
-    providerAccountName: string
+    name: string
     email: string
     image: string
   }> {
@@ -53,7 +53,7 @@ export class DiscordProvider extends BaseProvider {
 
     return {
       providerAccountId: user.id,
-      providerAccountName: user.username,
+      name: user.username,
       email: user.email,
       image: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`,
     }

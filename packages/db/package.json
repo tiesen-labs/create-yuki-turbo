@@ -23,7 +23,6 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@neondatabase/serverless": "^1.0.0",
     "drizzle-orm": "^0.42.0"
   },
   "devDependencies": {
