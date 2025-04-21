@@ -12,7 +12,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "clean": "git clean -xdf .cache .turbo dist drizzle prisma/generated node_modules",
     "db:push": "bun with-env drizzle-kit push",
     "db:studio": "bun with-env drizzle-kit studio",
     "dev": "tsc --watch",
