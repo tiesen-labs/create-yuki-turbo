@@ -1,4 +1,4 @@
-import { relations, sql } from 'drizzle-orm'
+import { relations } from 'drizzle-orm'
 import { pgTable, primaryKey } from 'drizzle-orm/pg-core'
 
 import { Post } from './post'
@@ -12,7 +12,7 @@ export const User = pgTable('User', (t) => ({
   createdAt: t.timestamp().defaultNow().notNull(),
   updatedAt: t
     .timestamp({ mode: 'date', withTimezone: true })
-    .$onUpdateFn(() => sql`now()`),
+    .$onUpdateFn(() => new Date()),
 }))
 
 export const userRelations = relations(User, ({ many }) => ({
@@ -41,7 +41,7 @@ export const accountRelations = relations(Account, ({ one }) => ({
 }))
 
 export const Session = pgTable('Session', (t) => ({
-  sessionToken: t.varchar({ length: 255 }).notNull(),
+  sessionToken: t.varchar({ length: 255 }).notNull().primaryKey(),
   expires: t.timestamp({ mode: 'date', withTimezone: true }).notNull(),
   userId: t
     .uuid()

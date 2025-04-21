@@ -1,7 +1,5 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
-
 import { Button } from '@yuki/ui/button'
 import {
   Form,
@@ -22,7 +20,6 @@ import { setSessionCookie } from './page.action'
 export const LoginForm: React.FC<{ redirect_uri?: string }> = ({
   redirect_uri,
 }) => {
-  const router = useRouter()
   const trpcClient = useTRPCClient()
 
   const form = useForm({
@@ -31,10 +28,7 @@ export const LoginForm: React.FC<{ redirect_uri?: string }> = ({
     submitFn: trpcClient.auth.signIn.mutate,
     onSuccess: async (session) => {
       toast.success('You have successfully logged in!')
-      await setSessionCookie(session)
-      router.push(
-        redirect_uri ? `${redirect_uri}?token=${session.sessionToken}` : '/',
-      )
+      await setSessionCookie(session, redirect_uri)
     },
     onError: (error) => {
       toast.error(error)
