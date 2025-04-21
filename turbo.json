@@ -21,28 +21,18 @@
       "outputLogs": "new-only"
     },
     "lint": {
-      "dependsOn": ["^lint", "^db:generate"],
+      "dependsOn": ["^lint"],
       "outputs": [".cache/.eslintcache"],
       "outputLogs": "new-only"
     },
     "typecheck": {
-      "dependsOn": ["^typecheck", "^db:generate"],
+      "dependsOn": ["^typecheck"],
       "outputs": [".cache/tsbuildinfo.json"],
       "outputLogs": "new-only"
     },
-    "db:deploy": {
-      "cache": false
-    },
-    "db:generate": {
-      "cache": false
-    },
-    "db:migrate": {
-      "cache": false,
-      "persistent": true
-    },
     "db:push": {
       "cache": false,
-      "persistent": true
+      "interactive": true
     },
     "db:studio": {
       "cache": false,

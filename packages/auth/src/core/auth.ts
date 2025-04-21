@@ -1,8 +1,7 @@
 import { cookies } from 'next/headers'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
 
-import type { User } from '@yuki/db'
-import { db } from '@yuki/db'
+import { db, schema } from '@yuki/db'
 import { env } from '@yuki/env'
 
 import type { BaseProvider } from '../providers/base'
@@ -242,38 +241,49 @@ export class Auth<TProviders extends Providers> {
     providerAccountName: string
     email: string
     image: string
-  }): Promise<User> {
+  }): Promise<typeof schema.User.$inferSelect> {
     const { provider, providerAccountId, providerAccountName, email, image } =
       data
 
-    const existingAccount = await this.db.account.findUnique({
-      where: { provider_providerAccountId: { provider, providerAccountId } },
+    const existingAccount = await this.db.query.Account.findFirst({
+      where: (account, { and, eq }) =>
+        and(
+          eq(account.provider, provider),
+          eq(account.providerAccountId, providerAccountId),
+        ),
+      with: { user: true },
     })
+    if (existingAccount?.user) return existingAccount.user
 
-    if (existingAccount) {
-      const user = await this.db.user.findUnique({
-        where: { id: existingAccount.userId },
+    const existingUser = await this.db.query.User.findFirst({
+      where: (user, { eq }) => eq(user.email, email),
+    })
+    if (existingUser) {
+      await this.db.insert(schema.Account).values({
+        provider,
+        providerAccountId,
+        userId: existingUser.id,
       })
-      if (!user) throw new Error(`Failed to sign in with ${provider}`)
-      return user
+      return existingUser
     }
 
-    const accountData = {
-      provider,
-      providerAccountId,
-      providerAccountName,
-    }
-
-    return await this.db.user.upsert({
-      where: { email },
-      update: { accounts: { create: accountData } },
-      create: {
+    const [newUser] = await this.db
+      .insert(schema.User)
+      .values({
         email,
         name: providerAccountName,
         image,
-        accounts: { create: accountData },
-      },
+      })
+      .returning()
+    if (!newUser) throw new Error('Failed to create user')
+
+    await this.db.insert(schema.Account).values({
+      provider,
+      providerAccountId,
+      userId: newUser.id,
     })
+
+    return newUser
   }
 
   private async getCookie(

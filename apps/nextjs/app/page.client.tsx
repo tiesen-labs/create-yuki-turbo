@@ -6,7 +6,7 @@ import {
   useSuspenseQuery,
 } from '@tanstack/react-query'
 
-import type { Post } from '@yuki/db'
+import type { RouterOutputs } from '@yuki/api'
 import { Button } from '@yuki/ui/button'
 import {
   Card,
@@ -95,7 +95,9 @@ export const PostList: React.FC = () => {
   return data.map((post) => <PostCard key={post.id} post={post} />)
 }
 
-const PostCard: React.FC<{ post: Post }> = ({ post }) => {
+const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> = ({
+  post,
+}) => {
   const trpc = useTRPC()
   const queryClient = useQueryClient()
   const { mutate, isPending } = useMutation(

@@ -5,32 +5,34 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./src/index.ts"
+    }
   },
   "scripts": {
-    "clean": "git clean -xdf .cache .turbo dist generated node_modules",
-    "db:deploy": "bun with-env prisma migrate deploy",
-    "db:generate": "bun with-env prisma generate",
-    "db:migrate": "bun with-env prisma migrate dev --skip-generate",
-    "db:push": "bun with-env prisma db push",
-    "db:studio": "bun with-env prisma studio -b none",
+    "build": "tsc",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
+    "db:push": "bun with-env drizzle-kit push",
+    "db:studio": "bun with-env drizzle-kit studio",
+    "dev": "tsc --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
     "with-env": "dotenv -e ../../.env --"
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@prisma/adapter-neon": "^6.6.0",
-    "@prisma/client": "^6.6.0"
+    "drizzle-orm": "^0.42.0"
   },
   "devDependencies": {
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
     "dotenv-cli": "^8.0.0",
+    "drizzle-kit": "^0.31.0",
     "eslint": "latest",
     "prettier": "latest",
-    "prisma": "^6.6.0",
     "typescript": "latest"
   }
 }

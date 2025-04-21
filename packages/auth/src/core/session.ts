@@ -4,8 +4,7 @@ import {
   encodeHexLowerCase,
 } from '@oslojs/encoding'
 
-import type { User } from '@yuki/db'
-import { db } from '@yuki/db'
+import { db, eq, schema } from '@yuki/db'
 
 export class Session {
   private readonly db: typeof db
@@ -25,20 +24,23 @@ export class Session {
   }
 
   public async createSession(
-    userId: User['id'],
+    userId: string,
   ): Promise<{ sessionToken: string; expires: Date }> {
     const token = this.generateSessionToken()
+    const sessionToken = encodeHexLowerCase(
+      sha256(new TextEncoder().encode(token)),
+    )
 
-    const session = await this.db.session.create({
-      data: {
-        sessionToken: encodeHexLowerCase(
-          sha256(new TextEncoder().encode(token)),
-        ),
+    const [session] = await this.db
+      .insert(schema.Session)
+      .values({
+        sessionToken,
         expires: new Date(Date.now() + this.EXPIRATION_TIME),
         userId,
-      },
-    })
+      })
+      .returning()
 
+    if (!session) throw new Error('Failed to create session')
     return { sessionToken: token, expires: session.expires }
   }
 
@@ -47,9 +49,9 @@ export class Session {
       sha256(new TextEncoder().encode(token)),
     )
 
-    const result = await this.db.session.findUnique({
-      where: { sessionToken },
-      include: { user: true },
+    const result = await this.db.query.Session.findFirst({
+      where: eq(schema.Session.sessionToken, sessionToken),
+      with: { user: true },
     })
 
     if (!result) return { expires: new Date() }
@@ -57,16 +59,18 @@ export class Session {
     const { user, ...session } = result
 
     if (Date.now() > session.expires.getTime()) {
-      await this.db.session.delete({ where: { sessionToken } })
+      await this.db
+        .delete(schema.Session)
+        .where(eq(schema.Session.sessionToken, sessionToken))
       return { expires: new Date() }
     }
 
     if (Date.now() >= session.expires.getTime() - this.EXPIRATION_TIME / 2) {
       session.expires = new Date(Date.now() + this.EXPIRATION_TIME)
-      await this.db.session.update({
-        where: { sessionToken },
-        data: { expires: session.expires },
-      })
+      await this.db
+        .update(schema.Session)
+        .set({ expires: session.expires })
+        .where(eq(schema.Session.sessionToken, sessionToken))
     }
 
     return { user, expires: session.expires }
@@ -76,15 +80,19 @@ export class Session {
     const sessionToken = encodeHexLowerCase(
       sha256(new TextEncoder().encode(token)),
     )
-    await this.db.session.delete({ where: { sessionToken } })
+    await this.db
+      .delete(schema.Session)
+      .where(eq(schema.Session.sessionToken, sessionToken))
   }
 
-  public async invalidateAllSessionTokens(userId: User['id']): Promise<void> {
-    await this.db.session.deleteMany({ where: { userId } })
+  public async invalidateAllSessionTokens(userId: string): Promise<void> {
+    await this.db
+      .delete(schema.Session)
+      .where(eq(schema.Session.userId, userId))
   }
 }
 
 export interface SessionResult {
-  user?: User
+  user?: typeof schema.User.$inferSelect
   expires: Date
 }

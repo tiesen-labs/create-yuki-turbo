@@ -2,6 +2,7 @@ import type { TRPCRouterRecord } from '@trpc/server'
 import { TRPCError } from '@trpc/server'
 
 import { Password, Session } from '@yuki/auth'
+import { eq, schema } from '@yuki/db'
 import {
   changePasswordSchema,
   signInSchema,
@@ -16,7 +17,9 @@ export const authRouter = {
   signIn: publicProcedure
     .input(signInSchema)
     .mutation(async ({ ctx, input: { email, password } }) => {
-      const user = await ctx.db.user.findUnique({ where: { email } })
+      const user = await ctx.db.query.User.findFirst({
+        where: (user, { eq }) => eq(user.email, email),
+      })
       if (!user) throw new Error('User not found')
       if (!user.password)
         throw new TRPCError({
@@ -37,8 +40,8 @@ export const authRouter = {
   signUp: publicProcedure
     .input(signUpSchema)
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.db.user.findUnique({
-        where: { email: input.email },
+      const user = await ctx.db.query.User.findFirst({
+        where: (user, { eq }) => eq(user.email, input.email),
       })
       if (user)
         throw new TRPCError({
@@ -46,13 +49,11 @@ export const authRouter = {
           message: 'User already exists',
         })
 
-      return ctx.db.user.create({
-        data: {
-          name: input.name,
-          email: input.email,
-          image: '',
-          password: pass.hash(input.password),
-        },
+      return ctx.db.insert(schema.User).values({
+        name: input.name,
+        email: input.email,
+        image: '',
+        password: pass.hash(input.password),
       })
     }),
 
@@ -71,9 +72,10 @@ export const authRouter = {
           })
       }
 
-      return ctx.db.user.update({
-        where: { id: ctx.session.user.id },
-        data: { password: pass.hash(input.newPassword) },
-      })
+      return ctx.db
+        .update(schema.User)
+        .set({ password: pass.hash(input.newPassword) })
+        .where(eq(schema.User.id, ctx.session.user.id))
+        .returning()
     }),
 } satisfies TRPCRouterRecord
