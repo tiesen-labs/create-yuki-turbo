@@ -5,16 +5,11 @@ import { env } from '@yuki/env'
 import { BaseProvider } from './base'
 
 export class DiscordProvider extends BaseProvider {
-  protected provider: Discord
-
-  constructor() {
-    super()
-    this.provider = new Discord(
-      env.DISCORD_CLIENT_ID,
-      env.DISCORD_CLIENT_SECRET,
-      this.getCallbackUrl('discord'),
-    )
-  }
+  protected provider = new Discord(
+    env.DISCORD_CLIENT_ID,
+    env.DISCORD_CLIENT_SECRET,
+    this.getCallbackUrl('discord'),
+  )
 
   public createAuthorizationURL(state: string, codeVerifier: string | null) {
     return this.provider.createAuthorizationURL(state, codeVerifier, [
@@ -32,14 +27,14 @@ export class DiscordProvider extends BaseProvider {
     email: string
     image: string
   }> {
-    const verifiedCode = await this.provider.validateAuthorizationCode(
+    const authResults = await this.provider.validateAuthorizationCode(
       code,
       codeVerifier,
     )
-    const token = verifiedCode.accessToken()
+    const accessToken = authResults.accessToken()
 
     const res = await fetch('https://discord.com/api/users/@me', {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${accessToken}` },
     })
     if (!res.ok) throw new Error('Failed to fetch user data')
 

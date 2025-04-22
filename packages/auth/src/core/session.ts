@@ -13,7 +13,6 @@ export class Session {
 
   constructor() {
     this.EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 30 // 30 days
-
     this.db = db
   }
 

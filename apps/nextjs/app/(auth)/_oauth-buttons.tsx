@@ -16,11 +16,11 @@ export const OauthButtons: React.FC<{ redirect_uri?: string }> = ({
       <form className="grid grid-cols-2 gap-4">
         <input type="hidden" name="redirect_uri" value={redirect_uri} />
 
-        <Button variant="outline" formAction="/api/auth/oauth/discord">
+        <Button variant="outline" formAction="/api/auth/discord">
           <DiscordIcon />
           <span className="sr-only md:not-sr-only">Discord</span>
         </Button>
-        <Button variant="outline" formAction="/api/auth/oauth/google">
+        <Button variant="outline" formAction="/api/auth/google">
           <GoogleIcon />
           <span className="sr-only md:not-sr-only">Google</span>
         </Button>
