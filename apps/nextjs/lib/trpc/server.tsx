@@ -49,4 +49,17 @@ function prefetch(
   else void queryClient.prefetchQuery(queryOptions)
 }
 
-export { api, trpc, prefetch, HydrateClient }
+function batchPrefetch(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  queryOptionsArray: ReturnType<TRPCQueryOptions<any>>[],
+) {
+  const queryClient = getQueryClient()
+
+  for (const queryOptions of queryOptionsArray) {
+    if (queryOptions.queryKey[1]?.type === 'infinite')
+      void queryClient.prefetchInfiniteQuery(queryOptions as never)
+    else void queryClient.prefetchQuery(queryOptions)
+  }
+}
+
+export { api, trpc, prefetch, batchPrefetch, HydrateClient }
