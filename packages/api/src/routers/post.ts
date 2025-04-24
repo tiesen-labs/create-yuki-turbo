@@ -33,6 +33,6 @@ export const postRouter = {
     }),
 
   delete: protectedProcedure.input(byIdSchema).mutation(({ ctx, input }) => {
-    return ctx.db.delete(posts).where(eq(posts.id, input.id))
+    return ctx.db.delete(posts).where(eq(posts.id, input.id)).returning()
   }),
 } satisfies TRPCRouterRecord

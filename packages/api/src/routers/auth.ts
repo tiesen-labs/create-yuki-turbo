@@ -81,5 +81,6 @@ export const authRouter = {
         .update(users)
         .set({ password: password.hash(input.newPassword) })
         .where(eq(users.id, ctx.session.user.id))
+        .returning()
     }),
 } satisfies TRPCRouterRecord
