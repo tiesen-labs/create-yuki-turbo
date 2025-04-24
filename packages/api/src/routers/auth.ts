@@ -51,12 +51,15 @@ export const authRouter = {
           message: 'User already exists',
         })
 
-      return ctx.db.insert(users).values({
-        name: input.name,
-        email: input.email,
-        image: '',
-        password: password.hash(input.password),
-      })
+      return ctx.db
+        .insert(users)
+        .values({
+          name: input.name,
+          email: input.email,
+          image: '',
+          password: password.hash(input.password),
+        })
+        .returning()
     }),
 
   changePassword: protectedProcedure
