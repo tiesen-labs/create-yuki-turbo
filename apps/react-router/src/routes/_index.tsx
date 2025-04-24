@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { Link } from 'react-router'
+import { Form, Link } from 'react-router'
 
 import { auth } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
@@ -45,9 +45,9 @@ export default function HomePage({
           {session.user && (
             <div className="flex justify-between">
               <Typography variant="h3">Welcome, {session.user.name}</Typography>
-              <form action="/api/auth/sign-out" method="POST">
+              <Form action="/api/auth/sign-out" method="POST">
                 <Button variant="secondary">Logout</Button>
-              </form>
+              </Form>
             </div>
           )}
         </section>

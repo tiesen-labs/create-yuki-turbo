@@ -99,7 +99,7 @@ function useForm<TSchema extends StandardSchemaV1, TData = unknown>(params: {
         try {
           const data = await submitFn(parsed.value)
           setData(data)
-          if (onSuccess) void onSuccess(data)
+          if (onSuccess) await onSuccess(data)
           setError({ message: '', fieldErrors: {} })
         } catch (error) {
           let message: string
@@ -108,7 +108,7 @@ function useForm<TSchema extends StandardSchemaV1, TData = unknown>(params: {
 
           setData(undefined)
           setError({ message, fieldErrors: {} })
-          if (onError) void onError(message)
+          if (onError) await onError(message)
         }
       })
     },

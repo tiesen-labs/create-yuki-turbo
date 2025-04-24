@@ -1,7 +1,5 @@
 'use client'
 
-import { startTransition } from 'react'
-
 import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import {
@@ -30,11 +28,9 @@ export const LoginForm: React.FC<{ redirect_uri?: string }> = ({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
     submitFn: trpcClient.auth.signIn.mutate,
-    onSuccess: (session) => {
-      startTransition(async () => {
-        await refresh(session.sessionToken)
-        await setSessionCookie(session, redirect_uri)
-      })
+    onSuccess: async (session) => {
+      await refresh(session.sessionToken)
+      void setSessionCookie(session, redirect_uri)
       toast.success('You have successfully logged in!')
     },
     onError: (error) => {
