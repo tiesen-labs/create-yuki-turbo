@@ -13,7 +13,7 @@ Click the "Use this template" button on the top right of the repository,
 or use Turbo's CLI to init your project (use Bun as package manager):
 
 ```bash
-bunx --bun create-turbo@latest -e https://github.com/tiesen243/create-yuki-turbo
+bun create turbo@latest --example https://github.com/tiesen243/create-yuki-turbo
 ```
 
 ## About
