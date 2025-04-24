@@ -51,7 +51,6 @@ export class GoogleProvider extends BaseProvider {
 
     const response = await fetch(this.GOOGLE_USER_INFO_URL, {
       headers: { Authorization: `Bearer ${accessToken}` },
-      signal: AbortSignal.timeout(5000), // Add timeout for better error handling
     })
     if (!response.ok) {
       const errorText = await response.text().catch(() => 'Unknown error')

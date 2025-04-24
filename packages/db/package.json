@@ -27,7 +27,7 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "drizzle-orm": "^0.42.0"
+    "drizzle-orm": "^0.43.0"
   },
   "devDependencies": {
     "@yuki/eslint-config": "workspace:*",

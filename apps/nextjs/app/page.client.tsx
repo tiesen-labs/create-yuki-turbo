@@ -7,7 +7,6 @@ import {
 } from '@tanstack/react-query'
 
 import type { RouterOutputs } from '@yuki/api'
-import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import {
   Card,
@@ -37,8 +36,6 @@ export const CreatePost: React.FC = () => {
   const trpc = useTRPC()
   const trpcClient = useTRPCClient()
   const queryClient = useQueryClient()
-  const session = useSession()
-  console.log(session)
 
   const form = useForm({
     schema: createPostSchema,
