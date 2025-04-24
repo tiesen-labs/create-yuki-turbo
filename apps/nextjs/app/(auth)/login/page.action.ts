@@ -12,23 +12,27 @@ export const setSessionCookie = async (
   },
   redirect_uri?: string,
 ) => {
-  const nextCookies = await cookies()
+  try {
+    const nextCookies = await cookies()
 
-  nextCookies.set('auth_token', session.sessionToken, {
-    path: '/',
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: env.NODE_ENV === 'production',
-    expires: session.expires,
-  })
-
-  redirect(
-    redirect_uri
-      ? redirect_uri.startsWith('http://') ||
-        redirect_uri.startsWith('https://') ||
-        redirect_uri.startsWith('exp:')
-        ? `${redirect_uri}?token=${session.sessionToken}`
-        : redirect_uri
-      : '/',
-  )
+    nextCookies.set('auth_token', session.sessionToken, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: env.NODE_ENV === 'production',
+      expires: session.expires,
+    })
+  } catch (error) {
+    console.error('Error setting session cookie:', error)
+  } finally {
+    redirect(
+      redirect_uri
+        ? redirect_uri.startsWith('http://') ||
+          redirect_uri.startsWith('https://') ||
+          redirect_uri.startsWith('exp:')
+          ? `${redirect_uri}?token=${session.sessionToken}`
+          : redirect_uri
+        : '/',
+    )
+  }
 }

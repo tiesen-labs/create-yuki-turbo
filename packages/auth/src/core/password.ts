@@ -4,6 +4,8 @@ import { encodeHexLowerCase } from '@oslojs/encoding'
 import { env } from '@yuki/env'
 
 export class Password {
+  private readonly pepper = env.AUTH_SECRET
+
   public hash(password: string): string {
     return this._hash(password)
   }
@@ -13,8 +15,8 @@ export class Password {
     return hashedPassword === hash
   }
 
-  private _hash(text: string): string {
-    const salted = `${text}${env.AUTH_SECRET}`
+  private _hash(password: string): string {
+    const salted = `${password}${this.pepper}`
     return encodeHexLowerCase(sha3_512(new TextEncoder().encode(salted)))
   }
 }

@@ -1,5 +1,8 @@
 'use client'
 
+import { startTransition } from 'react'
+
+import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import {
   Form,
@@ -21,14 +24,18 @@ export const LoginForm: React.FC<{ redirect_uri?: string }> = ({
   redirect_uri,
 }) => {
   const trpcClient = useTRPCClient()
+  const { refresh } = useSession()
 
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
     submitFn: trpcClient.auth.signIn.mutate,
-    onSuccess: async (session) => {
+    onSuccess: (session) => {
+      startTransition(async () => {
+        await refresh(session.sessionToken)
+        await setSessionCookie(session, redirect_uri)
+      })
       toast.success('You have successfully logged in!')
-      await setSessionCookie(session, redirect_uri)
     },
     onError: (error) => {
       toast.error(error)

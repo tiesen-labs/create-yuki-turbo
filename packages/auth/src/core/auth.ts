@@ -17,8 +17,8 @@ export interface AuthOptions<T extends Providers = Providers> {
 }
 
 export class Auth<TProviders extends Providers> {
-  private readonly db: typeof db
-  private readonly session: Session
+  private readonly db = db
+  private readonly session = new Session()
 
   private readonly COOKIE_KEY: string
   private readonly providers: TProviders
@@ -26,9 +26,6 @@ export class Auth<TProviders extends Providers> {
   constructor(options: AuthOptions<TProviders>) {
     this.COOKIE_KEY = options.cookieKey
     this.providers = options.providers
-
-    this.db = db
-    this.session = new Session()
   }
 
   public async auth(req?: Request): Promise<SessionResult> {
@@ -81,20 +78,20 @@ export class Auth<TProviders extends Providers> {
 
   private async handleGetRequests(req: Request): Promise<Response> {
     const url = new URL(req.url)
+    const path = url.pathname
 
-    if (url.pathname === '/api/auth' || url.pathname === '/api/auth/') {
+    if (path === '/api/auth' || path === '/api/auth/') {
       const session = await this.auth(req)
       if (session.user) session.user.password = undefined as unknown as null
       return Response.json(session)
     }
 
     if (
-      url.pathname.startsWith('/api/auth/') &&
-      url.pathname !== '/api/auth' &&
-      url.pathname !== '/api/auth/'
-    ) {
+      path.startsWith('/api/auth/') &&
+      path !== '/api/auth' &&
+      path !== '/api/auth/'
+    )
       return await this.handleOAuthRequest(req)
-    }
 
     return Response.json({ error: 'Not found' }, { status: 404 })
   }
@@ -110,6 +107,11 @@ export class Auth<TProviders extends Providers> {
   private handleOAuthStart(url: URL): Response {
     const redirectUri = url.searchParams.get('redirect_uri') ?? '/'
 
+    const providerName = String(url.pathname.split('/').pop())
+    const provider = this.providers[providerName]
+    if (!provider)
+      return Response.json({ error: 'Provider not supported' }, { status: 404 })
+
     if (
       redirectUri.startsWith('exp://') &&
       env.NODE_ENV === 'development' &&
@@ -119,17 +121,8 @@ export class Auth<TProviders extends Providers> {
         `https://${env.AUTH_PROXY_URL}${url.pathname}`,
       )
       redirectUrl.searchParams.set('redirect_uri', redirectUri)
-      return new Response('', {
-        headers: new Headers({ Location: redirectUrl.toString() }),
-        status: 302,
-      })
+      return this.createRedirectResponse(redirectUrl)
     }
-
-    const providerName = String(url.pathname.split('/').pop())
-    const provider = this.providers[providerName]
-
-    if (!provider)
-      return Response.json({ error: 'Provider not supported' }, { status: 404 })
 
     const state = generateState()
     const codeVerifier = generateCodeVerifier()
@@ -247,18 +240,20 @@ export class Auth<TProviders extends Providers> {
     email: string
     image: string
   }): Promise<typeof users.$inferSelect> {
-    const { provider, providerAccountId, name, email, image } = data
+    const { provider, providerAccountId, email } = data
 
+    // Check for existing account with this provider
     const existingAccount = await this.db.query.accounts.findFirst({
-      where: (account, { eq, and }) =>
+      where: (accounts, { and, eq }) =>
         and(
-          eq(account.provider, provider),
-          eq(account.providerAccountId, providerAccountId),
+          eq(accounts.provider, provider),
+          eq(accounts.providerAccountId, providerAccountId),
         ),
       with: { user: true },
     })
     if (existingAccount?.user) return existingAccount.user
 
+    // Check for existing user with this email
     const existingUser = await this.db.query.users.findFirst({
       where: (user, { eq }) => eq(user.email, email),
     })
@@ -272,10 +267,7 @@ export class Auth<TProviders extends Providers> {
     }
 
     return await this.db.transaction(async (tx) => {
-      const [newUser] = await tx
-        .insert(users)
-        .values({ email, name, image })
-        .returning()
+      const [newUser] = await tx.insert(users).values(data).returning()
       if (!newUser) throw new Error('Failed to create user')
 
       await tx.insert(accounts).values({
@@ -288,12 +280,21 @@ export class Auth<TProviders extends Providers> {
     })
   }
 
+  private createRedirectResponse(url: URL): Response {
+    return new Response(null, {
+      headers: new Headers({ Location: url.toString() }),
+      status: 302,
+    })
+  }
+
   private async getCookie(
     req?: Request,
     key: string = this.COOKIE_KEY,
   ): Promise<string | undefined> {
-    if (req)
-      return req.headers.get('cookie')?.match(new RegExp(`${key}=([^;]+)`))?.[1]
+    if (req) {
+      const cookie = req.headers.get('cookie')
+      return cookie ? new RegExp(`${key}=([^;]+)`).exec(cookie)?.[1] : undefined
+    }
     return (await cookies()).get(key)?.value
   }
 
@@ -302,14 +303,15 @@ export class Auth<TProviders extends Providers> {
     value: string,
     attributes: Record<string, string | number>,
   ): string {
-    const cookie = `${key}=${value}; ${Object.entries(attributes)
+    return `${key}=${value}; ${Object.entries(attributes)
       .map(([k, v]) => `${k}=${v}`)
       .join('; ')}`
-    return cookie
   }
 
   private deleteCookie(key: string): string {
-    return `${key}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; ${env.NODE_ENV === 'production' ? 'Secure;' : ''}`
+    return `${key}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0; ${
+      env.NODE_ENV === 'production' ? 'Secure;' : ''
+    }`
   }
 
   private setCorsHeaders(res: Response): void {

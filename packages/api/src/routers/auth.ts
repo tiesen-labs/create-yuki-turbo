@@ -12,14 +12,15 @@ import {
 
 import { protectedProcedure, publicProcedure } from '../trpc'
 
-const pass = new Password()
+const password = new Password()
+const session = new Session()
 
 export const authRouter = {
   signIn: publicProcedure
     .input(signInSchema)
-    .mutation(async ({ ctx, input: { email, password } }) => {
+    .mutation(async ({ ctx, input }) => {
       const user = await ctx.db.query.users.findFirst({
-        where: (user, { eq }) => eq(user.email, email),
+        where: eq(users.email, input.email),
       })
       if (!user) throw new Error('User not found')
       if (!user.password)
@@ -28,21 +29,21 @@ export const authRouter = {
           message: 'User has no password',
         })
 
-      const passwordMatch = pass.verify(password, user.password)
+      const passwordMatch = password.verify(input.password, user.password)
       if (!passwordMatch)
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'Invalid password',
         })
 
-      return new Session().createSession(user.id)
+      return session.createSession(user.id)
     }),
 
   signUp: publicProcedure
     .input(signUpSchema)
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db.query.users.findFirst({
-        where: (users, { eq }) => eq(users.email, input.email),
+        where: eq(users.email, input.email),
       })
       if (user)
         throw new TRPCError({
@@ -54,7 +55,7 @@ export const authRouter = {
         name: input.name,
         email: input.email,
         image: '',
-        password: pass.hash(input.password),
+        password: password.hash(input.password),
       })
     }),
 
@@ -62,7 +63,7 @@ export const authRouter = {
     .input(changePasswordSchema)
     .mutation(async ({ ctx, input }) => {
       if (ctx.session.user.password) {
-        const passwordMatch = pass.verify(
+        const passwordMatch = password.verify(
           input.currentPassword ?? '',
           ctx.session.user.password,
         )
@@ -75,7 +76,7 @@ export const authRouter = {
 
       return ctx.db
         .update(users)
-        .set({ password: pass.hash(input.newPassword) })
+        .set({ password: password.hash(input.newPassword) })
         .where(eq(users.id, ctx.session.user.id))
     }),
 } satisfies TRPCRouterRecord

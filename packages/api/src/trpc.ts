@@ -70,10 +70,12 @@ const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
   errorFormatter: ({ shape, error }) => ({
     ...shape,
+    message:
+      error.cause instanceof ZodError ? 'Validation error' : error.message,
     data: {
       ...shape.data,
       zodError:
-        error.cause instanceof ZodError ? treeifyError(error.cause) : {},
+        error.cause instanceof ZodError ? treeifyError(error.cause).errors : {},
     },
   }),
 })
@@ -98,7 +100,7 @@ export const createCallerFactory = t.createCallerFactory
 export const createTRPCRouter = t.router
 
 /**
- * Middleware for timing procedure execution and adding an articifial delay in development.
+ * Middleware for timing procedure execution.
  *
  * You can remove this if you don't like it, but it can help catch unwanted waterfalls by simulating
  * network latency that would occur in production but not in local development.

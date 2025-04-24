@@ -5,19 +5,35 @@ import { env } from '@yuki/env'
 import { BaseProvider } from './base'
 
 export class DiscordProvider extends BaseProvider {
-  protected provider = new Discord(
-    env.DISCORD_CLIENT_ID,
-    env.DISCORD_CLIENT_SECRET,
-    this.createCallbackUrl('discord'),
-  )
+  private readonly DISCORD_API_URL = 'https://discord.com/api/users/@me'
+  private readonly DISCORD_CDN_URL = 'https://cdn.discordapp.com/avatars'
+  private readonly DEFAULT_SCOPES = ['identify', 'email']
+  protected provider: Discord
 
-  public createAuthorizationURL(state: string, codeVerifier: string | null) {
-    return this.provider.createAuthorizationURL(state, codeVerifier, [
-      'identify',
-      'email',
-    ])
+  constructor() {
+    super()
+    this.provider = new Discord(
+      env.DISCORD_CLIENT_ID,
+      env.DISCORD_CLIENT_SECRET,
+      this.createCallbackUrl('discord'),
+    )
   }
 
+  /**
+   * Creates an authorization URL for Discord OAuth
+   */
+  public createAuthorizationURL(state: string, codeVerifier: string | null) {
+    return this.provider.createAuthorizationURL(
+      state,
+      codeVerifier,
+      this.DEFAULT_SCOPES,
+    )
+  }
+
+  /**
+   * Fetches user data from Discord API using the provided authorization code
+   * @see https://discord.com/developers/docs/topics/oauth2#client-credentials-flow
+   */
   public async fetchUserData(
     code: string,
     codeVerifier: string | null,
@@ -27,30 +43,41 @@ export class DiscordProvider extends BaseProvider {
     email: string
     image: string
   }> {
-    const authResults = await this.provider.validateAuthorizationCode(
+    const tokens = await this.provider.validateAuthorizationCode(
       code,
       codeVerifier,
     )
-    const accessToken = authResults.accessToken()
+    const accessToken = tokens.accessToken()
 
-    const res = await fetch('https://discord.com/api/users/@me', {
+    const response = await fetch(this.DISCORD_API_URL, {
       headers: { Authorization: `Bearer ${accessToken}` },
+      signal: AbortSignal.timeout(5000), // Add timeout for better error handling
     })
-    if (!res.ok) throw new Error('Failed to fetch user data')
 
-    // @see https://discord.com/developers/docs/resources/user#get-current-user
-    const user = (await res.json()) as {
-      id: string
-      email: string
-      username: string
-      avatar: string
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => 'Unknown error')
+      throw new Error(`Discord API error (${response.status}): ${errorText}`)
     }
+
+    const user = (await response.json()) as DiscordUserResponse
+
+    // Generate avatar URL or use default if avatar is null
+    const avatarUrl = user.avatar
+      ? `${this.DISCORD_CDN_URL}/${user.id}/${user.avatar}.png`
+      : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.id) % 5}.png`
 
     return {
       providerAccountId: user.id,
       name: user.username,
       email: user.email,
-      image: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`,
+      image: avatarUrl,
     }
   }
+}
+
+interface DiscordUserResponse {
+  id: string
+  username: string
+  email: string
+  avatar: string | null
 }

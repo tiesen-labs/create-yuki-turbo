@@ -5,20 +5,35 @@ import { env } from '@yuki/env'
 import { BaseProvider } from './base'
 
 export class GoogleProvider extends BaseProvider {
-  protected provider = new Google(
-    env.GOOGLE_CLIENT_ID,
-    env.GOOGLE_CLIENT_SECRET,
-    this.createCallbackUrl('google'),
-  )
+  private readonly GOOGLE_USER_INFO_URL =
+    'https://openidconnect.googleapis.com/v1/userinfo'
+  private readonly DEFAULT_SCOPES = ['openid', 'profile', 'email']
+  private provider: Google
 
-  public createAuthorizationURL(state: string, codeVerifier: string | null) {
-    return this.provider.createAuthorizationURL(state, codeVerifier ?? '', [
-      'openid',
-      'profile',
-      'email',
-    ])
+  constructor() {
+    super()
+    this.provider = new Google(
+      env.GOOGLE_CLIENT_ID,
+      env.GOOGLE_CLIENT_SECRET,
+      this.createCallbackUrl('google'),
+    )
   }
 
+  /**
+   * Creates an authorization URL for Google OAuth
+   */
+  public createAuthorizationURL(state: string, codeVerifier: string | null) {
+    return this.provider.createAuthorizationURL(
+      state,
+      codeVerifier ?? '',
+      this.DEFAULT_SCOPES,
+    )
+  }
+
+  /**
+   * Fetches user data from Google API using the provided authorization code
+   * @see https://developers.google.com/identity/protocols/oauth2/openid-connect#obtainuserinfo
+   */
   public async fetchUserData(
     code: string,
     codeVerifier: string | null,
@@ -28,25 +43,22 @@ export class GoogleProvider extends BaseProvider {
     email: string
     image: string
   }> {
-    const authResults = await this.provider.validateAuthorizationCode(
+    const tokens = await this.provider.validateAuthorizationCode(
       code,
       codeVerifier ?? '',
     )
-    const accessToken = authResults.accessToken()
+    const accessToken = tokens.accessToken()
 
-    const res = await fetch(
-      'https://openidconnect.googleapis.com/v1/userinfo',
-      { headers: { Authorization: `Bearer ${accessToken}` } },
-    )
-    if (!res.ok) throw new Error('Failed to fetch user data')
-
-    // @see https://developers.google.com/identity/protocols/oauth2/openid-connect#obtainuserinfo
-    const user = (await res.json()) as {
-      sub: string
-      email: string
-      name: string
-      picture: string
+    const response = await fetch(this.GOOGLE_USER_INFO_URL, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      signal: AbortSignal.timeout(5000), // Add timeout for better error handling
+    })
+    if (!response.ok) {
+      const errorText = await response.text().catch(() => 'Unknown error')
+      throw new Error(`Google API error (${response.status}): ${errorText}`)
     }
+
+    const user = (await response.json()) as GoogleUserResponse
 
     return {
       providerAccountId: user.sub,
@@ -55,4 +67,11 @@ export class GoogleProvider extends BaseProvider {
       image: user.picture,
     }
   }
+}
+
+interface GoogleUserResponse {
+  sub: string
+  email: string
+  name: string
+  picture: string
 }

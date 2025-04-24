@@ -7,6 +7,6 @@ export default [
     ignores: ['dist/**'],
   },
   ...baseConfig,
-  ...restrictEnvAccess,
   ...reactConfig,
+  ...restrictEnvAccess,
 ]
