@@ -2,7 +2,8 @@ import type { TRPCRouterRecord } from '@trpc/server'
 import { TRPCError } from '@trpc/server'
 
 import { Password, Session } from '@yuki/auth'
-import { eq, User } from '@yuki/db'
+import { eq } from '@yuki/db'
+import { users } from '@yuki/db/schema'
 import {
   changePasswordSchema,
   signInSchema,
@@ -17,7 +18,7 @@ export const authRouter = {
   signIn: publicProcedure
     .input(signInSchema)
     .mutation(async ({ ctx, input: { email, password } }) => {
-      const user = await ctx.db.query.User.findFirst({
+      const user = await ctx.db.query.users.findFirst({
         where: (user, { eq }) => eq(user.email, email),
       })
       if (!user) throw new Error('User not found')
@@ -40,8 +41,8 @@ export const authRouter = {
   signUp: publicProcedure
     .input(signUpSchema)
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.db.query.User.findFirst({
-        where: (user, { eq }) => eq(user.email, input.email),
+      const user = await ctx.db.query.users.findFirst({
+        where: (users, { eq }) => eq(users.email, input.email),
       })
       if (user)
         throw new TRPCError({
@@ -49,7 +50,7 @@ export const authRouter = {
           message: 'User already exists',
         })
 
-      return ctx.db.insert(User).values({
+      return ctx.db.insert(users).values({
         name: input.name,
         email: input.email,
         image: '',
@@ -73,8 +74,8 @@ export const authRouter = {
       }
 
       return ctx.db
-        .update(User)
+        .update(users)
         .set({ password: pass.hash(input.newPassword) })
-        .where(eq(User.id, ctx.session.user.id))
+        .where(eq(users.id, ctx.session.user.id))
     }),
 } satisfies TRPCRouterRecord

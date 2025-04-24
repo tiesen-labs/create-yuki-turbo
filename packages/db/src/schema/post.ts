@@ -1,19 +1,19 @@
 import { relations } from 'drizzle-orm'
 import { pgTable } from 'drizzle-orm/pg-core'
 
-import { User } from './auth'
+import { users } from './auth'
 
-export const Post = pgTable('Post', (t) => ({
+export const posts = pgTable('post', (t) => ({
   id: t.uuid().primaryKey().defaultRandom().notNull(),
   title: t.varchar({ length: 255 }).notNull(),
   content: t.text().notNull(),
   authorId: t
     .uuid()
     .notNull()
-    .references(() => User.id, { onDelete: 'cascade' }),
+    .references(() => users.id, { onDelete: 'cascade' }),
   createdAt: t.timestamp().defaultNow().notNull(),
 }))
 
-export const postRelations = relations(Post, ({ one }) => ({
-  author: one(User, { fields: [Post.authorId], references: [User.id] }),
+export const postRelations = relations(posts, ({ one }) => ({
+  author: one(users, { fields: [posts.authorId], references: [users.id] }),
 }))

@@ -8,7 +8,7 @@ export class GoogleProvider extends BaseProvider {
   protected provider = new Google(
     env.GOOGLE_CLIENT_ID,
     env.GOOGLE_CLIENT_SECRET,
-    this.getCallbackUrl('google'),
+    this.createCallbackUrl('google'),
   )
 
   public createAuthorizationURL(state: string, codeVerifier: string | null) {

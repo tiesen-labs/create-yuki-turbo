@@ -1,14 +1,12 @@
 import { env } from '@yuki/env'
 
 export abstract class BaseProvider {
-  protected abstract provider: unknown
-
-  public abstract createAuthorizationURL(
+  abstract createAuthorizationURL(
     state: string,
     codeVerifier: string | null,
   ): URL
 
-  public abstract fetchUserData(
+  abstract fetchUserData(
     code: string,
     codeVerifier: string | null,
   ): Promise<{
@@ -18,7 +16,7 @@ export abstract class BaseProvider {
     image: string
   }>
 
-  protected getCallbackUrl(provider: string) {
+  protected createCallbackUrl(provider: string) {
     const baseUrl = env.VERCEL_PROJECT_PRODUCTION_URL
       ? `https://${env.VERCEL_PROJECT_PRODUCTION_URL}`
       : env.VERCEL_URL

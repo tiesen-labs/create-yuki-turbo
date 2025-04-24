@@ -8,7 +8,7 @@ export class DiscordProvider extends BaseProvider {
   protected provider = new Discord(
     env.DISCORD_CLIENT_ID,
     env.DISCORD_CLIENT_SECRET,
-    this.getCallbackUrl('discord'),
+    this.createCallbackUrl('discord'),
   )
 
   public createAuthorizationURL(state: string, codeVerifier: string | null) {
