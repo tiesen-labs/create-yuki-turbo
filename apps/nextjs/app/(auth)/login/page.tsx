@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import {
   CardContent,
   CardDescription,
@@ -26,6 +28,13 @@ export default async function LoginPage({
 
       <CardContent>
         <LoginForm redirect_uri={redirect_uri} />
+
+        <p className="mt-4 text-sm">
+          Don&apos;t have an account?{' '}
+          <Link href="/register" className="hover:underline">
+            Register
+          </Link>
+        </p>
       </CardContent>
 
       <OauthButtons redirect_uri={redirect_uri} />

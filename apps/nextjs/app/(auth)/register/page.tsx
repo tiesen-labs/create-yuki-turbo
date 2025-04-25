@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import {
   CardContent,
   CardDescription,
@@ -20,6 +22,14 @@ export default function RegisterPage() {
 
       <CardContent>
         <RegisterForm />
+
+
+        <p className="mt-4 text-sm">
+          Already have an account?{' '}
+          <Link href="/login" className="hover:underline">
+            Login
+          </Link>
+        </p>
       </CardContent>
 
       <OauthButtons />

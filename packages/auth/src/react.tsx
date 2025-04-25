@@ -70,6 +70,7 @@ export function SessionProvider({
       const res = await fetch('/api/auth/sign-out', { method: 'POST' })
       if (!res.ok) throw new Error(`Sign out failed: ${res.status}`)
       setSession({ expires: new Date() })
+      window.location.reload()
     } catch (error) {
       console.error('Error signing out:', error)
     }
