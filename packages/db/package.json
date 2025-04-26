@@ -10,6 +10,7 @@
     }
   },
   "scripts": {
+    "build": "bun with-env prisma generate",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "db:generate": "bun with-env prisma generate",
     "db:push": "bun with-env prisma db push",

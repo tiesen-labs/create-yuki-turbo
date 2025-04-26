@@ -1,3 +1,7 @@
+/**
+ * Prisma client doesn't support Edge Runtime yet, so it cannot be used directly in Next.js middleware.
+ */
+
 import type { MiddlewareConfig, NextMiddleware } from 'next/server'
 import { NextResponse } from 'next/server'
 
