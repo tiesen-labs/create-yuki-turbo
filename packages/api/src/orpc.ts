@@ -7,6 +7,7 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 
+import type { ResponseHeadersPluginContext } from '@orpc/server/plugins'
 import { ORPCError, os } from '@orpc/server'
 
 import type { SessionResult } from '@yuki/auth'
@@ -63,7 +64,9 @@ export const createORPCContext = async (opts: { headers: Headers }) => {
  * This is where the orpc api is initialized, connecting the context and
  * transformer
  */
-const o = os.$context<Awaited<ReturnType<typeof createORPCContext>>>()
+const o = os.$context<
+  ResponseHeadersPluginContext & Awaited<ReturnType<typeof createORPCContext>>
+>()
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)

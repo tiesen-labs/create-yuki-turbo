@@ -1,5 +1,7 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+
 import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import {
@@ -16,21 +18,29 @@ import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
 import { useORPC } from '@/lib/orpc/react'
-import { setSessionCookie } from './page.action'
 
 export const LoginForm: React.FC<{ redirect_to?: string }> = ({
   redirect_to,
 }) => {
   const { orpcClient } = useORPC()
   const { refresh } = useSession()
+  const router = useRouter()
 
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
     submitFn: orpcClient.auth.signIn,
-    onSuccess: async (session) => {
-      await refresh(session.sessionToken)
-      void setSessionCookie(session, redirect_to)
+    onSuccess: async (token) => {
+      await refresh(token)
+      router.push(
+        redirect_to
+          ? redirect_to.startsWith('http://') ||
+            redirect_to.startsWith('https://') ||
+            redirect_to.startsWith('exp:')
+            ? `${redirect_to}?token=${token}`
+            : redirect_to
+          : '/',
+      )
       toast.success('You have successfully logged in!')
     },
     onError: (error) => {

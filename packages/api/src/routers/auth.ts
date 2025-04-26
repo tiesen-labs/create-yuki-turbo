@@ -3,6 +3,7 @@ import { ORPCError } from '@orpc/server'
 import { Password, Session } from '@yuki/auth'
 import { eq } from '@yuki/db'
 import { users } from '@yuki/db/schema'
+import { env } from '@yuki/env'
 import {
   changePasswordSchema,
   signInSchema,
@@ -16,7 +17,6 @@ const session = new Session()
 
 export const authRouter = {
   signIn: publicProcedure
-    .route({ method: 'POST' })
     .input(signInSchema)
     .handler(async ({ context, input }) => {
       const user = await context.db.query.users.findFirst({
@@ -34,11 +34,16 @@ export const authRouter = {
           message: 'Invalid password',
         })
 
-      return session.create(user.id)
+      const token = await session.create(user.id)
+      context.resHeaders?.set(
+        'Set-Cookie',
+        `auth_token=${token.sessionToken}; Path=/; HttpOnly; SameSite=Lax; Secure=${env.NODE_ENV === 'production' ? 'true' : 'false'}; Expires=${token.expires.toUTCString()}`,
+      )
+
+      return token.sessionToken
     }),
 
   signUp: publicProcedure
-    .route({ method: 'POST' })
     .input(signUpSchema)
     .handler(async ({ context, input }) => {
       const user = await context.db.query.users.findFirst({
@@ -62,7 +67,6 @@ export const authRouter = {
     }),
 
   changePassword: protectedProcedure
-    .route({ method: 'POST' })
     .input(changePasswordSchema)
     .handler(async ({ context, input }) => {
       if (
