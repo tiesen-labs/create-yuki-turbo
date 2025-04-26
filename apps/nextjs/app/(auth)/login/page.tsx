@@ -10,7 +10,7 @@ import {
 } from '@yuki/ui/card'
 
 import { OauthButtons } from '../_oauth-buttons'
-import { redirectCaches } from '../_searchParams'
+import { redirectCaches } from '../_search-params'
 import { LoginForm } from './page.client'
 
 export default async function LoginPage({

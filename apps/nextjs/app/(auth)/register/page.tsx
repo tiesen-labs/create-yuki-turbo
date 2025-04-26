@@ -1,3 +1,4 @@
+import type { SearchParams } from 'nuqs'
 import Link from 'next/link'
 
 import {
@@ -8,9 +9,15 @@ import {
 } from '@yuki/ui/card'
 
 import { OauthButtons } from '../_oauth-buttons'
+import { redirectCaches } from '../_search-params'
 import { RegisterForm } from './page.client'
 
-export default function RegisterPage() {
+export default async function RegisterPage({
+  searchParams,
+}: {
+  searchParams: Promise<SearchParams>
+}) {
+  await redirectCaches.parse(searchParams)
   return (
     <>
       <CardHeader>

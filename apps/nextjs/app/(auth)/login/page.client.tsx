@@ -19,7 +19,7 @@ import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
 import { useORPC } from '@/lib/orpc/react'
-import { redirect } from '../_searchParams'
+import { redirect } from '../_search-params'
 
 export const LoginForm: React.FC = () => {
   const [{ redirectTo }] = useQueryStates(redirect.parsers, redirect.configs)
