@@ -44,11 +44,13 @@ function batchPrefetch(
 ) {
   const queryClient = getQueryClient()
 
-  for (const queryOptions of queryOptionsArray) {
-    if (queryOptions.queryKey[1]?.type === 'infinite')
-      void queryClient.prefetchInfiniteQuery(queryOptions as never)
-    else void queryClient.prefetchQuery(queryOptions)
-  }
+  void Promise.all(
+    queryOptionsArray.map((queryOptions) => {
+      if (queryOptions.queryKey[1]?.type === 'infinite')
+        void queryClient.prefetchInfiniteQuery(queryOptions as never)
+      else void queryClient.prefetchQuery(queryOptions)
+    }),
+  )
 }
 
 export { api, trpc, prefetch, batchPrefetch }
