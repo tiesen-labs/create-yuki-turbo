@@ -28,17 +28,31 @@ export const middleware: NextMiddleware = async (req, _event) => {
   }
 
   /**
-   * CSRF protection
+   * CSRF Protection Implementation
    *
-   * This implementation follows the principle that GET requests are safe from CSRF attacks
-   * as they should not modify state. Only GET requests are allowed to pass through without
-   * additional verification.
+   * This middleware implements Cross-Site Request Forgery protection using origin verification:
    *
-   * Note: For complete CSRF protection, non-GET requests should include:
-   * - Verification of CSRF tokens
-   * - Origin/Referer header validation
-   * - Additional measures depending on the application requirements
+   * Security approach:
+   * - Only requests with matching Origin and Host headers are allowed to proceed
+   * - GET requests should be treated as safe (read-only operations)
+   * - For non-GET requests, we verify that the request originated from our own domain
+   *
+   * Security considerations:
+   * 1. Modern browsers automatically send Origin headers for cross-origin requests
+   * 2. This approach is effective against basic CSRF attacks but should be combined with:
+   *    - CSRF tokens for sensitive operations
+   *    - SameSite cookie attributes (Strict or Lax)
+   *    - Content-Type verification for additional protection
+   *
+   * Known exceptions:
+   * - React Native clients bypass CSRF checks (identified by 'x-trpc-source' header)
+   *   WARNING: This creates a security vulnerability and should be addressed by implementing
+   *   a proper token-based authentication system for mobile clients before deployment.
    */
+
+  const isReactNative = req.headers.get('x-trpc-source') === 'react-native'
+  if (isReactNative) return NextResponse.next()
+
   const originHeader = req.headers.get('Origin') ?? ''
   const hostHeader =
     req.headers.get('Host') ?? req.headers.get('X-Forwarded-Host') ?? ''

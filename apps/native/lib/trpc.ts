@@ -39,7 +39,7 @@ const trpcClient = createTRPCClient<AppRouter>({
       url: getBaseUrl() + '/api/trpc',
       headers() {
         const headers = new Map<string, string>()
-        headers.set('x-trpc-source', 'react-expo')
+        headers.set('x-trpc-source', 'react-native')
 
         const token = getToken()
         headers.set('Authorization', `Bearer ${token}`)

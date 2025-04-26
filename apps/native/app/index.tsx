@@ -87,7 +87,7 @@ const PostCard: React.FC<{
         <Pressable
           style={styles.card_action}
           onPress={() => {
-            mutate(post)
+            mutate({ id: post.id })
           }}
           disabled={isPending}
         >
