@@ -18,10 +18,9 @@ const getQueryClient = () => {
   else return (clientQueryClientSingleton ??= createQueryClient())
 }
 
-export const { TRPCProvider, useTRPC, useTRPCClient } =
-  createTRPCContext<AppRouter>()
+const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<AppRouter>()
 
-export const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
+const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const queryClient = getQueryClient()
@@ -56,3 +55,5 @@ export const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
     </QueryClientProvider>
   )
 }
+
+export { TRPCReactProvider, useTRPC, useTRPCClient }

@@ -40,7 +40,7 @@ export const CreatePost: React.FC = () => {
   const form = useForm({
     schema: createPostSchema,
     defaultValues: { title: '', content: '' },
-    submitFn: (values) => trpcClient.post.create.mutate(values),
+    submitFn: trpcClient.post.create.mutate,
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: trpc.post.all.queryKey(),

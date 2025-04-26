@@ -46,7 +46,7 @@ const RegisterForm: React.FC = () => {
   const form = useForm({
     schema: signUpSchema,
     defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
-    submitFn: async (values) => trpcClient.auth.signUp.mutate(values),
+    submitFn: trpcClient.auth.signUp.mutate,
     onSuccess: () => {
       toast.success('You have successfully registered!')
       void router('/login')

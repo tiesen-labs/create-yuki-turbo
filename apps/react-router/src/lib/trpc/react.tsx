@@ -20,10 +20,9 @@ const getQueryClient = () => {
   else return (clientQueryClientSingleton ??= createQueryClient())
 }
 
-export const { TRPCProvider, useTRPC, useTRPCClient } =
-  createTRPCContext<AppRouter>()
+const { TRPCProvider, useTRPC, useTRPCClient } = createTRPCContext<AppRouter>()
 
-export const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
+const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const queryClient = getQueryClient()
@@ -59,9 +58,7 @@ export const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
   )
 }
 
-export function HydrateClient({
-  children,
-}: Readonly<{ children: React.ReactNode }>) {
+function HydrateClient({ children }: Readonly<{ children: React.ReactNode }>) {
   const queryClient = getQueryClient()
 
   return (
@@ -70,3 +67,5 @@ export function HydrateClient({
     </HydrationBoundary>
   )
 }
+
+export { TRPCReactProvider, useTRPC, useTRPCClient, HydrateClient }
