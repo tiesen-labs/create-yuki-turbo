@@ -15,7 +15,7 @@ export const postRouter = {
   byId: publicProcedure
     .input(byIdSchema)
     .query(({ ctx, input }) =>
-      ctx.db.post.findFirst({ where: { id: input.id } }),
+      ctx.db.post.findUnique({ where: { id: input.id } }),
     ),
 
   create: protectedProcedure

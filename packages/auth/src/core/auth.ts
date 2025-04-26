@@ -250,7 +250,7 @@ export class Auth<TProviders extends Providers> {
     if (existingAccount?.user) return existingAccount.user
 
     // Check for existing user with this email
-    const existingUser = await this.db.user.findFirst({
+    const existingUser = await this.db.user.findUnique({
       where: { email },
     })
     if (existingUser) {

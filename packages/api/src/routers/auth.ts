@@ -17,7 +17,7 @@ export const authRouter = {
   signIn: publicProcedure
     .input(signInSchema)
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.db.user.findFirst({
+      const user = await ctx.db.user.findUnique({
         where: { email: input.email },
       })
 
@@ -41,7 +41,7 @@ export const authRouter = {
   signUp: publicProcedure
     .input(signUpSchema)
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.db.user.findFirst({
+      const user = await ctx.db.user.findUnique({
         where: { email: input.email },
       })
 
