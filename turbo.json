@@ -21,12 +21,12 @@
       "outputLogs": "new-only"
     },
     "lint": {
-      "dependsOn": ["^lint"],
+      "dependsOn": ["^db:generate", "^lint"],
       "outputs": [".cache/.eslintcache"],
       "outputLogs": "new-only"
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
+      "dependsOn": ["^db:generate", "^typecheck"],
       "outputs": [".cache/tsbuildinfo.json"],
       "outputLogs": "new-only"
     },

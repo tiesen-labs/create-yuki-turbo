@@ -73,6 +73,7 @@
         "superjson": "^2.2.2",
       },
       "devDependencies": {
+        "@prisma/nextjs-monorepo-workaround-plugin": "^6.6.0",
         "@tailwindcss/postcss": "^4.1.4",
         "@types/node": "22.15.2",
         "@types/react": "19.1.2",
@@ -814,6 +815,8 @@
     "@prisma/fetch-engine": ["@prisma/fetch-engine@6.6.0", "", { "dependencies": { "@prisma/debug": "6.6.0", "@prisma/engines-version": "6.6.0-53.f676762280b54cd07c770017ed3711ddde35f37a", "@prisma/get-platform": "6.6.0" } }, "sha512-Ohfo8gKp05LFLZaBlPUApM0M7k43a0jmo86YY35u1/4t+vuQH9mRGU7jGwVzGFY3v+9edeb/cowb1oG4buM1yw=="],
 
     "@prisma/get-platform": ["@prisma/get-platform@6.6.0", "", { "dependencies": { "@prisma/debug": "6.6.0" } }, "sha512-3qCwmnT4Jh5WCGUrkWcc6VZaw0JY7eWN175/pcb5Z6FiLZZ3ygY93UX0WuV41bG51a6JN/oBH0uywJ90Y+V5eA=="],
+
+    "@prisma/nextjs-monorepo-workaround-plugin": ["@prisma/nextjs-monorepo-workaround-plugin@6.6.0", "", {}, "sha512-aChO+nh3YH4ZuoHof0wl063K8r/tlIBMVIGvuCZJgbUDIF3L+wG7A8LFKRc46NOX1f9GOJ8n8mZzhJTuDr8wYQ=="],
 
     "@radix-ui/react-compose-refs": ["@radix-ui/react-compose-refs@1.1.2", "", { "peerDependencies": { "@types/react": "*", "react": "^16.8 || ^17.0 || ^18.0 || ^19.0 || ^19.0.0-rc" }, "optionalPeers": ["@types/react"] }, "sha512-z4eqJvfiNnFMHIIvXP3CY57y2WJs5g2v3X0zm9mEJkrkNv4rDxu+sg9Jh8EkXyeqBkB7SOcboo9dMVqhyrACIg=="],
 
