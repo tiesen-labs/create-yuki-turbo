@@ -6,11 +6,8 @@ import { redirect } from 'next/navigation'
 import { env } from '@yuki/env'
 
 export const setSessionCookie = async (
-  session: {
-    sessionToken: string
-    expires: Date
-  },
-  redirect_to?: string,
+  session: { sessionToken: string; expires: Date },
+  redirect_to: string,
 ) => {
   try {
     const nextCookies = await cookies()
@@ -26,13 +23,11 @@ export const setSessionCookie = async (
     console.error('Error setting session cookie:', error)
   } finally {
     redirect(
-      redirect_to
-        ? redirect_to.startsWith('http://') ||
-          redirect_to.startsWith('https://') ||
-          redirect_to.startsWith('exp:')
-          ? `${redirect_to}?token=${session.sessionToken}`
-          : redirect_to
-        : '/',
+      redirect_to.startsWith('http://') ||
+        redirect_to.startsWith('https://') ||
+        redirect_to.startsWith('exp:')
+        ? `${redirect_to}?token=${session.sessionToken}`
+        : redirect_to,
     )
   }
 }

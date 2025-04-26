@@ -1,5 +1,7 @@
 'use client'
 
+import { useQueryStates } from 'nuqs'
+
 import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import {
@@ -16,11 +18,11 @@ import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
 import { useTRPCClient } from '@/lib/trpc/react'
+import { redirect } from '../_search-params'
 import { setSessionCookie } from './page.action'
 
-export const LoginForm: React.FC<{ redirect_to?: string }> = ({
-  redirect_to,
-}) => {
+export const LoginForm: React.FC = () => {
+  const [{ redirectTo }] = useQueryStates(redirect.parsers, redirect.configs)
   const trpcClient = useTRPCClient()
   const { refresh } = useSession()
 
@@ -30,7 +32,7 @@ export const LoginForm: React.FC<{ redirect_to?: string }> = ({
     submitFn: trpcClient.auth.signIn.mutate,
     onSuccess: async (session) => {
       await refresh(session.sessionToken)
-      void setSessionCookie(session, redirect_to)
+      void setSessionCookie(session, redirectTo)
       toast.success('You have successfully logged in!')
     },
     onError: (error) => {

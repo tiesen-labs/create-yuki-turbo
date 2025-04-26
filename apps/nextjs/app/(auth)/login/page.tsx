@@ -1,3 +1,5 @@
+import type { SearchParams } from 'nuqs'
+import { Suspense } from 'react'
 import Link from 'next/link'
 
 import {
@@ -8,14 +10,15 @@ import {
 } from '@yuki/ui/card'
 
 import { OauthButtons } from '../_oauth-buttons'
+import { redirectCaches } from '../_search-params'
 import { LoginForm } from './page.client'
 
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirect_to?: string }>
+  searchParams: Promise<SearchParams>
 }) {
-  const { redirect_to } = await searchParams
+  await redirectCaches.parse(searchParams)
 
   return (
     <>
@@ -27,7 +30,9 @@ export default async function LoginPage({
       </CardHeader>
 
       <CardContent>
-        <LoginForm redirect_to={redirect_to} />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
 
         <p className="mt-4 text-sm">
           Don&apos;t have an account?{' '}
@@ -37,7 +42,7 @@ export default async function LoginPage({
         </p>
       </CardContent>
 
-      <OauthButtons redirect_to={redirect_to} />
+      <OauthButtons />
     </>
   )
 }
