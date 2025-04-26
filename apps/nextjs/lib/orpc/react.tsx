@@ -5,10 +5,7 @@ import type { QueryClient } from '@tanstack/react-query'
 import * as React from 'react'
 import { createORPCClient } from '@orpc/client'
 import { RPCLink } from '@orpc/client/fetch'
-import {
-  BatchLinkPlugin,
-  SimpleCsrfProtectionLinkPlugin,
-} from '@orpc/client/plugins'
+import { BatchLinkPlugin } from '@orpc/client/plugins'
 import { createORPCReactQueryUtils } from '@orpc/react-query'
 import { QueryClientProvider } from '@tanstack/react-query'
 
@@ -47,7 +44,6 @@ export const ORPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
       url: getBaseUrl() + '/api/orpc',
       headers: { 'x-orpc-source': 'react-nextjs' },
       plugins: [
-        new SimpleCsrfProtectionLinkPlugin(),
         new BatchLinkPlugin({
           groups: [{ condition: () => true, context: {} }],
         }),

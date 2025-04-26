@@ -50,7 +50,7 @@ const ORPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
     const link = new RPCLink({
       url: getBaseUrl() + '/api/orpc',
       headers: {
-        'x-orpc-source': 'react-nextjs',
+        'x-orpc-source': 'react-native',
         authorization: `Bearer ${getToken()}`,
       },
     })

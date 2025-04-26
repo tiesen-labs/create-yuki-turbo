@@ -4,7 +4,6 @@ import type {
 } from '@tanstack/react-query'
 import { cache } from 'react'
 import { createRouterUtils } from '@orpc/react-query'
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
 
 import { createCaller, createORPCContext } from '@yuki/api'
 
@@ -25,16 +24,6 @@ const getQueryClient = cache(createQueryClient)
 
 const api = (headers: Headers) => createCaller(() => createContext(headers))
 const orpc = (headers: Headers) => createRouterUtils(api(headers))
-
-function HydrateClient({ children }: Readonly<{ children: React.ReactNode }>) {
-  const queryClient = getQueryClient()
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      {children}
-    </HydrationBoundary>
-  )
-}
 
 function prefetch(
   queryOptions: FetchQueryOptions | FetchInfiniteQueryOptions,
@@ -60,4 +49,4 @@ function batchPrefetch(
   )
 }
 
-export { orpc, prefetch, batchPrefetch, HydrateClient }
+export { orpc, prefetch, batchPrefetch }

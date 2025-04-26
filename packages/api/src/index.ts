@@ -5,11 +5,7 @@ import type {
 } from '@orpc/server'
 import { createRouterClient } from '@orpc/server'
 import { RPCHandler } from '@orpc/server/fetch'
-import {
-  BatchHandlerPlugin,
-  CORSPlugin,
-  SimpleCsrfProtectionHandlerPlugin,
-} from '@orpc/server/plugins'
+import { BatchHandlerPlugin, CORSPlugin } from '@orpc/server/plugins'
 
 import { createORPCContext, createORPCRouter } from './orpc'
 import { authRouter } from './routers/auth'
@@ -35,11 +31,7 @@ const handlers = async (req: Request) => {
     response = new Response(null, { status: 204 })
   } else {
     const handler = new RPCHandler(appRouter, {
-      plugins: [
-        new CORSPlugin(),
-        new BatchHandlerPlugin(),
-        new SimpleCsrfProtectionHandlerPlugin(),
-      ],
+      plugins: [new CORSPlugin(), new BatchHandlerPlugin()],
     })
 
     const result = await handler.handle(req, {

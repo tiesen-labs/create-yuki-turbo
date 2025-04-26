@@ -7,7 +7,8 @@ import { Typography } from '@yuki/ui/typography'
 
 import type { Route } from './+types/_index'
 import { CreatePost, PostCardSkeleton, PostList } from '@/components/post'
-import { HydrateClient, orpc, prefetch } from '@/lib/orpc/server'
+import { HydrateClient } from '@/lib/orpc/react'
+import { orpc, prefetch } from '@/lib/orpc/server'
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   prefetch(orpc(request.headers).post.all.queryOptions())
