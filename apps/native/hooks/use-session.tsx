@@ -11,7 +11,7 @@ import { getBaseUrl } from '@/lib/utils'
 
 interface SessionContextValue {
   session: SessionResult
-  isLoading: boolean
+  status: 'loading' | 'authenticated' | 'unauthenticated'
   signIn: () => Promise<void>
   signOut: () => Promise<void>
 }
@@ -29,43 +29,44 @@ export function useSession() {
 export function SessionProvider(
   props: Readonly<{
     children: React.ReactNode
-    session?: SessionResult
   }>,
 ) {
-  const hasInitialSession = props.session !== undefined
-
-  const [isLoading, setIsLoading] = React.useState(!hasInitialSession)
-  const [session, setSession] = React.useState<SessionResult>(() => {
-    if (hasInitialSession) return props.session
-    return { expires: new Date() }
+  const [isLoading, setIsLoading] = React.useState(false)
+  const [session, setSession] = React.useState<SessionResult>({
+    expires: new Date(),
   })
 
-  async function fetchSession(): Promise<void> {
-    setIsLoading(true)
-    try {
-      const res = await fetch(`${getBaseUrl()}/api/auth`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${getToken()}`,
-        },
-      })
+  const status = React.useMemo(() => {
+    if (isLoading) return 'loading' as const
+    return session.user
+      ? ('authenticated' as const)
+      : ('unauthenticated' as const)
+  }, [session, isLoading])
 
-      if (!res.ok) throw new Error('Failed to fetch session')
-      const data = (await res.json()) as SessionResult
-      setSession(data)
-    } catch (error) {
-      console.error('Error fetching session:', error)
-      setSession({ expires: new Date() })
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const fetchSession = React.useCallback(
+    async (token: string | null): Promise<void> => {
+      setIsLoading(true)
+      try {
+        const res = await fetch(`${getBaseUrl()}/api/auth`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        })
+        if (!res.ok) throw new Error(`Failed to fetch session: ${res.status}`)
+
+        const sessionData = (await res.json()) as SessionResult
+        setSession(sessionData)
+      } catch (error) {
+        console.error('Error fetching session:', error)
+        setSession({ expires: new Date() })
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [],
+  )
 
   React.useEffect(() => {
-    if (hasInitialSession) return
-    void fetchSession()
-  }, [hasInitialSession])
+    void fetchSession(getToken())
+  }, [fetchSession])
 
   const signIn = React.useCallback(async () => {
     const redirectTo = Linking.createURL('/')
@@ -79,8 +80,8 @@ export function SessionProvider(
     const sessionToken = String(url.queryParams?.token)
     if (!sessionToken) throw new Error('No session token found')
     setToken(sessionToken)
-    await fetchSession()
-  }, [])
+    await fetchSession(sessionToken)
+  }, [fetchSession])
 
   const signOut = React.useCallback(async () => {
     await fetch(`${getBaseUrl()}/api/auth/sign-out`, {
@@ -97,11 +98,11 @@ export function SessionProvider(
   const value = React.useMemo(
     () => ({
       session,
-      isLoading,
+      status,
       signIn,
       signOut,
     }),
-    [session, isLoading, signIn, signOut],
+    [session, status, signIn, signOut],
   )
 
   return <SessionContext value={value}>{props.children}</SessionContext>

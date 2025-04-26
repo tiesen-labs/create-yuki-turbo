@@ -25,7 +25,7 @@ const configs = ({ config }: ConfigContext) =>
         backgroundColor: '#0a0a0a',
       },
     },
-    // extra: { eas: { projectId: 'your-project-id' } },
+    // extra: { eas: { projectId: '' } },
     experiments: {
       tsconfigPaths: true,
       typedRoutes: true,
