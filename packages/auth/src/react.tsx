@@ -16,7 +16,7 @@ const SessionContext = React.createContext<SessionContextValue | undefined>(
 )
 
 export function useSession() {
-  const ctx = React.useContext(SessionContext)
+  const ctx = React.use(SessionContext)
   if (!ctx) throw new Error('useSession must be used within a SessionProvider')
   return ctx
 }
