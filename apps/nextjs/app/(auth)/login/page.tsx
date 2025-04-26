@@ -1,4 +1,5 @@
 import type { SearchParams } from 'nuqs'
+import { Suspense } from 'react'
 import Link from 'next/link'
 
 import {
@@ -29,7 +30,9 @@ export default async function LoginPage({
       </CardHeader>
 
       <CardContent>
-        <LoginForm />
+        <Suspense>
+          <LoginForm />
+        </Suspense>
 
         <p className="mt-4 text-sm">
           Don&apos;t have an account?{' '}
