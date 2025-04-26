@@ -52,7 +52,7 @@ packages
   ├─ auth
   |   └─ Authentication from scratch using arctic for OAuth.
   ├─ db
-  |   └─ Typesafe db calls using Drizzle ORM
+  |   └─ Typesafe db calls using Prisma ORM
   ├─ env
   |   └─ Typesafe environment variables
   ├─ ui
@@ -87,7 +87,7 @@ bun i
 # There is an `.env.example` in the root directory you can use for reference
 cp .env.example .env
 
-# Push the Drizzle schema to the database
+# Push the Prisma schema to the database
 bun db:push
 ```
 
