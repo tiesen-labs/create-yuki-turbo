@@ -4,9 +4,8 @@ import {
   encodeHexLowerCase,
 } from '@oslojs/encoding'
 
-import type { users } from '@yuki/db/schema'
-import { db as database, eq } from '@yuki/db'
-import { sessions } from '@yuki/db/schema'
+import type { User } from '@yuki/db'
+import { db as database } from '@yuki/db'
 
 export class Session {
   private readonly TOKEN_BYTES = 20
@@ -22,21 +21,19 @@ export class Session {
     const sessionToken = this.hashToken(token)
     const expires = new Date(Date.now() + this.SESSION_EXPIRATION)
 
-    const [session] = await this.db
-      .insert(sessions)
-      .values({ sessionToken, expires, userId })
-      .returning()
+    const session = await this.db.session.create({
+      data: { sessionToken, expires, userId },
+    })
 
-    if (!session) throw new Error('Failed to create session')
     return { sessionToken: token, expires: session.expires }
   }
 
   public async validateToken(token: string): Promise<SessionResult> {
     const sessionToken = this.hashToken(token)
 
-    const result = await this.db.query.sessions.findFirst({
-      where: eq(sessions.sessionToken, sessionToken),
-      with: { user: true },
+    const result = await this.db.session.findFirst({
+      where: { sessionToken },
+      include: { user: true },
     })
 
     if (!result) return { expires: new Date() }
@@ -51,10 +48,10 @@ export class Session {
 
     if (now >= session.expires.getTime() - this.SESSION_REFRESH_THRESHOLD) {
       const newExpires = new Date(Date.now() + this.SESSION_EXPIRATION)
-      await this.db
-        .update(sessions)
-        .set({ expires: newExpires })
-        .where(eq(sessions.sessionToken, sessionToken))
+      await this.db.session.update({
+        where: { sessionToken },
+        data: { expires: newExpires },
+      })
       session.expires = newExpires
     }
 
@@ -66,7 +63,7 @@ export class Session {
   }
 
   public async invalidateAllTokens(userId: string): Promise<void> {
-    await this.db.delete(sessions).where(eq(sessions.userId, userId))
+    await this.db.session.deleteMany({ where: { userId } })
   }
 
   private generateToken(): string {
@@ -81,13 +78,11 @@ export class Session {
   }
 
   private async delete(sessionToken: string): Promise<void> {
-    await this.db
-      .delete(sessions)
-      .where(eq(sessions.sessionToken, sessionToken))
+    await this.db.session.delete({ where: { sessionToken } })
   }
 }
 
 export interface SessionResult {
-  user?: typeof users.$inferSelect
+  user?: User
   expires: Date
 }

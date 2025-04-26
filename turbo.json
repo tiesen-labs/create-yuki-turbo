@@ -30,6 +30,9 @@
       "outputs": [".cache/tsbuildinfo.json"],
       "outputLogs": "new-only"
     },
+    "db:generate": {
+      "cache": false
+    },
     "db:push": {
       "cache": false,
       "interactive": true

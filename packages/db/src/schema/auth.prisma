@@ -1,0 +1,34 @@
+model Session {
+  sessionToken String   @id @map("session_token") @db.VarChar(255)
+  expires      DateTime @db.Timestamptz(6)
+  userId       String   @map("user_id") @db.Uuid
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade, map: "session_user_id_user_id_fk")
+
+  @@map("session")
+}
+
+model User {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name      String    @db.VarChar(255)
+  email     String    @unique(map: "user_email_unique") @db.VarChar(255)
+  password  String?   @db.VarChar(255)
+  image     String    @db.VarChar(255)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(6)
+  updatedAt DateTime? @map("updated_at") @db.Timestamptz(6)
+
+  account Account[]
+  post    Post[]
+  session Session[]
+
+  @@map("user")
+}
+
+model Account {
+  provider          String @db.VarChar(255)
+  providerAccountId String @map("provider_account_id") @db.VarChar(255)
+  userId            String @map("user_id") @db.Uuid
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade, map: "account_user_id_user_id_fk")
+
+  @@id([provider, providerAccountId], map: "account_provider_provider_account_id_pk")
+  @@map("account")
+}

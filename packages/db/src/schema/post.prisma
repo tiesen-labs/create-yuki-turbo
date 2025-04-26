@@ -1,0 +1,11 @@
+model Post {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title     String   @db.VarChar(255)
+  content   String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  authorId String @map("author_id") @db.Uuid
+  author   User   @relation(fields: [authorId], references: [id], onDelete: Cascade, map: "post_author_id_user_id_fk")
+
+  @@map("post")
+}

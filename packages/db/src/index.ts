@@ -1,18 +1,17 @@
-import { Pool } from '@neondatabase/serverless'
-import { drizzle } from 'drizzle-orm/neon-serverless'
+import { PrismaNeon } from '@prisma/adapter-neon'
 
 import { env } from '@yuki/env'
 
-import * as schema from './schema'
+import { PrismaClient } from './generated/client'
 
-const createDrizzleClient = () => {
-  const pool = new Pool({ connectionString: env.DATABASE_URL })
-  return drizzle({ client: pool, schema, casing: 'snake_case' })
+const createPrismaClient = () => {
+  const adapter = new PrismaNeon({ connectionString: env.DATABASE_URL })
+  return new PrismaClient({ adapter })
 }
-const globalForDrizzle = globalThis as unknown as {
-  db: ReturnType<typeof createDrizzleClient> | undefined
+const globalForPrisma = globalThis as unknown as {
+  db: ReturnType<typeof createPrismaClient> | undefined
 }
-export const db = globalForDrizzle.db ?? createDrizzleClient()
-if (env.NODE_ENV !== 'production') globalForDrizzle.db = db
+export const db = globalForPrisma.db ?? createPrismaClient()
+if (env.NODE_ENV !== 'production') globalForPrisma.db = db
 
-export * from 'drizzle-orm/sql'
+export * from './generated/client'

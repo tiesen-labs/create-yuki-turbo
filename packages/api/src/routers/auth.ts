@@ -2,8 +2,6 @@ import type { TRPCRouterRecord } from '@trpc/server'
 import { TRPCError } from '@trpc/server'
 
 import { Password, Session } from '@yuki/auth'
-import { eq } from '@yuki/db'
-import { users } from '@yuki/db/schema'
 import {
   changePasswordSchema,
   signInSchema,
@@ -19,8 +17,8 @@ export const authRouter = {
   signIn: publicProcedure
     .input(signInSchema)
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.db.query.users.findFirst({
-        where: (users, { eq }) => eq(users.email, input.email),
+      const user = await ctx.db.user.findFirst({
+        where: { email: input.email },
       })
 
       if (!user)
@@ -43,8 +41,8 @@ export const authRouter = {
   signUp: publicProcedure
     .input(signUpSchema)
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.db.query.users.findFirst({
-        where: (users, { eq }) => eq(users.email, input.email),
+      const user = await ctx.db.user.findFirst({
+        where: { email: input.email },
       })
 
       if (user)
@@ -53,15 +51,14 @@ export const authRouter = {
           message: 'User already exists',
         })
 
-      return await ctx.db
-        .insert(users)
-        .values({
+      return await ctx.db.user.create({
+        data: {
           name: input.name,
           email: input.email,
           image: '',
           password: password.hash(input.password),
-        })
-        .returning()
+        },
+      })
     }),
 
   changePassword: protectedProcedure
@@ -76,10 +73,9 @@ export const authRouter = {
           message: 'Invalid password',
         })
 
-      return await ctx.db
-        .update(users)
-        .set({ password: password.hash(input.newPassword) })
-        .where(eq(users.id, ctx.session.user.id))
-        .returning()
+      return await ctx.db.user.update({
+        where: { id: ctx.session.user.id },
+        data: { password: password.hash(input.newPassword) },
+      })
     }),
 } satisfies TRPCRouterRecord

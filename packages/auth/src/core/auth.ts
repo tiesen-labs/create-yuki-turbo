@@ -1,8 +1,8 @@
 import { cookies } from 'next/headers'
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
 
+import type { User } from '@yuki/db'
 import { db } from '@yuki/db'
-import { accounts, users } from '@yuki/db/schema'
 import { env } from '@yuki/env'
 
 import type { BaseProvider } from '../providers/base'
@@ -239,43 +239,38 @@ export class Auth<TProviders extends Providers> {
     name: string
     email: string
     image: string
-  }): Promise<typeof users.$inferSelect> {
+  }): Promise<User> {
     const { provider, providerAccountId, email } = data
 
     // Check for existing account with this provider
-    const existingAccount = await this.db.query.accounts.findFirst({
-      where: (accounts, { and, eq }) =>
-        and(
-          eq(accounts.provider, provider),
-          eq(accounts.providerAccountId, providerAccountId),
-        ),
-      with: { user: true },
+    const existingAccount = await this.db.account.findUnique({
+      where: { provider_providerAccountId: { provider, providerAccountId } },
+      include: { user: true },
     })
     if (existingAccount?.user) return existingAccount.user
 
     // Check for existing user with this email
-    const existingUser = await this.db.query.users.findFirst({
-      where: (user, { eq }) => eq(user.email, email),
+    const existingUser = await this.db.user.findFirst({
+      where: { email },
     })
     if (existingUser) {
-      await this.db.insert(accounts).values({
-        provider,
-        providerAccountId,
-        userId: existingUser.id,
+      await this.db.account.create({
+        data: {
+          provider,
+          providerAccountId,
+          userId: existingUser.id,
+        },
       })
       return existingUser
     }
 
-    return await this.db.transaction(async (tx) => {
-      const [newUser] = await tx.insert(users).values(data).returning()
-      if (!newUser) throw new Error('Failed to create user')
-
-      await tx.insert(accounts).values({
-        provider,
-        providerAccountId,
-        userId: newUser.id,
+    return await this.db.$transaction(async (tx) => {
+      const newUser = await tx.user.create({
+        data: { name: data.name, email, image: data.image },
       })
-
+      await tx.account.create({
+        data: { provider, providerAccountId, userId: newUser.id },
+      })
       return newUser
     })
   }
