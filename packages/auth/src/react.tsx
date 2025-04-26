@@ -91,7 +91,5 @@ export function SessionProvider({
     [session, status, signOut, fetchSession],
   )
 
-  return (
-    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
-  )
+  return <SessionContext value={value}>{children}</SessionContext>
 }
