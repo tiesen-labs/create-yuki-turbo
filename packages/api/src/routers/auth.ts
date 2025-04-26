@@ -16,6 +16,7 @@ const session = new Session()
 
 export const authRouter = {
   signIn: publicProcedure
+    .route({ method: 'POST' })
     .input(signInSchema)
     .handler(async ({ context, input }) => {
       const user = await context.db.query.users.findFirst({
@@ -37,6 +38,7 @@ export const authRouter = {
     }),
 
   signUp: publicProcedure
+    .route({ method: 'POST' })
     .input(signUpSchema)
     .handler(async ({ context, input }) => {
       const user = await context.db.query.users.findFirst({
@@ -60,6 +62,7 @@ export const authRouter = {
     }),
 
   changePassword: protectedProcedure
+    .route({ method: 'POST' })
     .input(changePasswordSchema)
     .handler(async ({ context, input }) => {
       if (

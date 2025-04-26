@@ -45,12 +45,12 @@ export const middleware: NextMiddleware = async (req, _event) => {
    *    - Content-Type verification for additional protection
    *
    * Known exceptions:
-   * - React Native clients bypass CSRF checks (identified by 'x-trpc-source' header)
+   * - React Native clients bypass CSRF checks (identified by 'x-orpc-source' header)
    *   WARNING: This creates a security vulnerability and should be addressed by implementing
    *   a proper token-based authentication system for mobile clients before deployment.
    */
 
-  const isReactNative = req.headers.get('x-trpc-source') === 'react-native'
+  const isReactNative = req.headers.get('x-orpc-source') === 'react-native'
   if (isReactNative) return NextResponse.next()
 
   const originHeader = req.headers.get('Origin') ?? ''

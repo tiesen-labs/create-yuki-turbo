@@ -16,8 +16,6 @@
     "@react-router/node": "^7.5.2",
     "@react-router/serve": "^7.5.2",
     "@tanstack/react-query": "^5.74.4",
-    "@trpc/client": "^11.1.1",
-    "@trpc/tanstack-react-query": "^11.1.1",
     "@yuki/api": "workspace:*",
     "@yuki/auth": "workspace:*",
     "@yuki/db": "workspace:*",
@@ -27,8 +25,7 @@
     "isbot": "^5.1.27",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "react-router": "^7.5.2",
-    "superjson": "^2.2.2"
+    "react-router": "^7.5.2"
   },
   "devDependencies": {
     "@react-router/dev": "^7.5.2",

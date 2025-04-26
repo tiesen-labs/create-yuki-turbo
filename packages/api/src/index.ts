@@ -5,7 +5,11 @@ import type {
 } from '@orpc/server'
 import { createRouterClient } from '@orpc/server'
 import { RPCHandler } from '@orpc/server/fetch'
-import { BatchHandlerPlugin, CORSPlugin } from '@orpc/server/plugins'
+import {
+  BatchHandlerPlugin,
+  CORSPlugin,
+  SimpleCsrfProtectionHandlerPlugin,
+} from '@orpc/server/plugins'
 
 import { createORPCContext, createORPCRouter } from './orpc'
 import { authRouter } from './routers/auth'
@@ -31,8 +35,13 @@ const handlers = async (req: Request) => {
     response = new Response(null, { status: 204 })
   } else {
     const handler = new RPCHandler(appRouter, {
-      plugins: [new CORSPlugin(), new BatchHandlerPlugin()],
+      plugins: [
+        new CORSPlugin(),
+        new BatchHandlerPlugin(),
+        new SimpleCsrfProtectionHandlerPlugin(),
+      ],
     })
+
     const result = await handler.handle(req, {
       prefix: '/api/orpc',
       context: await createORPCContext({ headers: req.headers }),
@@ -42,14 +51,6 @@ const handlers = async (req: Request) => {
     else response = new Response('Not Found', { status: 404 })
   }
 
-  /**
-   * Configure basic CORS headers
-   * You should extend this to match your needs
-   */
-  response.headers.set('Access-Control-Allow-Origin', '*')
-  response.headers.set('Access-Control-Request-Method', '*')
-  response.headers.set('Access-Control-Allow-Methods', 'OPTIONS, GET, POST')
-  response.headers.set('Access-Control-Allow-Headers', '*')
   return response
 }
 

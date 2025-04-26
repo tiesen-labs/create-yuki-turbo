@@ -15,11 +15,11 @@
       "version": "1.0.0",
       "dependencies": {
         "@expo-google-fonts/geist": "^0.3.1",
+        "@orpc/client": "^1.1.0",
+        "@orpc/react-query": "^1.1.0",
         "@react-navigation/elements": "^2.3.8",
         "@react-navigation/native": "^7.1.6",
         "@tanstack/react-query": "^5.74.4",
-        "@trpc/client": "^11.1.1",
-        "@trpc/tanstack-react-query": "^11.1.1",
         "@yuki/api": "workspace:*",
         "@yuki/auth": "workspace:*",
         "expo": "~53.0.0-preview.7",
@@ -38,7 +38,6 @@
         "react-native-reanimated": "~3.17.5",
         "react-native-safe-area-context": "5.4.0",
         "react-native-screens": "~4.10.0",
-        "superjson": "^2.2.2",
       },
       "devDependencies": {
         "@babel/core": "^7.26.10",
@@ -61,8 +60,6 @@
         "@orpc/client": "^1.1.0",
         "@orpc/react-query": "^1.1.0",
         "@tanstack/react-query": "^5.74.4",
-        "@trpc/client": "^11.1.1",
-        "@trpc/tanstack-react-query": "^11.1.1",
         "@yuki/api": "workspace:*",
         "@yuki/auth": "workspace:*",
         "@yuki/db": "workspace:*",
@@ -72,7 +69,6 @@
         "next": "15.3.1",
         "react": "19.0.0",
         "react-dom": "19.0.0",
-        "superjson": "^2.2.2",
       },
       "devDependencies": {
         "@tailwindcss/postcss": "^4.1.4",
@@ -96,8 +92,6 @@
         "@react-router/node": "^7.5.2",
         "@react-router/serve": "^7.5.2",
         "@tanstack/react-query": "^5.74.4",
-        "@trpc/client": "^11.1.1",
-        "@trpc/tanstack-react-query": "^11.1.1",
         "@yuki/api": "workspace:*",
         "@yuki/auth": "workspace:*",
         "@yuki/db": "workspace:*",
@@ -108,7 +102,6 @@
         "react": "19.0.0",
         "react-dom": "19.0.0",
         "react-router": "^7.5.2",
-        "superjson": "^2.2.2",
       },
       "devDependencies": {
         "@react-router/dev": "^7.5.2",
@@ -962,12 +955,6 @@
     "@tanstack/react-query": ["@tanstack/react-query@5.74.4", "", { "dependencies": { "@tanstack/query-core": "5.74.4" }, "peerDependencies": { "react": "^18 || ^19" } }, "sha512-mAbxw60d4ffQ4qmRYfkO1xzRBPUEf/72Dgo3qqea0J66nIKuDTLEqQt0ku++SDFlMGMnB6uKDnEG1xD/TDse4Q=="],
 
     "@tootallnate/quickjs-emscripten": ["@tootallnate/quickjs-emscripten@0.23.0", "", {}, "sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA=="],
-
-    "@trpc/client": ["@trpc/client@11.1.1", "", { "peerDependencies": { "@trpc/server": "11.1.1", "typescript": ">=5.7.2" } }, "sha512-Beiv56hlt+ARbijtUsCQOvKJw/FkfuVk4W9TzJl285iIJw8iCA3ZTwTG9GjIeSgeR7d2MyOeUbI26LV255n33A=="],
-
-    "@trpc/server": ["@trpc/server@11.1.1", "", { "peerDependencies": { "typescript": ">=5.7.2" } }, "sha512-ZjPN3ypBHvGMAlMgeZPrxlRcH/3dn4AK0s5Ph1z+E6uiAvIQVCj7ZoMlXeeBsIy4THGDAk953jHVW2kMnlbb4g=="],
-
-    "@trpc/tanstack-react-query": ["@trpc/tanstack-react-query@11.1.1", "", { "peerDependencies": { "@tanstack/react-query": "^5.67.1", "@trpc/client": "11.1.1", "@trpc/server": "11.1.1", "react": ">=18.2.0", "react-dom": ">=18.2.0", "typescript": ">=5.7.2" } }, "sha512-yLEGAixJk4f4epjuilhO2wZV/u6/Gwl0rjTep1C71HcLB09kJdphACf2c8z2fGnKpAbMDSlg3YXzR92eItkR4w=="],
 
     "@ts-morph/common": ["@ts-morph/common@0.11.1", "", { "dependencies": { "fast-glob": "^3.2.7", "minimatch": "^3.0.4", "mkdirp": "^1.0.4", "path-browserify": "^1.0.1" } }, "sha512-7hWZS0NRpEsNV8vWJzg7FEz6V8MaLNeJOmwmghqUXTpzk16V1LLZhdo+4QvE/+zv4cVci0OviuJFnqhEfoV3+g=="],
 

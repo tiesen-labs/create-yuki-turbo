@@ -45,10 +45,10 @@ apps
   └─ native
       ├─ Expo 53 (EXPERIMENTAL)
       ├─ React Native using React 19
-      └─ Typesafe API calls using tRPC
+      └─ Typesafe API calls using oRPC
 packages
   ├─ api
-  |   └─ tRPC v11 router definition
+  |   └─ oRPC v1 router definition
   ├─ auth
   |   └─ Authentication from scratch using arctic for OAuth.
   ├─ db

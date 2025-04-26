@@ -5,7 +5,7 @@ import { byIdSchema, createPostSchema } from '@yuki/validators/post'
 import { protectedProcedure, publicProcedure } from '../orpc'
 
 export const postRouter = {
-  all: publicProcedure.handler(({ context }) =>
+  all: publicProcedure.route({ method: 'GET' }).handler(({ context }) =>
     context.db.query.posts.findMany({
       orderBy: desc(posts.createdAt),
       with: { author: { columns: { id: true, name: true, image: true } } },
@@ -19,6 +19,7 @@ export const postRouter = {
   ),
 
   create: protectedProcedure
+    .route({ method: 'POST' })
     .input(createPostSchema)
     .handler(({ context, input }) =>
       context.db
@@ -31,6 +32,7 @@ export const postRouter = {
     ),
 
   delete: protectedProcedure
+    .route({ method: 'DELETE' })
     .input(byIdSchema)
     .handler(({ context, input }) =>
       context.db.delete(posts).where(eq(posts.id, input.id)).returning(),

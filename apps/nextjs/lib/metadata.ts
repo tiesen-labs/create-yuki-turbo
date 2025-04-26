@@ -12,7 +12,7 @@ export const createMetadata = (override: Partial<Metadata> = {}): Metadata => {
   const title = override.title ? `${override.title} | ${siteName}` : siteName
   const description =
     override.description ??
-    'Clean and typesafe starter monorepo using Turborepo along with Next.js and tRPC '
+    'Clean and typesafe starter monorepo using Turborepo along with Next.js and oRPC '
 
   const {
     title: _,
