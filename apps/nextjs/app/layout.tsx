@@ -1,6 +1,7 @@
 import '@/app/globals.css'
 
 import { Geist } from 'next/font/google'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 import { SessionProvider } from '@yuki/auth/react'
 import { Toaster } from '@yuki/ui/sonner'
@@ -27,9 +28,12 @@ export default function RootLayout({
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <ORPCReactProvider>
-            <SessionProvider>{children}</SessionProvider>
-          </ORPCReactProvider>
+          <NuqsAdapter>
+            <ORPCReactProvider>
+              <SessionProvider>{children}</SessionProvider>
+            </ORPCReactProvider>
+          </NuqsAdapter>
+
           <Toaster />
         </ThemeProvider>
       </body>

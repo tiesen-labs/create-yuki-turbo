@@ -2,9 +2,11 @@ import { Button } from '@yuki/ui/button'
 import { CardFooter } from '@yuki/ui/card'
 import { DiscordIcon, GoogleIcon } from '@yuki/ui/icons'
 
-export const OauthButtons: React.FC<{ redirect_to?: string }> = ({
-  redirect_to,
-}) => {
+import { redirectCaches } from './_searchParams'
+
+export const OauthButtons: React.FC = () => {
+  const { redirectTo } = redirectCaches.all()
+
   return (
     <CardFooter className="grid gap-2">
       <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
@@ -14,7 +16,7 @@ export const OauthButtons: React.FC<{ redirect_to?: string }> = ({
       </div>
 
       <form className="grid grid-cols-2 gap-4">
-        <input type="hidden" name="redirect_to" value={redirect_to} />
+        <input type="hidden" name="redirect_to" value={redirectTo} />
 
         <Button variant="outline" formAction="/api/auth/discord">
           <DiscordIcon />

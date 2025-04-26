@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { useQueryStates } from 'nuqs'
 
 import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
@@ -18,10 +19,11 @@ import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
 import { useORPC } from '@/lib/orpc/react'
+import { redirect } from '../_searchParams'
 
-export const LoginForm: React.FC<{ redirect_to?: string }> = ({
-  redirect_to,
-}) => {
+export const LoginForm: React.FC = () => {
+  const [{ redirectTo }] = useQueryStates(redirect.parsers, redirect.configs)
+
   const { orpcClient } = useORPC()
   const { refresh } = useSession()
   const router = useRouter()
@@ -33,12 +35,12 @@ export const LoginForm: React.FC<{ redirect_to?: string }> = ({
     onSuccess: async (token) => {
       await refresh(token)
       router.push(
-        redirect_to
-          ? redirect_to.startsWith('http://') ||
-            redirect_to.startsWith('https://') ||
-            redirect_to.startsWith('exp:')
-            ? `${redirect_to}?token=${token}`
-            : redirect_to
+        redirectTo
+          ? redirectTo.startsWith('http://') ||
+            redirectTo.startsWith('https://') ||
+            redirectTo.startsWith('exp:')
+            ? `${redirectTo}?token=${token}`
+            : redirectTo
           : '/',
       )
       toast.success('You have successfully logged in!')

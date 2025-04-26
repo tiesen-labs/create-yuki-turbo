@@ -1,5 +1,6 @@
 import '@/app.css'
 
+import { NuqsAdapter } from 'nuqs/adapters/react-router/v7'
 import {
   isRouteErrorResponse,
   Links,
@@ -34,9 +35,12 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <ORPCReactProvider>
-            <SessionProvider>{children}</SessionProvider>
-          </ORPCReactProvider>
+          <NuqsAdapter>
+            <ORPCReactProvider>
+              <SessionProvider>{children}</SessionProvider>
+            </ORPCReactProvider>
+          </NuqsAdapter>
+
           <Toaster />
         </ThemeProvider>
         <ScrollRestoration />
