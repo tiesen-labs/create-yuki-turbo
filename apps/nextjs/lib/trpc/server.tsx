@@ -28,16 +28,6 @@ const trpc = createTRPCOptionsProxy({
   router: appRouter,
 })
 
-function HydrateClient({ children }: Readonly<{ children: React.ReactNode }>) {
-  const queryClient = getQueryClient()
-
-  return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      {children}
-    </HydrationBoundary>
-  )
-}
-
 function prefetch(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   queryOptions: ReturnType<TRPCQueryOptions<any>>,
@@ -60,6 +50,16 @@ function batchPrefetch(
       void queryClient.prefetchInfiniteQuery(queryOptions as never)
     else void queryClient.prefetchQuery(queryOptions)
   }
+}
+
+function HydrateClient({ children }: Readonly<{ children: React.ReactNode }>) {
+  const queryClient = getQueryClient()
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      {children}
+    </HydrationBoundary>
+  )
 }
 
 export { api, trpc, prefetch, batchPrefetch, HydrateClient }

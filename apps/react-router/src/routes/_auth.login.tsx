@@ -78,7 +78,6 @@ const LoginForm: React.FC = () => {
           navigate: false,
         },
       )
-      window.location.reload()
     },
     onError: (error) => {
       toast.error(error)
