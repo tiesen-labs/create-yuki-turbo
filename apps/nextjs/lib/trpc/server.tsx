@@ -28,6 +28,11 @@ const trpc = createTRPCOptionsProxy({
   router: appRouter,
 })
 
+/**
+ * Prefetches a tRPC query using React Query, supporting both standard and infinite queries.
+ *
+ * @param queryOptions - The options for the tRPC query to prefetch.
+ */
 function prefetch(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   queryOptions: ReturnType<TRPCQueryOptions<any>>,
@@ -39,6 +44,13 @@ function prefetch(
   else void queryClient.prefetchQuery(queryOptions)
 }
 
+/**
+ * Prefetches multiple tRPC queries using React Query based on the provided query options array.
+ *
+ * Each query is prefetched as either an infinite or standard query, depending on its type.
+ *
+ * @param queryOptionsArray - An array of tRPC query options to prefetch.
+ */
 function batchPrefetch(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   queryOptionsArray: ReturnType<TRPCQueryOptions<any>>[],
@@ -52,6 +64,13 @@ function batchPrefetch(
   }
 }
 
+/**
+ * Wraps children with a React Query hydration boundary using the current query client state.
+ *
+ * Enables hydration of server-prefetched queries on the client side by providing the dehydrated state to React Query.
+ *
+ * @param children - The React nodes to be rendered within the hydration boundary.
+ */
 function HydrateClient({ children }: Readonly<{ children: React.ReactNode }>) {
   const queryClient = getQueryClient()
 

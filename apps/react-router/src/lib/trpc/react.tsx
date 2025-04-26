@@ -58,6 +58,13 @@ const TRPCReactProvider: React.FC<{ children: React.ReactNode }> = ({
   )
 }
 
+/**
+ * Hydrates React Query state on the client using the current query client.
+ *
+ * Wraps children in a {@link HydrationBoundary} with the dehydrated state from the query client, enabling seamless React Query hydration after server-side rendering.
+ *
+ * @param children - React elements to be rendered within the hydration boundary.
+ */
 function HydrateClient({ children }: Readonly<{ children: React.ReactNode }>) {
   const queryClient = getQueryClient()
 

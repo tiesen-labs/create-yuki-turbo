@@ -11,6 +11,11 @@ import { Loader2Icon } from 'lucide-react-native'
 
 import { useSession } from '@/hooks/use-session'
 
+/**
+ * Displays the user's profile information or authentication actions based on session state.
+ *
+ * Renders a loading indicator while session status is loading, a login prompt if no user session exists, or the user's profile details and sign-out option when authenticated.
+ */
 export default function ProfileScreen() {
   const { fonts, colors } = useTheme()
   const { session, status, signIn, signOut } = useSession()
