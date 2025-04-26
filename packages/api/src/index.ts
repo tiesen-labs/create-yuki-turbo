@@ -1,15 +1,17 @@
-import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
-import { fetchRequestHandler } from '@trpc/server/adapters/fetch'
+import type {
+  InferRouterInputs,
+  InferRouterOutputs,
+  RouterClient,
+} from '@orpc/server'
+import { createRouterClient } from '@orpc/server'
+import { RPCHandler } from '@orpc/server/fetch'
+import { BatchHandlerPlugin, CORSPlugin } from '@orpc/server/plugins'
 
+import { createORPCContext, createORPCRouter } from './orpc'
 import { authRouter } from './routers/auth'
 import { postRouter } from './routers/post'
-import {
-  createCallerFactory,
-  createTRPCContext,
-  createTRPCRouter,
-} from './trpc'
 
-const appRouter = createTRPCRouter({
+const appRouter = createORPCRouter({
   auth: authRouter,
   post: postRouter,
 })
@@ -17,7 +19,7 @@ const appRouter = createTRPCRouter({
 /**
  * Export type definition of API
  */
-type AppRouter = typeof appRouter
+type AppRouter = RouterClient<typeof appRouter>
 
 /**
  * Handle incoming API requests
@@ -28,15 +30,16 @@ const handlers = async (req: Request) => {
   if (req.method === 'OPTIONS') {
     response = new Response(null, { status: 204 })
   } else {
-    response = await fetchRequestHandler({
-      endpoint: '/api/trpc',
-      router: appRouter,
-      req,
-      createContext: () => createTRPCContext({ headers: req.headers }),
-      onError({ error, path }) {
-        console.error(`>>> tRPC Error on '${path}'`, error)
-      },
+    const handler = new RPCHandler(appRouter, {
+      plugins: [new CORSPlugin(), new BatchHandlerPlugin()],
     })
+    const result = await handler.handle(req, {
+      prefix: '/api/orpc',
+      context: await createORPCContext({ headers: req.headers }),
+    })
+
+    if (result.response) response = result.response
+    else response = new Response('Not Found', { status: 404 })
   }
 
   /**
@@ -51,13 +54,15 @@ const handlers = async (req: Request) => {
 }
 
 /**
- * Create a server-side caller for the tRPC API
+ * Create a server-side caller for the oRPC API
  * @example
- * const trpc = createCaller(createContext);
- * const res = await trpc.post.all();
+ * const orpc = createCaller(createContext);
+ * const res = await orpc.post.all();
  *       ^? Post[]
  */
-const createCaller = createCallerFactory(appRouter)
+const createCaller = (
+  createContext: () => ReturnType<typeof createORPCContext>,
+) => createRouterClient(appRouter, { context: createContext })
 
 /**
  * Inference helpers for input types
@@ -65,7 +70,7 @@ const createCaller = createCallerFactory(appRouter)
  * type PostByIdInput = RouterInputs['post']['byId']
  *      ^? { id: number }
  **/
-type RouterInputs = inferRouterInputs<AppRouter>
+type RouterInputs = InferRouterInputs<typeof appRouter>
 
 /**
  * Inference helpers for output types
@@ -73,7 +78,7 @@ type RouterInputs = inferRouterInputs<AppRouter>
  * type AllPostsOutput = RouterOutputs['post']['all']
  *      ^? Post[]
  **/
-type RouterOutputs = inferRouterOutputs<AppRouter>
+type RouterOutputs = InferRouterOutputs<typeof appRouter>
 
 export type { AppRouter, RouterInputs, RouterOutputs }
-export { appRouter, createCaller, createTRPCContext, handlers }
+export { appRouter, createCaller, createORPCContext, handlers }

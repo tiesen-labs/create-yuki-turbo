@@ -1,5 +1,4 @@
-import type { TRPCRouterRecord } from '@trpc/server'
-import { TRPCError } from '@trpc/server'
+import { ORPCError } from '@orpc/server'
 
 import { Password, Session } from '@yuki/auth'
 import { eq } from '@yuki/db'
@@ -10,7 +9,7 @@ import {
   signUpSchema,
 } from '@yuki/validators/auth'
 
-import { protectedProcedure, publicProcedure } from '../trpc'
+import { protectedProcedure, publicProcedure } from '../orpc'
 
 const password = new Password()
 const session = new Session()
@@ -18,22 +17,19 @@ const session = new Session()
 export const authRouter = {
   signIn: publicProcedure
     .input(signInSchema)
-    .mutation(async ({ ctx, input }) => {
-      const user = await ctx.db.query.users.findFirst({
+    .handler(async ({ context, input }) => {
+      const user = await context.db.query.users.findFirst({
         where: (users, { eq }) => eq(users.email, input.email),
       })
 
-      if (!user)
-        throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' })
+      if (!user) throw new ORPCError('NOT_FOUND', { message: 'User not found' })
       if (!user.password)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
+        throw new ORPCError('UNAUTHORIZED', {
           message: 'User has no password',
         })
 
       if (!password.verify(input.password, user.password))
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
+        throw new ORPCError('UNAUTHORIZED', {
           message: 'Invalid password',
         })
 
@@ -42,18 +38,17 @@ export const authRouter = {
 
   signUp: publicProcedure
     .input(signUpSchema)
-    .mutation(async ({ ctx, input }) => {
-      const user = await ctx.db.query.users.findFirst({
+    .handler(async ({ context, input }) => {
+      const user = await context.db.query.users.findFirst({
         where: (users, { eq }) => eq(users.email, input.email),
       })
 
       if (user)
-        throw new TRPCError({
-          code: 'CONFLICT',
+        throw new ORPCError('CONFLICT', {
           message: 'User already exists',
         })
 
-      return await ctx.db
+      return await context.db
         .insert(users)
         .values({
           name: input.name,
@@ -66,20 +61,22 @@ export const authRouter = {
 
   changePassword: protectedProcedure
     .input(changePasswordSchema)
-    .mutation(async ({ ctx, input }) => {
+    .handler(async ({ context, input }) => {
       if (
-        ctx.session.user.password &&
-        !password.verify(input.currentPassword ?? '', ctx.session.user.password)
+        context.session.user.password &&
+        !password.verify(
+          input.currentPassword ?? '',
+          context.session.user.password,
+        )
       )
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
+        throw new ORPCError('UNAUTHORIZED', {
           message: 'Invalid password',
         })
 
-      return await ctx.db
+      return await context.db
         .update(users)
         .set({ password: password.hash(input.newPassword) })
-        .where(eq(users.id, ctx.session.user.id))
+        .where(eq(users.id, context.session.user.id))
         .returning()
     }),
-} satisfies TRPCRouterRecord
+}

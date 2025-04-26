@@ -7,7 +7,7 @@ import { Toaster } from '@yuki/ui/sonner'
 import { cn, ThemeProvider } from '@yuki/ui/utils'
 
 import { createMetadata } from '@/lib/metadata'
-import { TRPCReactProvider } from '@/lib/trpc/react'
+import { ORPCReactProvider } from '@/lib/orpc/react'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -27,9 +27,9 @@ export default function RootLayout({
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <TRPCReactProvider>
+          <ORPCReactProvider>
             <SessionProvider>{children}</SessionProvider>
-          </TRPCReactProvider>
+          </ORPCReactProvider>
           <Toaster />
         </ThemeProvider>
       </body>

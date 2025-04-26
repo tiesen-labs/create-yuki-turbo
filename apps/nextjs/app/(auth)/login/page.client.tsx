@@ -15,19 +15,19 @@ import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
-import { useTRPCClient } from '@/lib/trpc/react'
+import { useORPC } from '@/lib/orpc/react'
 import { setSessionCookie } from './page.action'
 
 export const LoginForm: React.FC<{ redirect_to?: string }> = ({
   redirect_to,
 }) => {
-  const trpcClient = useTRPCClient()
+  const { orpcClient } = useORPC()
   const { refresh } = useSession()
 
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
-    submitFn: trpcClient.auth.signIn.mutate,
+    submitFn: orpcClient.auth.signIn,
     onSuccess: async (session) => {
       await refresh(session.sessionToken)
       void setSessionCookie(session, redirect_to)

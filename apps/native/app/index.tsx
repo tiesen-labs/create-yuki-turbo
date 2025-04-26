@@ -16,7 +16,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated'
 import { useTheme } from '@react-navigation/native'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import {
   MessageCircleIcon,
   ShareIcon,
@@ -26,7 +26,7 @@ import {
 
 import type { RouterOutputs } from '@yuki/api'
 
-import { trpc } from '@/lib/trpc'
+import { useORPC } from '@/lib/orpc'
 
 export default function HomeScreen() {
   return (
@@ -38,7 +38,8 @@ export default function HomeScreen() {
 }
 
 const PostList: React.FC = () => {
-  const { data = [], isLoading } = useQuery(trpc.post.all.queryOptions())
+  const { orpc } = useORPC()
+  const { data = [], isLoading } = useQuery(orpc.post.all.queryOptions())
 
   return (
     <ScrollView>
@@ -53,13 +54,11 @@ const PostCard: React.FC<{
   post: RouterOutputs['post']['all'][number]
 }> = ({ post }) => {
   const { colors, fonts } = useTheme()
-  const queryClient = useQueryClient()
+  const { orpc, queryClient } = useORPC()
   const { mutate, isPending } = useMutation(
-    trpc.post.delete.mutationOptions({
+    orpc.post.delete.mutationOptions({
       onSettled: () => {
-        void queryClient.invalidateQueries({
-          queryKey: trpc.post.all.queryKey(),
-        })
+        void queryClient.invalidateQueries({ queryKey: orpc.post.all.key() })
       },
     }),
   )
@@ -284,13 +283,11 @@ const CreatePost: React.FC = () => {
     content: '',
   })
 
-  const queryClient = useQueryClient()
+  const { orpc, queryClient } = useORPC()
   const { mutate, isPending } = useMutation(
-    trpc.post.create.mutationOptions({
+    orpc.post.create.mutationOptions({
       onSettled: () => {
-        void queryClient.invalidateQueries({
-          queryKey: trpc.post.all.queryKey(),
-        })
+        void queryClient.invalidateQueries({ queryKey: orpc.post.all.key() })
         setFormData({ title: '', content: '' })
       },
     }),

@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 
 import type { RouterOutputs } from '@yuki/api'
 import { Button } from '@yuki/ui/button'
@@ -28,21 +24,17 @@ import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { createPostSchema } from '@yuki/validators/post'
 
-import { useTRPC, useTRPCClient } from '@/lib/trpc/react'
+import { useORPC } from '@/lib/orpc/react'
 
 export const CreatePost: React.FC = () => {
-  const trpc = useTRPC()
-  const trpcClient = useTRPCClient()
-  const queryClient = useQueryClient()
+  const { orpc, orpcClient, queryClient } = useORPC()
 
   const form = useForm({
     schema: createPostSchema,
     defaultValues: { title: '', content: '' },
-    submitFn: (values) => trpcClient.post.create.mutate(values),
+    submitFn: orpcClient.post.create,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: trpc.post.all.queryKey(),
-      })
+      await queryClient.invalidateQueries({ queryKey: orpc.post.all.key() })
       form.reset()
     },
     onError: (error) => {
@@ -88,23 +80,20 @@ export const CreatePost: React.FC = () => {
 }
 
 export const PostList: React.FC = () => {
-  const trpc = useTRPC()
-  const { data } = useSuspenseQuery(trpc.post.all.queryOptions())
+  const { orpc } = useORPC()
+  const { data } = useSuspenseQuery(orpc.post.all.queryOptions())
   return data.map((post) => <PostCard key={post.id} post={post} />)
 }
 
 const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> = ({
   post,
 }) => {
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
+  const { orpc, queryClient } = useORPC()
   const { mutate, isPending } = useMutation(
-    trpc.post.delete.mutationOptions({
+    orpc.post.delete.mutationOptions({
       onError: (error) => toast.error(error.message),
       onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: trpc.post.all.queryKey(),
-        })
+        await queryClient.invalidateQueries({ queryKey: orpc.post.all.key() })
       },
     }),
   )

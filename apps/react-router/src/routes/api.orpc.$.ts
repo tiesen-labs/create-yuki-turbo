@@ -1,13 +1,16 @@
 import { handlers } from '@yuki/api'
 
-import type { Route } from './+types/api.trpc.$trpc'
+import type { Route } from './+types/api.orpc.$'
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
   setAuthorization(request)
+
   return handlers(request)
 }
 export const action = async ({ request }: Route.ActionArgs) => {
   setAuthorization(request)
+  console.log(request)
+
   return handlers(request)
 }
 

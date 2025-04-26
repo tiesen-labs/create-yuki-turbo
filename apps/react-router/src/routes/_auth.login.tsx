@@ -22,7 +22,7 @@ import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
 import type { Route } from './+types/_auth.login'
-import { useTRPCClient } from '@/lib/trpc/react'
+import { useORPC } from '@/lib/orpc/react'
 
 export const action = ({ request }: Route.ActionArgs) => {
   try {
@@ -61,13 +61,13 @@ export default function LoginPage(_: Route.ComponentProps) {
 }
 
 const LoginForm: React.FC = () => {
-  const trpcClient = useTRPCClient()
+  const { orpcClient } = useORPC()
   const submit = useSubmit()
 
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
-    submitFn: trpcClient.auth.signIn.mutate,
+    submitFn: orpcClient.auth.signIn,
     onSuccess: async (data) => {
       toast.success('You have successfully logged in!')
       await submit(

@@ -20,7 +20,7 @@ import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { signUpSchema } from '@yuki/validators/auth'
 
-import { useTRPCClient } from '@/lib/trpc/react'
+import { useORPC } from '@/lib/orpc/react'
 
 export default function RegisterPage() {
   return (
@@ -41,12 +41,12 @@ export default function RegisterPage() {
 
 const RegisterForm: React.FC = () => {
   const router = useNavigate()
-  const trpcClient = useTRPCClient()
+  const { orpcClient } = useORPC()
 
   const form = useForm({
     schema: signUpSchema,
     defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
-    submitFn: async (values) => trpcClient.auth.signUp.mutate(values),
+    submitFn: orpcClient.auth.signUp,
     onSuccess: () => {
       toast.success('You have successfully registered!')
       void router('/login')

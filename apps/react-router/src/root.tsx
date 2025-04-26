@@ -16,7 +16,7 @@ import { ThemeProvider } from '@yuki/ui/utils'
 
 import type { Route } from './+types/root'
 import { createMetadata } from '@/lib/metadata'
-import { TRPCReactProvider } from '@/lib/trpc/react'
+import { ORPCReactProvider } from '@/lib/orpc/react'
 
 export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -34,9 +34,9 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
           defaultTheme="dark"
           disableTransitionOnChange
         >
-          <TRPCReactProvider>
+          <ORPCReactProvider>
             <SessionProvider>{children}</SessionProvider>
-          </TRPCReactProvider>
+          </ORPCReactProvider>
           <Toaster />
         </ThemeProvider>
         <ScrollRestoration />

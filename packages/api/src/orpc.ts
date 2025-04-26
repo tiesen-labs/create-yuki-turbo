@@ -7,9 +7,7 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 
-import { initTRPC, TRPCError } from '@trpc/server'
-import superjson from 'superjson'
-import { treeifyError, ZodError } from 'zod'
+import { ORPCError, os } from '@orpc/server'
 
 import type { SessionResult } from '@yuki/auth'
 import { auth, Session } from '@yuki/auth'
@@ -40,14 +38,14 @@ const isomorphicGetSession = async (
  * This helper generates the "internals" for a tRPC context. The API handler and RSC clients each
  * wrap this and provides the required context.
  *
- * @see https://trpc.io/docs/server/context
+ * @see https://orpc.unnoq.com/docs/context
  */
-export const createTRPCContext = async (opts: { headers: Headers }) => {
+export const createORPCContext = async (opts: { headers: Headers }) => {
   const session = await isomorphicGetSession(opts.headers)
 
-  const source = opts.headers.get('x-trpc-source') ?? 'unknown'
+  const source = opts.headers.get('x-orpc-source') ?? 'unknown'
   console.log(
-    '>>> tRPC Request from',
+    '>>> oRPC Request from',
     source,
     'by',
     session.user ?? 'anonymous',
@@ -65,25 +63,20 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
-  errorFormatter: ({ shape, error }) => ({
-    ...shape,
-    message:
-      error.cause instanceof ZodError ? 'Validation error' : error.message,
-    data: {
-      ...shape.data,
-      zodError:
-        error.cause instanceof ZodError ? treeifyError(error.cause).errors : {},
-    },
-  }),
-})
-
-/**
- * Create a server-side caller
- * @see https://trpc.io/docs/server/server-side-calls
- */
-export const createCallerFactory = t.createCallerFactory
+const o = os.$context<Awaited<ReturnType<typeof createORPCContext>>>()
+// .create({
+//   transformer: superjson,
+//   errorFormatter: ({ shape, error }) => ({
+//     ...shape,
+//     message:
+//       error.cause instanceof ZodError ? 'Validation error' : error.message,
+//     data: {
+//       ...shape.data,
+//       zodError:
+//         error.cause instanceof ZodError ? treeifyError(error.cause).errors : {},
+//     },
+//   }),
+// })
 
 /**
  * 3. ROUTER & PROCEDURE (THE IMPORTANT BIT)
@@ -94,9 +87,9 @@ export const createCallerFactory = t.createCallerFactory
 
 /**
  * This is how you create new routers and subrouters in your tRPC API
- * @see https://trpc.io/docs/router
+ * @see https://orpc.unnoq.com/docs/router
  */
-export const createTRPCRouter = t.router
+export const createORPCRouter = o.router.bind(o)
 
 /**
  * Middleware for timing procedure execution.
@@ -104,13 +97,13 @@ export const createTRPCRouter = t.router
  * You can remove this if you don't like it, but it can help catch unwanted waterfalls by simulating
  * network latency that would occur in production but not in local development.
  */
-const timingMiddleware = t.middleware(async ({ next, path }) => {
+const timingMiddleware = o.middleware(async ({ next, path }) => {
   const start = Date.now()
 
   const result = await next()
 
   const end = Date.now()
-  console.log(`[TRPC] ${path} took ${end - start}ms to execute`)
+  console.log(`[ORPC] ${path} took ${end - start}ms to execute`)
 
   return result
 })
@@ -122,7 +115,7 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * tRPC API. It does not guarantee that a user querying is authorized, but you
  * can still access user session data if they are logged in
  */
-export const publicProcedure = t.procedure.use(timingMiddleware)
+export const publicProcedure = o.use(timingMiddleware)
 
 /**
  * Protected (authenticated) procedure
@@ -132,15 +125,15 @@ export const publicProcedure = t.procedure.use(timingMiddleware)
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure
+export const protectedProcedure = o
   .use(timingMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.session.user) throw new TRPCError({ code: 'UNAUTHORIZED' })
+  .use(({ context, next }) => {
+    if (!context.session.user) throw new ORPCError('UNAUTHORIZED')
 
     return next({
-      ctx: {
+      context: {
         // infers the `session` as non-nullable
-        session: { ...ctx.session, user: ctx.session.user },
+        session: { ...context.session, user: context.session.user },
       },
     })
   })
