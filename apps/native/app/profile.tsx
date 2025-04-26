@@ -13,9 +13,9 @@ import { useSession } from '@/hooks/use-session'
 
 export default function ProfileScreen() {
   const { fonts, colors } = useTheme()
-  const { session, isLoading, signIn, signOut } = useSession()
+  const { session, status, signIn, signOut } = useSession()
 
-  if (isLoading) {
+  if (status === 'loading') {
     return (
       <SafeAreaView style={styles.container}>
         <Loader2Icon size={32} color="#78a9ff" />
