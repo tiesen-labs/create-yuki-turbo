@@ -10,6 +10,7 @@ coverage
 
 # database
 migrations/
+generated/
 
 # next.js
 .next/

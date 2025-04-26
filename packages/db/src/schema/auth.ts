@@ -5,8 +5,8 @@ import { posts } from './post'
 
 export const users = pgTable('user', (t) => ({
   id: t.uuid().primaryKey().defaultRandom().notNull(),
-  name: t.varchar({ length: 255 }).unique().notNull(),
-  email: t.varchar({ length: 255 }).notNull(),
+  name: t.varchar({ length: 255 }).notNull(),
+  email: t.varchar({ length: 255 }).unique().notNull(),
   password: t.varchar({ length: 255 }),
   image: t.varchar({ length: 255 }).notNull(),
   createdAt: t.timestamp().defaultNow().notNull(),
