@@ -21,7 +21,7 @@ export const restrictEnvAccess = tseslint.config(
           object: 'process',
           property: 'env',
           message:
-            "Use `import { env } from '@/env'` instead to ensure validated types.",
+            "Use `import { env } from '@yuki/env'` instead to ensure validated types.",
         },
       ],
       'no-restricted-imports': [
@@ -30,7 +30,7 @@ export const restrictEnvAccess = tseslint.config(
           name: 'process',
           importNames: ['env'],
           message:
-            "Use `import { env } from '@/env'` instead to ensure validated types.",
+            "Use `import { env } from '@yuki/env'` instead to ensure validated types.",
         },
       ],
     },
@@ -75,7 +75,6 @@ export default tseslint.config(
     plugins: { turbo: turboPlugin },
     rules: {
       ...turboPlugin.configs.recommended.rules,
-      'turbo/no-undeclared-env-vars': 'warn',
     },
   },
   {

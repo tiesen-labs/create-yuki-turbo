@@ -23,11 +23,10 @@ import { db } from '@yuki/db'
 const isomorphicGetSession = async (
   headers: Headers,
 ): Promise<SessionResult> => {
-  const session = new Session()
   const authToken = headers.get('Authorization') ?? ''
 
   if (authToken)
-    return session.validateSessionToken(authToken.replace('Bearer ', ''))
+    return new Session().validateToken(authToken.replace('Bearer ', ''))
   return auth()
 }
 

@@ -70,7 +70,7 @@ export function SessionProvider(
   const signIn = React.useCallback(async () => {
     const redirectTo = Linking.createURL('/')
     const result = await Browser.openAuthSessionAsync(
-      `${getBaseUrl()}/login?redirect_uri=${encodeURIComponent(redirectTo)}`,
+      `${getBaseUrl()}/login?redirect_to=${encodeURIComponent(redirectTo)}`,
       redirectTo,
     )
 

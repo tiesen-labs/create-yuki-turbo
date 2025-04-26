@@ -18,8 +18,8 @@ import { signInSchema } from '@yuki/validators/auth'
 import { useTRPCClient } from '@/lib/trpc/react'
 import { setSessionCookie } from './page.action'
 
-export const LoginForm: React.FC<{ redirect_uri?: string }> = ({
-  redirect_uri,
+export const LoginForm: React.FC<{ redirect_to?: string }> = ({
+  redirect_to,
 }) => {
   const trpcClient = useTRPCClient()
   const { refresh } = useSession()
@@ -30,7 +30,7 @@ export const LoginForm: React.FC<{ redirect_uri?: string }> = ({
     submitFn: trpcClient.auth.signIn.mutate,
     onSuccess: async (session) => {
       await refresh(session.sessionToken)
-      void setSessionCookie(session, redirect_uri)
+      void setSessionCookie(session, redirect_to)
       toast.success('You have successfully logged in!')
     },
     onError: (error) => {

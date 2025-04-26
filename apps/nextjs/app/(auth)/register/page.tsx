@@ -23,7 +23,6 @@ export default function RegisterPage() {
       <CardContent>
         <RegisterForm />
 
-
         <p className="mt-4 text-sm">
           Already have an account?{' '}
           <Link href="/login" className="hover:underline">

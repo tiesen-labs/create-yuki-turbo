@@ -17,7 +17,7 @@ export const middleware: NextMiddleware = async (req, _event) => {
       protectedRoutes.some((route) => pathName.startsWith(route))
     ) {
       const url = new URL('/login', req.url)
-      url.searchParams.set('redirect_uri', pathName)
+      url.searchParams.set('redirect_to', pathName)
       return NextResponse.redirect(url)
     }
 

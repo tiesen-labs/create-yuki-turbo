@@ -13,9 +13,9 @@ import { LoginForm } from './page.client'
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ redirect_uri?: string }>
+  searchParams: Promise<{ redirect_to?: string }>
 }) {
-  const { redirect_uri } = await searchParams
+  const { redirect_to } = await searchParams
 
   return (
     <>
@@ -27,7 +27,7 @@ export default async function LoginPage({
       </CardHeader>
 
       <CardContent>
-        <LoginForm redirect_uri={redirect_uri} />
+        <LoginForm redirect_to={redirect_to} />
 
         <p className="mt-4 text-sm">
           Don&apos;t have an account?{' '}
@@ -37,7 +37,7 @@ export default async function LoginPage({
         </p>
       </CardContent>
 
-      <OauthButtons redirect_uri={redirect_uri} />
+      <OauthButtons redirect_to={redirect_to} />
     </>
   )
 }

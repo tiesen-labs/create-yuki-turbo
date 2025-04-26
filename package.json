@@ -28,10 +28,10 @@
   },
   "prettier": "@yuki/prettier-config",
   "devDependencies": {
-    "@turbo/gen": "^2.5.1",
+    "@turbo/gen": "^2.5.2",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "turbo": "^2.5.1"
+    "turbo": "^2.5.2"
   },
   "packageManager": "bun@1.2.10",
   "engines": {

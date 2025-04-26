@@ -15,10 +15,10 @@ export class Session {
 
   constructor(private readonly db = database) {}
 
-  public async createSession(
+  public async create(
     userId: string,
   ): Promise<{ sessionToken: string; expires: Date }> {
-    const token = this.generateSessionToken()
+    const token = this.generateToken()
     const sessionToken = this.hashToken(token)
     const expires = new Date(Date.now() + this.SESSION_EXPIRATION)
 
@@ -31,7 +31,7 @@ export class Session {
     return { sessionToken: token, expires: session.expires }
   }
 
-  public async validateSessionToken(token: string): Promise<SessionResult> {
+  public async validateToken(token: string): Promise<SessionResult> {
     const sessionToken = this.hashToken(token)
 
     const result = await this.db.query.sessions.findFirst({
@@ -45,7 +45,7 @@ export class Session {
     const now = Date.now()
 
     if (now > session.expires.getTime()) {
-      await this.deleteSession(sessionToken)
+      await this.delete(sessionToken)
       return { expires: new Date() }
     }
 
@@ -61,15 +61,15 @@ export class Session {
     return { user, expires: session.expires }
   }
 
-  public async invalidateSessionToken(token: string): Promise<void> {
-    await this.deleteSession(this.hashToken(token))
+  public async invalidateToken(token: string): Promise<void> {
+    await this.delete(this.hashToken(token))
   }
 
-  public async invalidateAllSessionTokens(userId: string): Promise<void> {
+  public async invalidateAllTokens(userId: string): Promise<void> {
     await this.db.delete(sessions).where(eq(sessions.userId, userId))
   }
 
-  private generateSessionToken(): string {
+  private generateToken(): string {
     const bytes = new Uint8Array(this.TOKEN_BYTES)
     crypto.getRandomValues(bytes)
     const token = encodeBase32LowerCaseNoPadding(bytes)
@@ -80,7 +80,7 @@ export class Session {
     return encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
   }
 
-  private async deleteSession(sessionToken: string): Promise<void> {
+  private async delete(sessionToken: string): Promise<void> {
     await this.db
       .delete(sessions)
       .where(eq(sessions.sessionToken, sessionToken))

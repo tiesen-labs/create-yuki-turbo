@@ -10,7 +10,7 @@ export const setSessionCookie = async (
     sessionToken: string
     expires: Date
   },
-  redirect_uri?: string,
+  redirect_to?: string,
 ) => {
   try {
     const nextCookies = await cookies()
@@ -26,12 +26,12 @@ export const setSessionCookie = async (
     console.error('Error setting session cookie:', error)
   } finally {
     redirect(
-      redirect_uri
-        ? redirect_uri.startsWith('http://') ||
-          redirect_uri.startsWith('https://') ||
-          redirect_uri.startsWith('exp:')
-          ? `${redirect_uri}?token=${session.sessionToken}`
-          : redirect_uri
+      redirect_to
+        ? redirect_to.startsWith('http://') ||
+          redirect_to.startsWith('https://') ||
+          redirect_to.startsWith('exp:')
+          ? `${redirect_to}?token=${session.sessionToken}`
+          : redirect_to
         : '/',
     )
   }

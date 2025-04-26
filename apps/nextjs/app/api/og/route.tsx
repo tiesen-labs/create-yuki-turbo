@@ -24,6 +24,7 @@ export function GET(req: NextRequest) {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`https://tiesen.id.vn/assets/logo.svg`}
+            alt="Logo"
             tw="w-20 h-20 mr-4"
             style={{ filter: 'invert(1)' }}
           />

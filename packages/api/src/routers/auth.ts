@@ -20,38 +20,40 @@ export const authRouter = {
     .input(signInSchema)
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db.query.users.findFirst({
-        where: eq(users.email, input.email),
+        where: (users, { eq }) => eq(users.email, input.email),
       })
-      if (!user) throw new Error('User not found')
+
+      if (!user)
+        throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' })
       if (!user.password)
         throw new TRPCError({
-          code: 'NOT_FOUND',
+          code: 'UNAUTHORIZED',
           message: 'User has no password',
         })
 
-      const passwordMatch = password.verify(input.password, user.password)
-      if (!passwordMatch)
+      if (!password.verify(input.password, user.password))
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'Invalid password',
         })
 
-      return session.createSession(user.id)
+      return session.create(user.id)
     }),
 
   signUp: publicProcedure
     .input(signUpSchema)
     .mutation(async ({ ctx, input }) => {
       const user = await ctx.db.query.users.findFirst({
-        where: eq(users.email, input.email),
+        where: (users, { eq }) => eq(users.email, input.email),
       })
+
       if (user)
         throw new TRPCError({
           code: 'CONFLICT',
           message: 'User already exists',
         })
 
-      return ctx.db
+      return await ctx.db
         .insert(users)
         .values({
           name: input.name,
@@ -65,19 +67,16 @@ export const authRouter = {
   changePassword: protectedProcedure
     .input(changePasswordSchema)
     .mutation(async ({ ctx, input }) => {
-      if (ctx.session.user.password) {
-        const passwordMatch = password.verify(
-          input.currentPassword ?? '',
-          ctx.session.user.password,
-        )
-        if (!passwordMatch)
-          throw new TRPCError({
-            code: 'UNAUTHORIZED',
-            message: 'Invalid password',
-          })
-      }
+      if (
+        ctx.session.user.password &&
+        !password.verify(input.currentPassword ?? '', ctx.session.user.password)
+      )
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'Invalid password',
+        })
 
-      return ctx.db
+      return await ctx.db
         .update(users)
         .set({ password: password.hash(input.newPassword) })
         .where(eq(users.id, ctx.session.user.id))

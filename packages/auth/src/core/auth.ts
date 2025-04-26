@@ -34,7 +34,7 @@ export class Auth<TProviders extends Providers> {
       req?.headers.get('Authorization')?.split(' ')[1]
 
     if (!authToken) return { expires: new Date() }
-    return await this.session.validateSessionToken(authToken)
+    return await this.session.validateToken(authToken)
   }
 
   public async handlers(req: Request): Promise<Response> {
@@ -73,7 +73,7 @@ export class Auth<TProviders extends Providers> {
     const token =
       (await this.getCookie(req)) ??
       req?.headers.get('Authorization')?.split(' ')[1]
-    if (token) await this.session.invalidateSessionToken(token)
+    if (token) await this.session.invalidateToken(token)
   }
 
   private async handleGetRequests(req: Request): Promise<Response> {
@@ -105,7 +105,7 @@ export class Auth<TProviders extends Providers> {
   }
 
   private handleOAuthStart(url: URL): Response {
-    const redirectUri = url.searchParams.get('redirect_uri') ?? '/'
+    const redirectTo = url.searchParams.get('redirect_to') ?? '/'
 
     const providerName = String(url.pathname.split('/').pop())
     const provider = this.providers[providerName]
@@ -113,14 +113,14 @@ export class Auth<TProviders extends Providers> {
       return Response.json({ error: 'Provider not supported' }, { status: 404 })
 
     if (
-      redirectUri.startsWith('exp://') &&
+      redirectTo.startsWith('exp://') &&
       env.NODE_ENV === 'development' &&
       env.AUTH_PROXY_URL
     ) {
       const redirectUrl = new URL(
         `https://${env.AUTH_PROXY_URL}${url.pathname}`,
       )
-      redirectUrl.searchParams.set('redirect_uri', redirectUri)
+      redirectUrl.searchParams.set('redirect_to', redirectTo)
       return this.createRedirectResponse(redirectUrl)
     }
 
@@ -153,7 +153,7 @@ export class Auth<TProviders extends Providers> {
     )
     response.headers.append(
       'Set-Cookie',
-      this.setCookie('redirect_uri', redirectUri, {
+      this.setCookie('redirect_to', redirectTo, {
         Path: '/',
         HttpOnly: '',
         SameSite: 'Lax',
@@ -175,7 +175,7 @@ export class Auth<TProviders extends Providers> {
     const state = url.searchParams.get('state')
     const storedState = (await this.getCookie(req, 'oauth_state')) ?? ''
     const codeVerifier = (await this.getCookie(req, 'code_verifier')) ?? ''
-    const redirectUri = (await this.getCookie(req, 'redirect_uri')) ?? '/'
+    const redirectUri = (await this.getCookie(req, 'redirect_to')) ?? '/'
 
     if (!code || !state || state !== storedState)
       throw new Error('Invalid state')
@@ -183,7 +183,7 @@ export class Auth<TProviders extends Providers> {
     const userData = await provider.fetchUserData(code, codeVerifier)
 
     const user = await this.createUser({ ...userData, provider: providerName })
-    const session = await this.session.createSession(user.id)
+    const session = await this.session.create(user.id)
 
     let redirectLocation = redirectUri
     if (
@@ -212,7 +212,7 @@ export class Auth<TProviders extends Providers> {
     )
     response.headers.append('Set-Cookie', this.deleteCookie('oauth_state'))
     response.headers.append('Set-Cookie', this.deleteCookie('code_verifier'))
-    response.headers.append('Set-Cookie', this.deleteCookie('redirect_uri'))
+    response.headers.append('Set-Cookie', this.deleteCookie('redirect_to'))
 
     return response
   }
