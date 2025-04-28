@@ -13,9 +13,9 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@react-router/node": "^7.5.2",
-    "@react-router/serve": "^7.5.2",
-    "@tanstack/react-query": "^5.74.4",
+    "@react-router/node": "^7.5.3",
+    "@react-router/serve": "^7.5.3",
+    "@tanstack/react-query": "^5.74.7",
     "@trpc/client": "^11.1.1",
     "@trpc/tanstack-react-query": "^11.1.1",
     "@yuki/api": "workspace:*",
@@ -32,10 +32,10 @@
     "superjson": "^2.2.2"
   },
   "devDependencies": {
-    "@react-router/dev": "^7.5.2",
-    "@react-router/fs-routes": "^7.5.2",
+    "@react-router/dev": "^7.5.3",
+    "@react-router/fs-routes": "^7.5.3",
     "@tailwindcss/vite": "^4.1.4",
-    "@types/node": "22.15.2",
+    "@types/node": "22.15.3",
     "@types/react": "19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vercel/react-router": "^1.1.0",
