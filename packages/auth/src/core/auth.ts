@@ -76,6 +76,18 @@ export class Auth<TProviders extends Providers> {
     if (token) await this.session.invalidateToken(token)
   }
 
+  public middleware(
+    callbackFn: (params: {
+      request: Request
+      session: SessionResult
+    }) => Promise<Response> | Response,
+  ) {
+    return async (req: Request): Promise<Response> => {
+      const session = await this.auth(req)
+      return callbackFn({ request: req, session })
+    }
+  }
+
   private async handleGetRequests(req: Request): Promise<Response> {
     const url = new URL(req.url)
     const path = url.pathname

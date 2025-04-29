@@ -1,28 +1,26 @@
-import type { MiddlewareConfig, NextMiddleware } from 'next/server'
+import type { MiddlewareConfig } from 'next/server'
 import { NextResponse } from 'next/server'
 
-import { auth } from '@yuki/auth'
+import { middleware } from '@yuki/auth'
 
 const authRoutes: string[] = ['/login', '/register']
 const protectedRoutes: string[] = ['/protected']
 
-export const middleware: NextMiddleware = async (req, _event) => {
-  const pathName = req.nextUrl.pathname
+export default middleware(({ request, session }) => {
+  const { pathname } = new URL(request.url)
 
-  if (req.method === 'GET') {
-    const session = await auth(req)
-
+  if (request.method === 'GET') {
     if (
       !session.user &&
-      protectedRoutes.some((route) => pathName.startsWith(route))
+      protectedRoutes.some((route) => pathname.startsWith(route))
     ) {
-      const url = new URL('/login', req.url)
-      url.searchParams.set('redirect_to', pathName)
+      const url = new URL('/login', request.url)
+      url.searchParams.set('redirect_to', pathname)
       return NextResponse.redirect(url)
     }
 
-    if (session.user && authRoutes.some((route) => pathName.startsWith(route)))
-      return NextResponse.redirect(new URL('/', req.url))
+    if (session.user && authRoutes.some((route) => pathname.startsWith(route)))
+      return NextResponse.redirect(new URL('/', request.url))
 
     return NextResponse.next()
   }
@@ -50,12 +48,12 @@ export const middleware: NextMiddleware = async (req, _event) => {
    *   a proper token-based authentication system for mobile clients before deployment.
    */
 
-  const isReactNative = req.headers.get('x-trpc-source') === 'react-native'
+  const isReactNative = request.headers.get('x-trpc-source') === 'react-native'
   if (isReactNative) return NextResponse.next()
 
-  const originHeader = req.headers.get('Origin') ?? ''
+  const originHeader = request.headers.get('Origin') ?? ''
   const hostHeader =
-    req.headers.get('Host') ?? req.headers.get('X-Forwarded-Host') ?? ''
+    request.headers.get('Host') ?? request.headers.get('X-Forwarded-Host') ?? ''
   if (!originHeader || !hostHeader)
     return new NextResponse(null, { status: 403 })
 
@@ -69,7 +67,7 @@ export const middleware: NextMiddleware = async (req, _event) => {
     return new NextResponse(null, { status: 403 })
 
   return NextResponse.next()
-}
+})
 
 export const config = {
   matcher: [
