@@ -28,13 +28,13 @@ export const authRouter = {
       if (!user.password)
         throw new TRPCError({
           code: 'UNAUTHORIZED',
-          message: 'User has no password',
+          message: 'Incorrect username or password',
         })
 
       if (!password.verify(input.password, user.password))
         throw new TRPCError({
           code: 'UNAUTHORIZED',
-          message: 'Invalid password',
+          message: 'Incorrect username or password',
         })
 
       return session.create(user.id)

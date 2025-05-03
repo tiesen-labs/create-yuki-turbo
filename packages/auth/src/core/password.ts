@@ -17,6 +17,9 @@ export class Password {
 
   private _hash(password: string): string {
     const salted = `${password}${this.pepper}`
-    return encodeHexLowerCase(sha3_512(new TextEncoder().encode(salted)))
+    return (
+      encodeHexLowerCase(sha3_512(new TextEncoder().encode(salted))) +
+      this.pepper
+    )
   }
 }
