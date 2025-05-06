@@ -8,10 +8,12 @@ import { Typography } from '@yuki/ui/typography'
 import type { Route } from './+types/_index'
 import { CreatePost, PostCardSkeleton, PostList } from '@/components/post'
 import { HydrateClient } from '@/lib/trpc/react'
-import { prefetch, trpc } from '@/lib/trpc/server'
+import { getQueryClient, trpc } from '@/lib/trpc/server'
 
 export const loader = async ({ request }: Route.LoaderArgs) => {
-  prefetch(trpc(request.headers).post.all.queryOptions())
+  await getQueryClient().prefetchQuery(
+    trpc(request.headers).post.all.queryOptions(),
+  )
 
   const session = await auth(request)
   return { session }

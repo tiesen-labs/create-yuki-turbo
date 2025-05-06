@@ -12,7 +12,7 @@ import superjson from 'superjson'
 import { treeifyError, ZodError } from 'zod'
 
 import type { SessionResult } from '@yuki/auth'
-import { auth, Session } from '@yuki/auth'
+import { auth, Password, Session } from '@yuki/auth'
 import { db } from '@yuki/db'
 
 /**
@@ -56,6 +56,8 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
     db,
     session,
+    sessionService: new Session(),
+    passwordService: new Password(),
   }
 }
 

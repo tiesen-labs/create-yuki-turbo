@@ -25,9 +25,8 @@ type AppRouter = typeof appRouter
 const handlers = async (req: Request) => {
   let response: Response
 
-  if (req.method === 'OPTIONS') {
-    response = new Response(null, { status: 204 })
-  } else {
+  if (req.method === 'OPTIONS') response = new Response(null, { status: 204 })
+  else
     response = await fetchRequestHandler({
       endpoint: '/api/trpc',
       router: appRouter,
@@ -37,7 +36,6 @@ const handlers = async (req: Request) => {
         console.error(`>>> tRPC Error on '${path}'`, error)
       },
     })
-  }
 
   /**
    * Configure basic CORS headers

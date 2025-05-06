@@ -20,7 +20,7 @@ import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { signUpSchema } from '@yuki/validators/auth'
 
-import { useTRPCClient } from '@/lib/trpc/react'
+import { useTRPC } from '@/lib/trpc/react'
 
 export default function RegisterPage() {
   return (
@@ -41,7 +41,7 @@ export default function RegisterPage() {
 
 const RegisterForm: React.FC = () => {
   const router = useNavigate()
-  const trpcClient = useTRPCClient()
+  const { trpcClient } = useTRPC()
 
   const form = useForm({
     schema: signUpSchema,

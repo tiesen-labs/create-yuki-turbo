@@ -1,4 +1,8 @@
+import { Suspense } from 'react'
+
 import { Card } from '@yuki/ui/card'
+
+import { OauthButtons } from './_oauth-buttons'
 
 export default function AuthLayout({
   children,
@@ -7,7 +11,13 @@ export default function AuthLayout({
 }>) {
   return (
     <main className="container grid min-h-dvh place-items-center">
-      <Card className="w-screen max-w-md">{children}</Card>
+      <Card className="w-screen max-w-md">
+        {children}
+
+        <Suspense>
+          <OauthButtons />
+        </Suspense>
+      </Card>
     </main>
   )
 }

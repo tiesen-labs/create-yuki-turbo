@@ -22,7 +22,7 @@ import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
 import type { Route } from './+types/_auth.login'
-import { useTRPCClient } from '@/lib/trpc/react'
+import { useTRPC } from '@/lib/trpc/react'
 
 export const action = ({ request }: Route.ActionArgs) => {
   try {
@@ -61,7 +61,7 @@ export default function LoginPage(_: Route.ComponentProps) {
 }
 
 const LoginForm: React.FC = () => {
-  const trpcClient = useTRPCClient()
+  const { trpcClient } = useTRPC()
   const submit = useSubmit()
 
   const form = useForm({

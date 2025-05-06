@@ -91,7 +91,7 @@ function useForm<TSchema extends StandardSchemaV1, TData = unknown>(params: {
             {},
           ) as Record<keyof StandardSchemaV1.InferInput<TSchema>, string>,
         })
-        if (onError) void onError('Validation error')
+        if (onError) await onError('Validation error')
         return
       }
 

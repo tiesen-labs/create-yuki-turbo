@@ -5,11 +5,11 @@ import { auth } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
 
-import { HydrateClient, prefetch, trpc } from '@/lib/trpc/server'
+import { getQueryClient, HydrateClient, trpc } from '@/lib/trpc/server'
 import { CreatePost, PostCardSkeleton, PostList } from './page.client'
 
 export default function HomePage() {
-  prefetch(trpc.post.all.queryOptions())
+  void getQueryClient().prefetchQuery(trpc.post.all.queryOptions())
 
   return (
     <HydrateClient>

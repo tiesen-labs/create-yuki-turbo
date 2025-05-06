@@ -1,10 +1,6 @@
 'use client'
 
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 
 import type { RouterOutputs } from '@yuki/api'
 import { Button } from '@yuki/ui/button'
@@ -25,26 +21,22 @@ import {
   FormMessage,
   useForm,
 } from '@yuki/ui/form'
-import { TrashIcon } from '@yuki/ui/icons'
+import { Loader2Icon, TrashIcon } from '@yuki/ui/icons'
 import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { createPostSchema } from '@yuki/validators/post'
 
-import { useTRPC, useTRPCClient } from '@/lib/trpc/react'
+import { useTRPC } from '@/lib/trpc/react'
 
 export const CreatePost: React.FC = () => {
-  const trpc = useTRPC()
-  const trpcClient = useTRPCClient()
-  const queryClient = useQueryClient()
+  const { trpc, trpcClient, queryClient } = useTRPC()
 
   const form = useForm({
     schema: createPostSchema,
     defaultValues: { title: '', content: '' },
     submitFn: trpcClient.post.create.mutate,
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: trpc.post.all.queryKey(),
-      })
+      await queryClient.invalidateQueries(trpc.post.all.queryFilter())
       form.reset()
     },
     onError: (error) => {
@@ -90,7 +82,7 @@ export const CreatePost: React.FC = () => {
 }
 
 export const PostList: React.FC = () => {
-  const trpc = useTRPC()
+  const { trpc } = useTRPC()
   const { data } = useSuspenseQuery(trpc.post.all.queryOptions())
   return data.map((post) => <PostCard key={post.id} post={post} />)
 }
@@ -98,16 +90,12 @@ export const PostList: React.FC = () => {
 const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> = ({
   post,
 }) => {
-  const trpc = useTRPC()
-  const queryClient = useQueryClient()
+  const { trpc, queryClient } = useTRPC()
   const { mutate, isPending } = useMutation(
     trpc.post.delete.mutationOptions({
       onError: (error) => toast.error(error.message),
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({
-          queryKey: trpc.post.all.queryKey(),
-        })
-      },
+      onSuccess: () =>
+        queryClient.invalidateQueries(trpc.post.all.queryFilter()),
     }),
   )
 
@@ -125,7 +113,11 @@ const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> = ({
             }}
             disabled={isPending}
           >
-            <TrashIcon />
+            {isPending ? (
+              <Loader2Icon className="animate-spin" />
+            ) : (
+              <TrashIcon />
+            )}
           </Button>
         </CardAction>
       </CardHeader>

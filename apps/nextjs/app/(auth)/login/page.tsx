@@ -9,16 +9,13 @@ import {
   CardTitle,
 } from '@yuki/ui/card'
 
-import { OauthButtons } from '../_oauth-buttons'
-import { redirectCaches } from '../_search-params'
+import { loader } from '../_search-params'
 import { LoginForm } from './page.client'
 
-export default async function LoginPage({
-  searchParams,
-}: {
+export default async function LoginPage(props: {
   searchParams: Promise<SearchParams>
 }) {
-  await redirectCaches.parse(searchParams)
+  const { redirectTo } = await loader(props.searchParams)
 
   return (
     <>
@@ -36,13 +33,14 @@ export default async function LoginPage({
 
         <p className="mt-4 text-sm">
           Don&apos;t have an account?{' '}
-          <Link href="/register" className="hover:underline">
+          <Link
+            href={`/register?redirect_to=${redirectTo}`}
+            className="hover:underline"
+          >
             Register
           </Link>
         </p>
       </CardContent>
-
-      <OauthButtons />
     </>
   )
 }

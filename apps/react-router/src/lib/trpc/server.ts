@@ -1,4 +1,3 @@
-import type { TRPCQueryOptions } from '@trpc/tanstack-react-query'
 import { cache } from 'react'
 import { createTRPCOptionsProxy } from '@trpc/tanstack-react-query'
 
@@ -27,30 +26,4 @@ const trpc = (headers: Headers) =>
     router: appRouter,
   })
 
-function prefetch(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  queryOptions: ReturnType<TRPCQueryOptions<any>>,
-): void {
-  const queryClient = getQueryClient()
-
-  if (queryOptions.queryKey[1]?.type === 'infinite')
-    void queryClient.prefetchInfiniteQuery(queryOptions as never)
-  else void queryClient.prefetchQuery(queryOptions)
-}
-
-function batchPrefetch(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  queryOptionsArray: ReturnType<TRPCQueryOptions<any>>[],
-) {
-  const queryClient = getQueryClient()
-
-  void Promise.all(
-    queryOptionsArray.map((queryOptions) => {
-      if (queryOptions.queryKey[1]?.type === 'infinite')
-        void queryClient.prefetchInfiniteQuery(queryOptions as never)
-      else void queryClient.prefetchQuery(queryOptions)
-    }),
-  )
-}
-
-export { api, trpc, prefetch, batchPrefetch }
+export { api, trpc, getQueryClient }

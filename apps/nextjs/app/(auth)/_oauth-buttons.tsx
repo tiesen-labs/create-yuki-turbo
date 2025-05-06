@@ -1,11 +1,15 @@
+'use client'
+
+import { useQueryStates } from 'nuqs'
+
 import { Button } from '@yuki/ui/button'
 import { CardFooter } from '@yuki/ui/card'
 import { DiscordIcon, GoogleIcon } from '@yuki/ui/icons'
 
-import { redirectCaches } from './_search-params'
+import { redirect } from './_search-params'
 
 export const OauthButtons: React.FC = () => {
-  const { redirectTo } = redirectCaches.all()
+  const [{ redirectTo }] = useQueryStates(redirect.parsers, redirect.configs)
 
   return (
     <CardFooter className="grid gap-2">

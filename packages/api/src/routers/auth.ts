@@ -1,7 +1,6 @@
 import type { TRPCRouterRecord } from '@trpc/server'
 import { TRPCError } from '@trpc/server'
 
-import { Password, Session } from '@yuki/auth'
 import { eq } from '@yuki/db'
 import { users } from '@yuki/db/schema'
 import {
@@ -11,9 +10,6 @@ import {
 } from '@yuki/validators/auth'
 
 import { protectedProcedure, publicProcedure } from '../trpc'
-
-const password = new Password()
-const session = new Session()
 
 export const authRouter = {
   signIn: publicProcedure
@@ -31,13 +27,13 @@ export const authRouter = {
           message: 'Incorrect username or password',
         })
 
-      if (!password.verify(input.password, user.password))
+      if (!ctx.passwordService.verify(input.password, user.password))
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'Incorrect username or password',
         })
 
-      return session.create(user.id)
+      return ctx.sessionService.create(user.id)
     }),
 
   signUp: publicProcedure
@@ -59,7 +55,7 @@ export const authRouter = {
           name: input.name,
           email: input.email,
           image: '',
-          password: password.hash(input.password),
+          password: ctx.passwordService.hash(input.password),
         })
         .returning()
     }),
@@ -69,7 +65,10 @@ export const authRouter = {
     .mutation(async ({ ctx, input }) => {
       if (
         ctx.session.user.password &&
-        !password.verify(input.currentPassword ?? '', ctx.session.user.password)
+        !ctx.passwordService.verify(
+          input.currentPassword ?? '',
+          ctx.session.user.password,
+        )
       )
         throw new TRPCError({
           code: 'UNAUTHORIZED',
@@ -78,7 +77,7 @@ export const authRouter = {
 
       return await ctx.db
         .update(users)
-        .set({ password: password.hash(input.newPassword) })
+        .set({ password: ctx.passwordService.hash(input.newPassword) })
         .where(eq(users.id, ctx.session.user.id))
         .returning()
     }),
