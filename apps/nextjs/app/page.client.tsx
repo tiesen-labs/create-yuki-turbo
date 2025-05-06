@@ -1,6 +1,7 @@
 'use client'
 
-import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { skipToken, useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { useSubscription } from '@trpc/tanstack-react-query'
 
 import type { RouterOutputs } from '@yuki/api'
 import { Button } from '@yuki/ui/button'
@@ -21,7 +22,7 @@ import {
   FormMessage,
   useForm,
 } from '@yuki/ui/form'
-import { Loader2Icon, TrashIcon } from '@yuki/ui/icons'
+import { Loader2Icon, RotateCcwIcon, TrashIcon } from '@yuki/ui/icons'
 import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { createPostSchema } from '@yuki/validators/post'
@@ -84,7 +85,33 @@ export const CreatePost: React.FC = () => {
 export const PostList: React.FC = () => {
   const { trpc } = useTRPC()
   const { data } = useSuspenseQuery(trpc.post.all.queryOptions())
+
   return data.map((post) => <PostCard key={post.id} post={post} />)
+}
+
+export const SubscriptionStatus: React.FC = () => {
+  const { trpc, queryClient } = useTRPC()
+  const { status, reset } = useSubscription(
+    trpc.post.onCreate.subscriptionOptions(skipToken, {
+      onError: (error) => toast.error(error.message),
+      onData: (data) => {
+        toast.success('New post created')
+        queryClient.setQueryData(trpc.post.all.queryKey(), (oldData) => [
+          data,
+          ...(oldData ?? []),
+        ])
+      },
+    }),
+  )
+
+  return (
+    <div className="flex items-center justify-end gap-2">
+      <span>{status}</span>
+      <Button size="icon" onClick={reset}>
+        <RotateCcwIcon />
+      </Button>
+    </div>
+  )
 }
 
 const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> = ({

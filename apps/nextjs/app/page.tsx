@@ -6,7 +6,12 @@ import { Button } from '@yuki/ui/button'
 import { Typography } from '@yuki/ui/typography'
 
 import { getQueryClient, HydrateClient, trpc } from '@/lib/trpc/server'
-import { CreatePost, PostCardSkeleton, PostList } from './page.client'
+import {
+  CreatePost,
+  PostCardSkeleton,
+  PostList,
+  SubscriptionStatus,
+} from './page.client'
 
 export default function HomePage() {
   void getQueryClient().prefetchQuery(trpc.post.all.queryOptions())
@@ -30,6 +35,8 @@ export default function HomePage() {
           <h2 className="sr-only">Posts List Section</h2>
 
           <CreatePost />
+
+          <SubscriptionStatus />
 
           <Suspense
             fallback={Array.from({ length: 5 }, (_, i) => (
