@@ -94,12 +94,21 @@ export const SubscriptionStatus: React.FC = () => {
   const { status, reset } = useSubscription(
     trpc.post.onCreate.subscriptionOptions(skipToken, {
       onError: (error) => toast.error(error.message),
-      onData: (data) => {
-        toast.success('New post created')
-        queryClient.setQueryData(trpc.post.all.queryKey(), (oldData) => [
-          data,
-          ...(oldData ?? []),
-        ])
+      onData: ({ action, data }) => {
+        switch (action) {
+          case 'create':
+            queryClient.setQueryData(trpc.post.all.queryKey(), (oldData) => [
+              data,
+              ...(oldData ?? []),
+            ])
+            break
+          case 'delete':
+            queryClient.setQueryData(trpc.post.all.queryKey(), (oldData) => {
+              if (!oldData) return oldData
+              return oldData.filter((post) => post.id !== data.id)
+            })
+            break
+        }
       },
     }),
   )

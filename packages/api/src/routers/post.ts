@@ -33,20 +33,27 @@ export const postRouter = {
         })
         .returning()
 
-      ee.emit('postCreated', post)
+      ee.emit('post', 'create', post)
 
       return post
     }),
 
   onCreate: publicProcedure.subscription(async function* ({ signal }) {
-    for await (const [data] of on(ee, 'postCreated', { signal })) {
-      yield data as typeof posts.$inferSelect
+    for await (const [action, data] of on(ee, 'post', { signal })) {
+      yield { action, data } as {
+        action: 'create' | 'delete'
+        data: typeof posts.$inferSelect
+      }
     }
   }),
 
   delete: protectedProcedure
     .input(byIdSchema)
-    .mutation(({ ctx, input }) =>
-      ctx.db.delete(posts).where(eq(posts.id, input.id)).returning(),
-    ),
+    .mutation(async ({ ctx, input }) => {
+      const [post] = await ctx.db
+        .delete(posts)
+        .where(eq(posts.id, input.id))
+        .returning()
+      ee.emit('post', 'delete', post)
+    }),
 } satisfies TRPCRouterRecord
