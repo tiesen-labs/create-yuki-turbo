@@ -39,11 +39,11 @@ export const postRouter = {
     }),
 
   onCreate: publicProcedure.subscription(async function* ({ signal }) {
-    for await (const [action, data] of on(ee, 'post', { signal })) {
-      yield { action, data } as {
-        action: 'create' | 'delete'
-        data: typeof posts.$inferSelect
-      }
+    for await (const [a, d] of on(ee, 'post', { signal })) {
+      const action = a as 'create' | 'delete'
+      const data = d as typeof posts.$inferSelect
+
+      yield { action, data }
     }
   }),
 

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import {
-  Image,
   Pressable,
   SafeAreaView,
   ScrollView,
@@ -67,23 +66,6 @@ const PostCard: React.FC<{
   return (
     <View style={{ ...styles.card, backgroundColor: colors.card }}>
       <View style={styles.card_header}>
-        <Image src={post.author.image} style={styles.user_avatar} />
-
-        <View>
-          <Text style={{ ...fonts.bold, color: colors.text }}>
-            {post.author.name}
-          </Text>
-          <Text
-            style={{
-              ...fonts.regular,
-              fontSize: 12,
-              color: colors.text + '80',
-            }}
-          >
-            {post.createdAt.toDateString()}
-          </Text>
-        </View>
-
         <Pressable
           style={styles.card_action}
           onPress={() => {
