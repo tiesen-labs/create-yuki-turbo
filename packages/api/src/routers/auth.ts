@@ -33,7 +33,7 @@ export const authRouter = {
           message: 'Incorrect username or password',
         })
 
-      return ctx.sessionService.create(user.id)
+      return user.id
     }),
 
   signUp: publicProcedure
