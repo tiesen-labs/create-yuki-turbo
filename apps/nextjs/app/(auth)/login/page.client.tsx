@@ -45,7 +45,7 @@ export const LoginForm: React.FC = () => {
           return
         }
 
-        const { token } = await res.json()
+        const { token } = (await res.json()) as { token: string }
         await refresh(token)
 
         toast.success('You have successfully logged in!')
