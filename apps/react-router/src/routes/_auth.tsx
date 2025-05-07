@@ -7,7 +7,7 @@ import { DiscordIcon, GoogleIcon } from '@yuki/ui/icons'
 export default function AuthLayout() {
   return (
     <main className="container grid min-h-dvh place-items-center">
-      <Card className="w-screen max-w-md">
+      <Card className="w-full max-w-md">
         <Outlet />
 
         <CardFooter className="grid gap-2">
@@ -18,13 +18,13 @@ export default function AuthLayout() {
           </div>
 
           <form className="grid grid-cols-2 gap-4">
-            <Button variant="outline" formAction="/api/auth/oauth/discord">
+            <Button variant="outline" formAction="/api/auth/discord">
               <DiscordIcon />
-              <span className="sr-only md:not-sr-only">Discord</span>
+              <span className="xs:not-sr-only sr-only">Discord</span>
             </Button>
-            <Button variant="outline" formAction="/api/auth/oauth/google">
+            <Button variant="outline" formAction="/api/auth/google">
               <GoogleIcon />
-              <span className="sr-only md:not-sr-only">Google</span>
+              <span className="xs:not-sr-only sr-only">Google</span>
             </Button>
           </form>
         </CardFooter>

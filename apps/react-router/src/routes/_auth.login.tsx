@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
 import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
@@ -36,11 +36,17 @@ export default function LoginPage(_: Route.ComponentProps) {
 
       <CardContent>
         <LoginForm />
+
+        <p className="mt-4 text-sm">
+          Don&apos;t have an account?{' '}
+          <Link to="/register" className="hover:underline">
+            Register{' '}
+          </Link>{' '}
+        </p>
       </CardContent>
     </>
   )
 }
-
 const LoginForm: React.FC = () => {
   const { trpcClient } = useTRPC()
   const { refresh } = useSession()

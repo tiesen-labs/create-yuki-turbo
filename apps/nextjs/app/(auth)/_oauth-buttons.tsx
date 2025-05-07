@@ -24,11 +24,11 @@ export const OauthButtons: React.FC = () => {
 
         <Button variant="outline" formAction="/api/auth/discord">
           <DiscordIcon />
-          <span className="sr-only md:not-sr-only">Discord</span>
+          <span className="xs:not-sr-only sr-only">Discord</span>
         </Button>
         <Button variant="outline" formAction="/api/auth/google">
           <GoogleIcon />
-          <span className="sr-only md:not-sr-only">Google</span>
+          <span className="xs:not-sr-only sr-only">Google</span>
         </Button>
       </form>
     </CardFooter>
