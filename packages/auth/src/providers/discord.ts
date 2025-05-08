@@ -1,7 +1,5 @@
 import { Discord } from 'arctic'
 
-import { env } from '@yuki/env'
-
 import { BaseProvider } from './base'
 
 export class DiscordProvider extends BaseProvider {
@@ -13,8 +11,8 @@ export class DiscordProvider extends BaseProvider {
   constructor() {
     super()
     this.provider = new Discord(
-      env.DISCORD_CLIENT_ID,
-      env.DISCORD_CLIENT_SECRET,
+      process.env.DISCORD_CLIENT_ID ?? '',
+      process.env.DISCORD_CLIENT_SECRET ?? '',
       this.createCallbackUrl('discord'),
     )
   }

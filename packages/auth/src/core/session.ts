@@ -1,93 +1,85 @@
+'use server'
+
 import { sha256 } from '@oslojs/crypto/sha2'
 import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase,
 } from '@oslojs/encoding'
 
-import type { users } from '@yuki/db/schema'
-import { db as database, eq } from '@yuki/db'
-import { sessions } from '@yuki/db/schema'
+import { db, eq } from '@yuki/db'
+import { sessions, users } from '@yuki/db/schema'
 
-export class Session {
-  private readonly TOKEN_BYTES = 20
-  private readonly SESSION_EXPIRATION = 1000 * 60 * 60 * 24 * 30 // 30 days
-  private readonly SESSION_REFRESH_THRESHOLD = this.SESSION_EXPIRATION / 2 // 15 days
+import type { SessionResult } from '../types'
 
-  constructor(private readonly db = database) {}
+const TOKEN_BYTES = 20
+const SESSION_EXPIRATION = 1000 * 60 * 60 * 24 * 30 // 30 days
+const SESSION_REFRESH_THRESHOLD = SESSION_EXPIRATION / 2 // 15 days
 
-  public async create(
-    userId: string,
-  ): Promise<{ sessionToken: string; expires: Date }> {
-    const token = this.generateToken()
-    const sessionToken = this.hashToken(token)
-    const expires = new Date(Date.now() + this.SESSION_EXPIRATION)
+export async function createSession(
+  userId: string,
+): Promise<{ sessionToken: string; expires: Date }> {
+  const token = generateToken()
+  const sessionToken = hashToken(token)
+  const expires = new Date(Date.now() + SESSION_EXPIRATION)
 
-    const [session] = await this.db
-      .insert(sessions)
-      .values({ sessionToken, expires, userId })
-      .returning()
+  const [session] = await db
+    .insert(sessions)
+    .values({ sessionToken, expires, userId })
+    .returning()
 
-    if (!session) throw new Error('Failed to create session')
-    return { sessionToken: token, expires: session.expires }
-  }
+  if (!session) throw new Error('Failed to create session')
+  return { sessionToken: token, expires: session.expires }
+}
 
-  public async validateToken(token: string): Promise<SessionResult> {
-    const sessionToken = this.hashToken(token)
+export async function validateToken(token: string): Promise<SessionResult> {
+  const sessionToken = hashToken(token)
 
-    const result = await this.db.query.sessions.findFirst({
-      where: eq(sessions.sessionToken, sessionToken),
-      with: { user: true },
+  const [result] = await db
+    .select({
+      sessionToken: sessions.sessionToken,
+      expires: sessions.expires,
+      user: users,
     })
+    .from(sessions)
+    .where(eq(sessions.sessionToken, sessionToken))
+    .innerJoin(users, eq(users.id, sessions.userId))
 
-    if (!result) return { expires: new Date() }
+  if (!result) return { expires: new Date() }
 
-    const { user, ...session } = result
-    const now = Date.now()
+  const { user, ...session } = result
+  const now = Date.now()
 
-    if (now > session.expires.getTime()) {
-      await this.delete(sessionToken)
-      return { expires: new Date() }
-    }
-
-    if (now >= session.expires.getTime() - this.SESSION_REFRESH_THRESHOLD) {
-      const newExpires = new Date(Date.now() + this.SESSION_EXPIRATION)
-      await this.db
-        .update(sessions)
-        .set({ expires: newExpires })
-        .where(eq(sessions.sessionToken, sessionToken))
-      session.expires = newExpires
-    }
-
-    return { user, expires: session.expires }
+  if (now > session.expires.getTime()) {
+    await db.delete(sessions).where(eq(sessions.sessionToken, sessionToken))
+    return { expires: new Date() }
   }
 
-  public async invalidateToken(token: string): Promise<void> {
-    await this.delete(this.hashToken(token))
-  }
-
-  public async invalidateAllTokens(userId: string): Promise<void> {
-    await this.db.delete(sessions).where(eq(sessions.userId, userId))
-  }
-
-  private generateToken(): string {
-    const bytes = new Uint8Array(this.TOKEN_BYTES)
-    crypto.getRandomValues(bytes)
-    const token = encodeBase32LowerCaseNoPadding(bytes)
-    return token
-  }
-
-  private hashToken(token: string): string {
-    return encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
-  }
-
-  private async delete(sessionToken: string): Promise<void> {
-    await this.db
-      .delete(sessions)
+  if (now >= session.expires.getTime() - SESSION_REFRESH_THRESHOLD) {
+    const newExpires = new Date(Date.now() + SESSION_EXPIRATION)
+    await db
+      .update(sessions)
+      .set({ expires: newExpires })
       .where(eq(sessions.sessionToken, sessionToken))
+    session.expires = newExpires
   }
+
+  return { user, expires: session.expires }
 }
 
-export interface SessionResult {
-  user?: typeof users.$inferSelect
-  expires: Date
+export async function invalidateToken(token: string): Promise<void> {
+  await db.delete(sessions).where(eq(sessions.sessionToken, hashToken(token)))
 }
+
+export async function invalidateAllTokens(userId: string): Promise<void> {
+  await db.delete(sessions).where(eq(sessions.userId, userId))
+}
+
+const generateToken = (): string => {
+  const bytes = new Uint8Array(TOKEN_BYTES)
+  crypto.getRandomValues(bytes)
+  const token = encodeBase32LowerCaseNoPadding(bytes)
+  return token
+}
+
+const hashToken = (token: string): string =>
+  encodeHexLowerCase(sha256(new TextEncoder().encode(token)))

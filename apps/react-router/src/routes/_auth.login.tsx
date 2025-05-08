@@ -1,6 +1,7 @@
-import { Link, useNavigate } from 'react-router'
+import type { z } from 'zod'
+import { data, Link, useNavigate } from 'react-router'
 
-import { useSession } from '@yuki/auth/react'
+import { signIn } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
 import {
   CardContent,
@@ -22,7 +23,12 @@ import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
 import type { Route } from './+types/_auth.login'
-import { useTRPC } from '@/lib/trpc/react'
+
+export const action = async ({ request }: Route.ActionArgs) => {
+  const input = (await request.json()) as z.infer<typeof signInSchema>
+  const sessionCookie = await signIn({ ...input, skipSetCookie: true })
+  return data('/', { headers: { 'Set-Cookie': sessionCookie } })
+}
 
 export default function LoginPage(_: Route.ComponentProps) {
   return (
@@ -47,38 +53,23 @@ export default function LoginPage(_: Route.ComponentProps) {
     </>
   )
 }
-const LoginForm: React.FC = () => {
-  const { trpcClient } = useTRPC()
-  const { refresh } = useSession()
-  const navigate = useNavigate()
 
+const LoginForm: React.FC = () => {
+  const navigate = useNavigate()
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
-    submitFn: trpcClient.auth.signIn.mutate,
-    onSuccess: async (userId) => {
-      try {
-        const res = await fetch('/api/auth/sign-in', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId }),
-        })
-
-        if (!res.ok) {
-          const errorData = await res.text()
-          toast.error(`Failed to sign in: ${errorData || 'Unknown error'}`)
-          return
-        }
-
-        const { token } = (await res.json()) as { token: string }
-        await refresh(token)
-
-        await navigate('/')
-        toast.success('You have successfully logged in!')
-      } catch (error) {
-        console.error('Login error:', error)
-        toast.error('An unexpected error occurred')
-      }
+    submitFn: async (values) => {
+      const res = await fetch('/login', {
+        method: 'POST',
+        body: JSON.stringify(values),
+        credentials: 'include',
+      })
+      if (!res.ok) throw new Error('Invalid email or password')
+    },
+    onSuccess: async () => {
+      toast.success('You have successfully logged in!')
+      await navigate('/')
     },
     onError: (error) => {
       toast.error(error)

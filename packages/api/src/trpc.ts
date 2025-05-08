@@ -12,7 +12,7 @@ import superjson from 'superjson'
 import { treeifyError, ZodError } from 'zod'
 
 import type { SessionResult } from '@yuki/auth'
-import { auth, Password, Session } from '@yuki/auth'
+import { auth, validateToken } from '@yuki/auth'
 import { db } from '@yuki/db'
 
 /**
@@ -25,8 +25,7 @@ const isomorphicGetSession = async (
 ): Promise<SessionResult> => {
   const authToken = headers.get('Authorization') ?? ''
 
-  if (authToken)
-    return new Session().validateToken(authToken.replace('Bearer ', ''))
+  if (authToken) return validateToken(authToken.replace('Bearer ', ''))
   return auth()
 }
 
@@ -56,7 +55,6 @@ export const createTRPCContext = async (opts: { headers: Headers }) => {
   return {
     db,
     session,
-    passwordService: new Password(),
   }
 }
 

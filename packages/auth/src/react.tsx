@@ -2,7 +2,7 @@
 
 import * as React from 'react'
 
-import type { SessionResult } from './core/session'
+import type { SessionResult } from './types'
 
 type SessionContextValue = {
   signOut: () => Promise<void>
