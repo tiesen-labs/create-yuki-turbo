@@ -1,26 +1,27 @@
 import type { MiddlewareConfig } from 'next/server'
 import { NextResponse } from 'next/server'
 
-import { middleware } from '@yuki/auth'
+import { auth } from '@yuki/auth'
 
 const authRoutes: string[] = ['/login', '/register']
 const protectedRoutes: string[] = ['/protected']
 
-export default middleware(({ request, session }) => {
-  const { pathname } = new URL(request.url)
+export default async function middleware(req: Request) {
+  const { pathname } = new URL(req.url)
+  const session = await auth(req)
 
-  if (request.method === 'GET') {
+  if (req.method === 'GET') {
     if (
       !session.user &&
       protectedRoutes.some((route) => pathname.startsWith(route))
     ) {
-      const url = new URL('/login', request.url)
+      const url = new URL('/login', req.url)
       url.searchParams.set('redirect_to', pathname)
       return NextResponse.redirect(url)
     }
 
     if (session.user && authRoutes.some((route) => pathname.startsWith(route)))
-      return NextResponse.redirect(new URL('/', request.url))
+      return NextResponse.redirect(new URL('/', req.url))
 
     return NextResponse.next()
   }
@@ -48,12 +49,12 @@ export default middleware(({ request, session }) => {
    *   a proper token-based authentication system for mobile clients before deployment.
    */
 
-  const isReactNative = request.headers.get('x-trpc-source') === 'react-native'
+  const isReactNative = req.headers.get('x-trpc-source') === 'react-native'
   if (isReactNative) return NextResponse.next()
 
-  const originHeader = request.headers.get('Origin') ?? ''
+  const originHeader = req.headers.get('Origin') ?? ''
   const hostHeader =
-    request.headers.get('Host') ?? request.headers.get('X-Forwarded-Host') ?? ''
+    req.headers.get('Host') ?? req.headers.get('X-Forwarded-Host') ?? ''
   if (!originHeader || !hostHeader)
     return new NextResponse(null, { status: 403 })
 
@@ -67,7 +68,7 @@ export default middleware(({ request, session }) => {
     return new NextResponse(null, { status: 403 })
 
   return NextResponse.next()
-})
+}
 
 export const config = {
   matcher: [

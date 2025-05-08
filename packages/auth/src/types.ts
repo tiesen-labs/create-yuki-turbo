@@ -11,10 +11,3 @@ export interface SessionResult {
 }
 
 export type Handler = (req: Request) => Response | Promise<Response>
-
-export type AuthParams =
-  | Request
-  | ((params: {
-      req: Request
-      session: SessionResult
-    }) => Response | Promise<Response>)

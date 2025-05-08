@@ -2,6 +2,7 @@ import type { z } from 'zod'
 import { data, Link, useNavigate } from 'react-router'
 
 import { signIn } from '@yuki/auth'
+import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import {
   CardContent,
@@ -26,8 +27,11 @@ import type { Route } from './+types/_auth.login'
 
 export const action = async ({ request }: Route.ActionArgs) => {
   const input = (await request.json()) as z.infer<typeof signInSchema>
-  const sessionCookie = await signIn({ ...input, skipSetCookie: true })
-  return data('/', { headers: { 'Set-Cookie': sessionCookie } })
+  const { sessionCookie, token } = await signIn({
+    ...input,
+    skipSetCookie: true,
+  })
+  return data({ token }, { headers: { 'Set-Cookie': sessionCookie } })
 }
 
 export default function LoginPage(_: Route.ComponentProps) {
@@ -56,6 +60,7 @@ export default function LoginPage(_: Route.ComponentProps) {
 
 const LoginForm: React.FC = () => {
   const navigate = useNavigate()
+  const { refresh } = useSession()
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
@@ -66,8 +71,10 @@ const LoginForm: React.FC = () => {
         credentials: 'include',
       })
       if (!res.ok) throw new Error('Invalid email or password')
+      return (await res.json()) as { token: string }
     },
-    onSuccess: async () => {
+    onSuccess: async ({ token }) => {
+      await refresh(token)
       toast.success('You have successfully logged in!')
       await navigate('/')
     },

@@ -1,6 +1,10 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
+import { useQueryStates } from 'nuqs'
+
 import { signIn } from '@yuki/auth'
+import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import {
   Form,
@@ -15,17 +19,22 @@ import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
 import { signInSchema } from '@yuki/validators/auth'
 
+import { redirect } from '../_search-params'
+
 export const LoginForm: React.FC = () => {
-  // const [{ redirectTo }] = useQueryStates(redirect.parsers, redirect.configs)
-  // const { refresh } = useSession()
-  // const router = useRouter()
+  const [{ redirectTo }] = useQueryStates(redirect.parsers, redirect.configs)
+  const { refresh } = useSession()
+  const router = useRouter()
 
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
     submitFn: signIn,
-    onSuccess: (data) => {
-      console.log(data)
+    onSuccess: async ({ token }) => {
+      await refresh(token)
+      const isExternal = /^(http|https|exp)?:\/\//.test(redirectTo)
+      if (isExternal) router.push(`${redirectTo}?token=${token}`)
+      else router.push(redirectTo)
     },
     onError: (error) => {
       toast.error(error)

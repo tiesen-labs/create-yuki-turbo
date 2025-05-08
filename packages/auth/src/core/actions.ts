@@ -3,7 +3,7 @@
 import { db, eq } from '@yuki/db'
 import { accounts, users } from '@yuki/db/schema'
 
-import type { AuthParams, Handler, SessionResult } from '../types'
+import type { SessionResult } from '../types'
 import { getCookie, setCookie } from './cookies'
 import { verify } from './password'
 import { createSession, invalidateToken, validateToken } from './session'
@@ -30,27 +30,7 @@ const SESSION_COOKIE_NAME = 'auth_token'
  *   return new Response('Protected data');
  * });
  */
-async function auth(params?: Request): Promise<SessionResult>
-async function auth(
-  params: (params: {
-    req: Request
-    session: SessionResult
-  }) => Response | Promise<Response>,
-): Promise<Handler>
-async function auth(
-  params?: AuthParams,
-): Promise<SessionResult | Response | Handler> {
-  if (typeof params === 'function') {
-    return async (req: Request) => {
-      const token =
-        (await getCookie(SESSION_COOKIE_NAME, req)) ??
-        req.headers.get('Authorization')?.replace(' Bearer ', '') ??
-        ''
-      const session = await validateToken(token)
-      return params({ req, session })
-    }
-  }
-
+async function auth(params?: Request): Promise<SessionResult> {
   const token =
     (await getCookie(SESSION_COOKIE_NAME, params)) ??
     params?.headers.get('Authorization')?.replace(' Bearer ', '') ??
@@ -76,7 +56,7 @@ async function signIn(input: {
   email: string
   password: string
   skipSetCookie?: boolean
-}): Promise<string> {
+}): Promise<{ sessionCookie: string; token: string }> {
   const [user] = await db
     .select({ id: users.id, password: users.password })
     .from(users)
@@ -92,7 +72,10 @@ async function signIn(input: {
       expires: sessionCookie.expires,
     })
 
-  return `auth_token=${sessionCookie.sessionToken}; Expires=${sessionCookie.expires.toUTCString()}; Path=/; HttpOnly; Secure; SameSite=Lax`
+  return {
+    sessionCookie: `auth_token=${sessionCookie.sessionToken}; Expires=${sessionCookie.expires.toUTCString()}; Path=/; HttpOnly; Secure; SameSite=Lax`,
+    token: sessionCookie.sessionToken,
+  }
 }
 
 /**
