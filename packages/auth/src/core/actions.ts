@@ -30,10 +30,10 @@ const SESSION_COOKIE_NAME = 'auth_token'
  *   return new Response('Protected data');
  * });
  */
-async function auth(params?: Request): Promise<SessionResult> {
+async function auth(req?: Request): Promise<SessionResult> {
   const token =
-    (await getCookie(SESSION_COOKIE_NAME, params)) ??
-    params?.headers.get('Authorization')?.replace(' Bearer ', '') ??
+    (await getCookie(SESSION_COOKIE_NAME, req)) ??
+    req?.headers.get('Authorization')?.replace('Bearer ', '') ??
     ''
 
   return validateToken(token)
@@ -93,7 +93,10 @@ async function signIn(input: {
  * await signOut(request);
  */
 async function signOut(req?: Request): Promise<void> {
-  const token = await getCookie(SESSION_COOKIE_NAME, req)
+  const token =
+    (await getCookie(SESSION_COOKIE_NAME, req)) ??
+    req?.headers.get('Authorization')?.replace('Bearer ', '') ??
+    ''
   if (token) await invalidateToken(token)
 }
 

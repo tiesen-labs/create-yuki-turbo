@@ -23,16 +23,16 @@ import { redirect } from '../_search-params'
 
 export const LoginForm: React.FC = () => {
   const [{ redirectTo }] = useQueryStates(redirect.parsers, redirect.configs)
+  const isExternal = /^(http|https|exp)?:\/\//.test(redirectTo)
   const { refresh } = useSession()
   const router = useRouter()
 
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
-    submitFn: signIn,
+    submitFn: (values) => signIn({ ...values, skipSetCookie: isExternal }),
     onSuccess: async ({ token }) => {
       await refresh(token)
-      const isExternal = /^(http|https|exp)?:\/\//.test(redirectTo)
       if (isExternal) router.push(`${redirectTo}?token=${token}`)
       else router.push(redirectTo)
     },
