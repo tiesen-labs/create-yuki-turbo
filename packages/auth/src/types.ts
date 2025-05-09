@@ -9,5 +9,3 @@ export interface SessionResult {
   user?: typeof users.$inferSelect
   expires: Date
 }
-
-export type Handler = (req: Request) => Response | Promise<Response>

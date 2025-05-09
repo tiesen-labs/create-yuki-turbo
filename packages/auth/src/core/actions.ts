@@ -10,46 +10,53 @@ import { verify } from './password'
 import { createSession, invalidateToken, validateToken } from './session'
 
 /**
- * Authentication utility that validates session tokens and provides authenticated handlers
+ * Extracts the session token from a request
  *
- * @description
- * This function has two modes of operation:
- * 1. Direct authentication: Pass a Request or nothing to validate a session token
- * 2. Handler creation: Pass a callback to create an authentication middleware handler
- *
- * @example
- * // Direct authentication
- * const session = await auth(request);
- * if (!session.user) return new Response('Unauthorized', { status: 401 });
- *
- * @example
- * // Create authenticated handler
- * export const GET = auth(({ req, session }) => {
- *   if (!session.user) return new Response('Unauthorized', { status: 401 });
- *   return new Response('Protected data');
- * });
+ * @param request - Optional request object to extract token from
+ * @returns The session token or empty string if not found
+ * @internal
  */
-async function auth(req?: Request): Promise<SessionResult> {
-  const token =
-    (await getCookie(SESSION_COOKIE_NAME, req)) ??
-    req?.headers.get('Authorization')?.replace('Bearer ', '') ??
+async function getSessionToken(request?: Request): Promise<string> {
+  return (
+    (await getCookie(SESSION_COOKIE_NAME, request)) ??
+    request?.headers.get('Authorization')?.replace('Bearer ', '') ??
     ''
+  )
+}
 
+/**
+ * Authenticates a request by validating the session token
+ *
+ * @param request - Optional request object to extract the session token from
+ * @returns Promise resolving to a SessionResult with user information if authenticated
+ *
+ * @example
+ * // Authenticate the current request
+ * const session = await auth();
+ *
+ * @example
+ * // Authenticate with a specific request
+ * const session = await auth(request);
+ */
+async function auth(request?: Request): Promise<SessionResult> {
+  const token = await getSessionToken(request)
   return validateToken(token)
 }
 
 /**
  * Signs in a user with email and password
  *
- * @description
- * Authenticates a user by their email and password. If successful, creates a session
- * by making a request to the sign-in API endpoint.
+ * @param input - Object containing email and password credentials
+ * @returns Object containing the session token and expiration date
+ * @throws Error if credentials are invalid or authentication fails
  *
  * @example
  * // Sign in a user
- * await signIn({ email: 'user@example.com', password: 'password123' });
- *
- * @throws {Error} If the email or password is invalid
+ * try {
+ *   const session = await signIn({ email: 'user@example.com', password: 'password123' });
+ * } catch (error) {
+ *   // Handle authentication failure
+ * }
  */
 async function signIn(input: {
   email: string
@@ -69,8 +76,8 @@ async function signIn(input: {
 /**
  * Signs out the current user by invalidating their session
  *
- * @description
- * Retrieves the session token from cookies and invalidates it if present.
+ * @param request - Optional Request object to extract the session token from
+ * @returns Promise that resolves when the session is invalidated
  *
  * @example
  * // Sign out the current user
@@ -80,11 +87,8 @@ async function signIn(input: {
  * // Sign out with a specific request context
  * await signOut(request);
  */
-async function signOut(req?: Request): Promise<void> {
-  const token =
-    (await getCookie(SESSION_COOKIE_NAME, req)) ??
-    req?.headers.get('Authorization')?.replace('Bearer ', '') ??
-    ''
+async function signOut(request?: Request): Promise<void> {
+  const token = await getSessionToken(request)
   if (token) await invalidateToken(token)
 }
 
@@ -92,10 +96,14 @@ async function signOut(req?: Request): Promise<void> {
  * Creates a new user or links accounts for existing users
  *
  * @description
- * Creates a user account based on OAuth provider data. If an account with the
- * same provider and providerAccountId exists, returns the associated user.
- * If a user with the same email exists, links the new provider to that user.
- * Otherwise creates a new user with the provider account linked.
+ * This function has three possible outcomes:
+ * 1. Return existing user if the provider account is already linked
+ * 2. Link new provider to existing user with matching email
+ * 3. Create new user and link provider account
+ *
+ * @param data - User data including provider details, name, email, and image
+ * @returns The created or existing user object
+ * @throws Error if user creation fails
  *
  * @example
  * // Create user from OAuth data
@@ -126,19 +134,20 @@ async function createUser(data: {
   })
   if (existingAccount?.user) return existingAccount.user
 
-  const existingUser = await db.query.users.findFirst({
-    where: (user, { eq }) => eq(user.email, email),
-  })
-  if (existingUser) {
-    await db.insert(accounts).values({
-      provider,
-      providerAccountId,
-      userId: existingUser.id,
-    })
-    return existingUser
-  }
-
   return await db.transaction(async (tx) => {
+    const existingUser = await tx.query.users.findFirst({
+      where: (user, { eq }) => eq(user.email, email),
+    })
+
+    if (existingUser) {
+      await tx.insert(accounts).values({
+        provider,
+        providerAccountId,
+        userId: existingUser.id,
+      })
+      return existingUser
+    }
+
     const [newUser] = await tx.insert(users).values(data).returning()
     if (!newUser) throw new Error('Failed to create user')
 
