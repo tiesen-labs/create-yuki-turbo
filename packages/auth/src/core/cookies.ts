@@ -2,8 +2,6 @@
 
 import { cookies } from 'next/headers'
 
-import { env } from '@yuki/env'
-
 export const getCookie = async (
   key: string,
   req?: Request,
@@ -22,7 +20,7 @@ export const setCookie = async (
     path: '/',
     httpOnly: true,
     sameSite: 'lax' as const,
-    secure: env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === 'production',
     ...options,
   }
 

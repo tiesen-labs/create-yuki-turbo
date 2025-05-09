@@ -1,7 +1,5 @@
 import { generateCodeVerifier, generateState } from 'arctic'
 
-import { env } from '@yuki/env'
-
 import type { AuthOptions, Providers } from '../types'
 import { SESSION_COOKIE_NAME } from '../config'
 import { auth, createUser, signIn, signOut } from './actions'
@@ -50,11 +48,15 @@ export function Auth<TProviders extends Providers>(
     const provider = providers[providerName]
     if (!provider) throw new Error(`Provider ${providerName} is not supported`)
 
-    if (redirectTo.startsWith('exp://') && env.NODE_ENV === 'development') {
-      if (!env.AUTH_PROXY_URL) throw new Error('AUTH_PROXY_URL is not set')
+    if (
+      redirectTo.startsWith('exp://') &&
+      process.env.NODE_ENV === 'development'
+    ) {
+      if (!process.env.AUTH_PROXY_URL)
+        throw new Error('AUTH_PROXY_URL is not set')
 
       const redirectUrl = new URL(
-        `https://${env.AUTH_PROXY_URL}${url.pathname}`,
+        `https://${process.env.AUTH_PROXY_URL}${url.pathname}`,
       )
       redirectUrl.searchParams.set('redirect_to', redirectTo)
       return createRedirectResponse(redirectUrl)

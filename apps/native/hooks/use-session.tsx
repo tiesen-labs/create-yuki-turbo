@@ -84,14 +84,13 @@ export function SessionProvider(
   }, [fetchSession])
 
   const signOut = React.useCallback(async () => {
-    const token = getToken()
-    await deleteToken()
-    setSession({ expires: new Date() })
-
     await fetch(`${getBaseUrl()}/api/auth/sign-out`, {
       method: 'POST',
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${getToken()}` },
     })
+
+    await deleteToken()
+    setSession({ expires: new Date() })
   }, [])
 
   const value = React.useMemo(

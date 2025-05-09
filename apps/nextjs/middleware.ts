@@ -42,15 +42,10 @@ export default async function middleware(req: Request) {
    *    - CSRF tokens for sensitive operations
    *    - SameSite cookie attributes (Strict or Lax)
    *    - Content-Type verification for additional protection
-   *
-   * Known exceptions:
-   * - React Native clients bypass CSRF checks (identified by 'x-trpc-source' header)
-   *   WARNING: This creates a security vulnerability and should be addressed by implementing
-   *   a proper token-based authentication system for mobile clients before deployment.
    */
 
-  const isReactNative = req.headers.get('x-trpc-source') === 'react-native'
-  if (isReactNative) return NextResponse.next()
+  const authHeader = req.headers.get('Authorization')?.replace('Bearer ', '')
+  if (authHeader) return NextResponse.next()
 
   const originHeader = req.headers.get('Origin') ?? ''
   const hostHeader =
