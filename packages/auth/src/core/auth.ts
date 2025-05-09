@@ -3,6 +3,7 @@ import { generateCodeVerifier, generateState } from 'arctic'
 import { env } from '@yuki/env'
 
 import type { AuthOptions, Providers } from '../types'
+import { SESSION_COOKIE_NAME } from '../config'
 import { auth, createUser, signIn, signOut } from './actions'
 import { deleteCookie, getCookie, setCookie } from './cookies'
 import { createSession } from './session'
@@ -35,8 +36,7 @@ import { createRedirectResponse, setCorsHeaders } from './utils'
  * })
  *
  * // Use in API route
- * export const GET = authHandler.handlers.GET
- * export const POST = authHandler.handlers.POST
+ * export const { GET, POST } = authHandler.handlers
  * ```
  */
 export function Auth<TProviders extends Providers>(
@@ -99,7 +99,7 @@ export function Auth<TProviders extends Providers>(
 
     const response = createRedirectResponse(redirectUrl)
     await setCookie(
-      'auth_token',
+      SESSION_COOKIE_NAME,
       sessionCookie.sessionToken,
       { expires: sessionCookie.expires.toUTCString() },
       response,
@@ -148,10 +148,30 @@ export function Auth<TProviders extends Providers>(
         const { pathname } = new URL(req.url)
         let response = new Response('Not Found', { status: 404 })
 
-        if (pathname === '/api/auth/sign-out') {
+        if (pathname === '/api/auth/sign-in') {
+          const json = (await req.json()) as { email: string; password: string }
+          try {
+            const { sessionToken, expires } = await signIn(json)
+            response = Response.json({ token: sessionToken }, { status: 200 })
+            await setCookie(
+              SESSION_COOKIE_NAME,
+              sessionToken,
+              { expires: expires.toUTCString() },
+              response,
+            )
+          } catch (e) {
+            if (e instanceof Error)
+              response = Response.json({ error: e.message }, { status: 401 })
+            else
+              response = Response.json(
+                { error: 'Internal Server Error' },
+                { status: 500 },
+              )
+          }
+        } else if (pathname === '/api/auth/sign-out') {
           await signOut(req)
           response = createRedirectResponse('/')
-          await deleteCookie('auth_token', response)
+          await deleteCookie(SESSION_COOKIE_NAME, response)
         }
 
         setCorsHeaders(response)

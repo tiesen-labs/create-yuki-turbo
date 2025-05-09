@@ -2,6 +2,7 @@ import type { AuthOptions } from './types'
 import { DiscordProvider } from './providers/discord'
 import { GoogleProvider } from './providers/google'
 
+export const SESSION_COOKIE_NAME = 'auth_token'
 /**
  * Authentication configuration
  *
@@ -16,3 +17,5 @@ export const authOptions = {
   discord: new DiscordProvider(),
   google: new GoogleProvider(),
 } satisfies AuthOptions
+
+export type Options = typeof authOptions

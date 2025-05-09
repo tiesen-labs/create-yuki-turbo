@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation'
 import { useQueryStates } from 'nuqs'
 
-import { signIn } from '@yuki/auth'
 import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import {
@@ -23,16 +22,15 @@ import { redirect } from '../_search-params'
 
 export const LoginForm: React.FC = () => {
   const [{ redirectTo }] = useQueryStates(redirect.parsers, redirect.configs)
-  const isExternal = /^(http|https|exp)?:\/\//.test(redirectTo)
-  const { refresh } = useSession()
+  const { signIn } = useSession()
   const router = useRouter()
 
   const form = useForm({
     schema: signInSchema,
     defaultValues: { email: '', password: '' },
-    submitFn: (values) => signIn({ ...values, skipSetCookie: isExternal }),
-    onSuccess: async ({ token }) => {
-      await refresh(token)
+    submitFn: (values) => signIn('credentials', values),
+    onSuccess: (token) => {
+      const isExternal = /^(http|https|exp)?:\/\//.test(redirectTo)
       if (isExternal) router.push(`${redirectTo}?token=${token}`)
       else router.push(redirectTo)
     },

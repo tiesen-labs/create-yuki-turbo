@@ -2,9 +2,18 @@
 
 import * as React from 'react'
 
+import type { Options } from './config'
 import type { SessionResult } from './types'
 
-type SessionContextValue = {
+type Provider = 'credentials' | keyof Options
+
+type SessionContextValue<TProvider extends Provider = Provider> = {
+  signIn: (
+    providers: TProvider,
+    options: TProvider extends 'credentials'
+      ? { email: string; password: string }
+      : { redirectTo?: string },
+  ) => Promise<void>
   signOut: () => Promise<void>
   refresh: (token?: string) => Promise<void>
 } & (
@@ -70,6 +79,31 @@ export function SessionProvider({
     [],
   )
 
+  const signIn = React.useCallback(
+    async <TProvider extends Provider>(
+      provider: TProvider,
+      options: TProvider extends 'credentials'
+        ? { email: string; password: string }
+        : { redirectTo?: string },
+    ) => {
+      if (provider === 'credentials') {
+        const res = await fetch('/api/auth/sign-in', {
+          method: 'POST',
+          body: JSON.stringify(options),
+        })
+        const json = (await res.json()) as { token: string; error: string }
+        if (!res.ok) throw new Error(json.error)
+        await fetchSession(json.token)
+        return json.token
+      } else {
+        const redirectTo =
+          (options as { redirectTo?: string }).redirectTo ?? '/'
+        window.location.href = `/api/auth/sign-in/${provider}?redirect_to=${redirectTo}`
+      }
+    },
+    [fetchSession],
+  )
+
   const signOut = React.useCallback(async (): Promise<void> => {
     try {
       const res = await fetch('/api/auth/sign-out', { method: 'POST' })
@@ -91,10 +125,11 @@ export function SessionProvider({
       ({
         session,
         status,
+        signIn,
         signOut,
         refresh: fetchSession,
       }) as SessionContextValue,
-    [session, status, signOut, fetchSession],
+    [session, status, signIn, signOut, fetchSession],
   )
 
   return <SessionContext value={value}>{children}</SessionContext>

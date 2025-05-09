@@ -4,11 +4,10 @@ import { db, eq } from '@yuki/db'
 import { accounts, users } from '@yuki/db/schema'
 
 import type { SessionResult } from '../types'
-import { getCookie, setCookie } from './cookies'
+import { SESSION_COOKIE_NAME } from '../config'
+import { getCookie } from './cookies'
 import { verify } from './password'
 import { createSession, invalidateToken, validateToken } from './session'
-
-const SESSION_COOKIE_NAME = 'auth_token'
 
 /**
  * Authentication utility that validates session tokens and provides authenticated handlers
@@ -55,8 +54,7 @@ async function auth(req?: Request): Promise<SessionResult> {
 async function signIn(input: {
   email: string
   password: string
-  skipSetCookie?: boolean
-}): Promise<{ sessionCookie: string; token: string }> {
+}): Promise<{ sessionToken: string; expires: Date }> {
   const [user] = await db
     .select({ id: users.id, password: users.password })
     .from(users)
@@ -65,17 +63,7 @@ async function signIn(input: {
   if (!user?.password || !verify(input.password, user.password))
     throw new Error('Invalid email or password')
 
-  const sessionCookie = await createSession(user.id)
-
-  if (!input.skipSetCookie)
-    await setCookie('auth_token', sessionCookie.sessionToken, {
-      expires: sessionCookie.expires,
-    })
-
-  return {
-    sessionCookie: `auth_token=${sessionCookie.sessionToken}; Expires=${sessionCookie.expires.toUTCString()}; Path=/; HttpOnly; Secure; SameSite=Lax`,
-    token: sessionCookie.sessionToken,
-  }
+  return createSession(user.id)
 }
 
 /**
