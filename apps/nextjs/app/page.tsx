@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import { auth } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
+import { GithubIcon } from '@yuki/ui/icons'
 import { Typography } from '@yuki/ui/typography'
 
 import { getQueryClient, HydrateClient, trpc } from '@/lib/trpc/server'
@@ -28,6 +29,18 @@ export default function HomePage() {
         <Typography className="text-center text-lg">
           A type-safe fullstack framework for building web applications.
         </Typography>
+
+        <div className="mt-4 flex justify-center">
+          <Button variant="outline" size="sm" className="mx-auto" asChild>
+            <a
+              href="https://github.com/tiesen243/create-yuki-turbo"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GithubIcon /> See on GitHub
+            </a>
+          </Button>
+        </div>
 
         <AuthShowcase />
 
