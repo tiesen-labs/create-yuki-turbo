@@ -21,5 +21,5 @@ export {
   validateToken,
   invalidateToken,
   invalidateAllTokens,
-} from './core/session'
+} from './core/queries'
 export { hash, verify } from './core/password'

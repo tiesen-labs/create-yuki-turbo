@@ -1,10 +1,15 @@
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
 
-import type { AuthOptions, Providers } from '../types'
+import type { AuthOptions, Providers, SessionResult } from '../types'
 import { SESSION_COOKIE_NAME } from '../config'
-import { auth, createUser, signIn, signOut } from './actions'
 import { deleteCookie, getCookie, setCookie } from './cookies'
-import { createSession } from './session'
+import {
+  createSession,
+  createUser,
+  signIn,
+  signOut,
+  validateToken,
+} from './queries'
 
 /**
  * Creates an authentication handler with OAuth providers
@@ -38,6 +43,28 @@ import { createSession } from './session'
 export function Auth<TProviders extends Providers>(
   providers: AuthOptions<TProviders>,
 ) {
+  /**
+   * Authenticates a request by validating the session token
+   *
+   * @param request - Optional request object to extract the session token from
+   * @returns Promise resolving to a SessionResult with user information if authenticated
+   *
+   * @example
+   * // Authenticate the current request
+   * const session = await auth();
+   *
+   * @example
+   * // Authenticate with a specific request
+   * const session = await auth(request);
+   */
+  async function auth(request?: Request): Promise<SessionResult> {
+    const token =
+      (await getCookie(SESSION_COOKIE_NAME, request)) ??
+      request?.headers.get('Authorization')?.replace('Bearer ', '') ??
+      ''
+    return validateToken(token)
+  }
+
   /**
    * Creates a HTTP 302 redirect response with the specified URL
    * @param url - The destination URL to redirect to (string or URL object)

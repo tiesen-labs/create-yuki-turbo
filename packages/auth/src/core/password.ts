@@ -12,7 +12,6 @@ const AUTH_SECRET = process.env.AUTH_SECRET
  *
  * @param password - The plain text password to hash
  * @returns A hexadecimal string representation of the hashed password
- * @throws Error if AUTH_SECRET environment variable is not defined
  */
 function hash(password: string): string {
   // Salt the password with the authentication secret
@@ -33,7 +32,6 @@ function hash(password: string): string {
  * @param password - The plain text password to verify
  * @param hashedPassword - The stored password hash to compare against
  * @returns Boolean indicating whether the password matches the hash
- * @throws Error if AUTH_SECRET environment variable is not defined
  */
 function verify(password: string, hashedPassword: string): boolean {
   return hash(password) === hashedPassword
