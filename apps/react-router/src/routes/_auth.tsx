@@ -22,16 +22,14 @@ export default function AuthLayout() {
 
           <form className="grid grid-cols-2 gap-4">
             <Button variant="outline" onClick={() => signIn('discord')}>
-              <DiscordIcon />
-              <span className="xs:not-sr-only sr-only">Discord</span>
+              <DiscordIcon /> Discord
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={() => signIn('google')}
             >
-              <GoogleIcon />
-              <span className="xs:not-sr-only sr-only">Google</span>
+              <GoogleIcon /> Google
             </Button>
           </form>
         </CardFooter>

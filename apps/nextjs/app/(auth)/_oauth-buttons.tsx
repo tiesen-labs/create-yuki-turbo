@@ -26,16 +26,14 @@ export const OauthButtons: React.FC = () => {
           variant="outline"
           onClick={() => signIn('discord', { redirectTo })}
         >
-          <DiscordIcon />
-          <span className="xs:not-sr-only sr-only">Discord</span>
+          <DiscordIcon /> Discord
         </Button>
         <Button
           variant="outline"
           size="sm"
           onClick={() => signIn('google', { redirectTo })}
         >
-          <GoogleIcon />
-          <span className="xs:not-sr-only sr-only">Google</span>
+          <GoogleIcon /> Google
         </Button>
       </div>
     </CardFooter>
