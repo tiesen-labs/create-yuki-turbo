@@ -22,9 +22,9 @@ type SessionContextValue = {
    */
   signIn: <TProvider extends Provider>(
     provider: TProvider,
-    options: TProvider extends 'credentials'
+    options?: TProvider extends 'credentials'
       ? { email: string; password: string }
-      : { redirectTo?: string },
+      : { redirectTo: string },
   ) => Promise<TProvider extends 'credentials' ? string : undefined>
 
   /**
@@ -132,9 +132,9 @@ export function SessionProvider({
   const signIn = React.useCallback(
     async <TProvider extends Provider>(
       provider: TProvider,
-      options: TProvider extends 'credentials'
+      options?: TProvider extends 'credentials'
         ? { email: string; password: string }
-        : { redirectTo?: string },
+        : { redirectTo: string },
     ): Promise<TProvider extends 'credentials' ? string : undefined> => {
       if (provider === 'credentials') {
         try {

@@ -1,10 +1,13 @@
 import { Outlet } from 'react-router'
 
+import { useSession } from '@yuki/auth/react'
 import { Button } from '@yuki/ui/button'
 import { Card, CardFooter } from '@yuki/ui/card'
 import { DiscordIcon, GoogleIcon } from '@yuki/ui/icons'
 
 export default function AuthLayout() {
+  const { signIn } = useSession()
+
   return (
     <main className="container grid min-h-dvh place-items-center">
       <Card className="w-full max-w-md">
@@ -18,11 +21,15 @@ export default function AuthLayout() {
           </div>
 
           <form className="grid grid-cols-2 gap-4">
-            <Button variant="outline" formAction="/api/auth/discord">
+            <Button variant="outline" onClick={() => signIn('discord')}>
               <DiscordIcon />
               <span className="xs:not-sr-only sr-only">Discord</span>
             </Button>
-            <Button variant="outline" formAction="/api/auth/google">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => signIn('google')}
+            >
               <GoogleIcon />
               <span className="xs:not-sr-only sr-only">Google</span>
             </Button>
