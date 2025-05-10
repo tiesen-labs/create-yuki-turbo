@@ -22,9 +22,9 @@ type SessionContextValue = {
    */
   signIn: <TProvider extends Provider>(
     provider: TProvider,
-    options?: TProvider extends 'credentials'
-      ? { email: string; password: string }
-      : { redirectTo: string },
+    ...args: TProvider extends 'credentials'
+      ? [options: { email: string; password: string }]
+      : [options?: { redirectTo: string }]
   ) => Promise<TProvider extends 'credentials' ? string : undefined>
 
   /**
@@ -132,15 +132,15 @@ export function SessionProvider({
   const signIn = React.useCallback(
     async <TProvider extends Provider>(
       provider: TProvider,
-      options?: TProvider extends 'credentials'
-        ? { email: string; password: string }
-        : { redirectTo: string },
+      ...args: TProvider extends 'credentials'
+        ? [options: { email: string; password: string }]
+        : [options?: { redirectTo: string }]
     ): Promise<TProvider extends 'credentials' ? string : undefined> => {
       if (provider === 'credentials') {
         try {
           const res = await fetch('/api/auth/sign-in', {
             method: 'POST',
-            body: JSON.stringify(options),
+            body: JSON.stringify(args[0]),
           })
 
           const json = (await res.json()) as { token: string; error: string }
@@ -157,7 +157,7 @@ export function SessionProvider({
         }
       } else {
         const redirectTo =
-          (options as { redirectTo?: string }).redirectTo ?? '/'
+          (args[0] as { redirectTo?: string }).redirectTo ?? '/'
         window.location.href = `/api/auth/sign-in/${provider}?redirect_to=${encodeURIComponent(redirectTo)}`
         return undefined as TProvider extends 'credentials' ? string : undefined
       }
