@@ -1,12 +1,12 @@
-import type { MiddlewareConfig } from 'next/server'
+import type { MiddlewareConfig, NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
 import { auth } from '@yuki/auth'
 
 const authRoutes: string[] = ['/login', '/register']
-const protectedRoutes: string[] = ['/protected']
+const protectedRoutes: string[] = []
 
-export default async function middleware(req: Request) {
+export default async function middleware(req: NextRequest) {
   const { pathname } = new URL(req.url)
   const session = await auth(req)
 
@@ -29,23 +29,20 @@ export default async function middleware(req: Request) {
   /**
    * CSRF Protection Implementation
    *
-   * This middleware implements Cross-Site Request Forgery protection using origin verification:
+   * Provides protection against Cross-Site Request Forgery by:
+   * - Comparing Origin header with Host header to verify same-origin requests
+   * - Blocking requests with missing or mismatched headers (403 Forbidden)
+   * - Bypassing protection for authenticated users
    *
    * Security approach:
-   * - Only requests with matching Origin and Host headers are allowed to proceed
-   * - GET requests should be treated as safe (read-only operations)
-   * - For non-GET requests, we verify that the request originated from our own domain
+   * - Validates Origin as proper URL and matches against request host
+   * - Basic protection complemented by CSRF tokens and SameSite cookies
    *
-   * Security considerations:
-   * 1. Modern browsers automatically send Origin headers for cross-origin requests
-   * 2. This approach is effective against basic CSRF attacks but should be combined with:
-   *    - CSRF tokens for sensitive operations
-   *    - SameSite cookie attributes (Strict or Lax)
-   *    - Content-Type verification for additional protection
+   * Note: Consider additional validation for authenticated users or
+   * implementing request-specific CSRF tokens for enhanced security.
    */
 
-  const authHeader = req.headers.get('Authorization')?.replace('Bearer ', '')
-  if (authHeader) return NextResponse.next()
+  if (session.user) return NextResponse.next()
 
   const originHeader = req.headers.get('Origin') ?? ''
   const hostHeader =

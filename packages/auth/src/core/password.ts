@@ -15,9 +15,6 @@ const AUTH_SECRET = process.env.AUTH_SECRET
  * @throws Error if AUTH_SECRET environment variable is not defined
  */
 function hash(password: string): string {
-  if (!AUTH_SECRET)
-    throw new Error('AUTH_SECRET environment variable must be defined')
-
   // Salt the password with the authentication secret
   const salted = `${password}${AUTH_SECRET}`
 
