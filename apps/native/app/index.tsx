@@ -55,11 +55,8 @@ const PostCard: React.FC<{
   const queryClient = useQueryClient()
   const { mutate, isPending } = useMutation(
     trpc.post.delete.mutationOptions({
-      onSettled: () => {
-        void queryClient.invalidateQueries({
-          queryKey: trpc.post.all.queryKey(),
-        })
-      },
+      onSettled: () =>
+        queryClient.invalidateQueries(trpc.post.all.queryFilter()),
     }),
   )
 
@@ -270,9 +267,7 @@ const CreatePost: React.FC = () => {
   const { mutate, isPending } = useMutation(
     trpc.post.create.mutationOptions({
       onSettled: () => {
-        void queryClient.invalidateQueries({
-          queryKey: trpc.post.all.queryKey(),
-        })
+        void queryClient.invalidateQueries(trpc.post.all.queryFilter())
         setFormData({ title: '', content: '' })
       },
     }),

@@ -1,6 +1,6 @@
 'use client'
 
-import { skipToken, useMutation, useSuspenseQuery } from '@tanstack/react-query'
+import { useMutation, useSuspenseQuery } from '@tanstack/react-query'
 import { useSubscription } from '@trpc/tanstack-react-query'
 
 import type { RouterOutputs } from '@yuki/api'
@@ -92,7 +92,7 @@ export const PostList: React.FC = () => {
 export const SubscriptionStatus: React.FC = () => {
   const { trpc, queryClient } = useTRPC()
   const { status, reset } = useSubscription(
-    trpc.post.onCreate.subscriptionOptions(skipToken, {
+    trpc.post.onUpdate.subscriptionOptions(undefined, {
       onError: (error) => toast.error(error.message),
       onData: ({ action, data }) => {
         switch (action) {

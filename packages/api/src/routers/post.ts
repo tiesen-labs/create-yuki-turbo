@@ -38,15 +38,6 @@ export const postRouter = {
       return post
     }),
 
-  onCreate: publicProcedure.subscription(async function* ({ signal }) {
-    for await (const [a, d] of on(ee, 'post', { signal })) {
-      const action = a as 'create' | 'delete'
-      const data = d as typeof posts.$inferSelect
-
-      yield { action, data }
-    }
-  }),
-
   delete: protectedProcedure
     .input(byIdSchema)
     .mutation(async ({ ctx, input }) => {
@@ -56,4 +47,13 @@ export const postRouter = {
         .returning()
       ee.emit('post', 'delete', post)
     }),
+
+  onUpdate: publicProcedure.subscription(async function* ({ signal }) {
+    for await (const [a, d] of on(ee, 'post', { signal })) {
+      const action = a as 'create' | 'delete'
+      const data = d as typeof posts.$inferSelect
+
+      yield { action, data }
+    }
+  }),
 } satisfies TRPCRouterRecord

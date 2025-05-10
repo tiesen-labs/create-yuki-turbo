@@ -1,4 +1,4 @@
-import '@/app.css'
+import '@/globals.css'
 
 import { NuqsAdapter } from 'nuqs/adapters/react-router/v7'
 import {

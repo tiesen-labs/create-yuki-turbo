@@ -19,7 +19,7 @@ export const authRouter = {
       if (user)
         throw new TRPCError({
           code: 'CONFLICT',
-          message: 'User with this email already exists',
+          message: 'User already exists',
         })
 
       await ctx.db

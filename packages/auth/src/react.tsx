@@ -13,19 +13,19 @@ type Provider = 'credentials' | keyof Options
  * Authentication session context value type
  * @template TProvider - The type of authentication provider
  */
-type SessionContextValue<TProvider extends Provider = Provider> = {
+type SessionContextValue = {
   /**
    * Signs in a user using the specified provider
    * @param provider - The authentication provider to use
    * @param options - Provider-specific options (credentials or redirect configuration)
    * @returns Promise that resolves when sign-in process completes
    */
-  signIn: (
+  signIn: <TProvider extends Provider>(
     provider: TProvider,
     options: TProvider extends 'credentials'
       ? { email: string; password: string }
       : { redirectTo?: string },
-  ) => Promise<void>
+  ) => Promise<TProvider extends 'credentials' ? string : undefined>
 
   /**
    * Signs out the current user
@@ -135,12 +135,11 @@ export function SessionProvider({
       options: TProvider extends 'credentials'
         ? { email: string; password: string }
         : { redirectTo?: string },
-    ): Promise<string | undefined> => {
+    ): Promise<TProvider extends 'credentials' ? string : undefined> => {
       if (provider === 'credentials') {
         try {
           const res = await fetch('/api/auth/sign-in', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(options),
           })
 
@@ -149,7 +148,9 @@ export function SessionProvider({
           if (!res.ok) throw new Error(json.error || 'Authentication failed')
 
           await fetchSession(json.token)
-          return json.token
+          return json.token as TProvider extends 'credentials'
+            ? string
+            : undefined
         } catch (error) {
           console.error('Sign in error:', error)
           throw error
@@ -158,6 +159,7 @@ export function SessionProvider({
         const redirectTo =
           (options as { redirectTo?: string }).redirectTo ?? '/'
         window.location.href = `/api/auth/sign-in/${provider}?redirect_to=${encodeURIComponent(redirectTo)}`
+        return undefined as TProvider extends 'credentials' ? string : undefined
       }
     },
     [fetchSession],
@@ -168,13 +170,8 @@ export function SessionProvider({
    */
   const signOut = React.useCallback(async (): Promise<void> => {
     try {
-      const res = await fetch('/api/auth/sign-out', {
-        method: 'POST',
-        credentials: 'same-origin',
-      })
-
+      const res = await fetch('/api/auth/sign-out', { method: 'POST' })
       if (!res.ok) throw new Error(`Sign out failed: ${res.status}`)
-
       setSession({ expires: new Date() })
       window.location.reload()
     } catch (error) {

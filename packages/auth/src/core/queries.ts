@@ -38,7 +38,7 @@ async function createSession(
   crypto.getRandomValues(bytes)
   const token = encodeBase32LowerCaseNoPadding(bytes)
 
-  const sessionToken = hashToken(token)
+  const sessionToken = hashSHA256(token)
   const expires = new Date(Date.now() + SESSION_EXPIRATION)
 
   // Store the hashed token in the database
@@ -66,7 +66,7 @@ async function createSession(
  * @returns Session result containing user data if valid, or just expiration if invalid
  */
 async function validateToken(token: string): Promise<SessionResult> {
-  const sessionToken = hashToken(token)
+  const sessionToken = hashSHA256(token)
 
   // Lookup the session and associated user in the database
   const [result] = await db
@@ -110,7 +110,7 @@ async function validateToken(token: string): Promise<SessionResult> {
  * @param token - The unhashed session token to invalidate
  */
 async function invalidateToken(token: string): Promise<void> {
-  await db.delete(sessions).where(eq(sessions.sessionToken, hashToken(token)))
+  await db.delete(sessions).where(eq(sessions.sessionToken, hashSHA256(token)))
 }
 
 /**
@@ -254,15 +254,17 @@ async function createUser(data: {
  * This ensures that even if the database is compromised, the original
  * tokens cannot be recovered and used to hijack sessions.
  *
- * @param token - The token to hash
+ * @param str - The string to hash
  * @returns Hex-encoded string representation of the SHA-256 hash
  */
-const hashToken = (token: string): string =>
-  encodeHexLowerCase(sha256(new TextEncoder().encode(token)))
+function hashSHA256(str: string): string {
+  return encodeHexLowerCase(sha256(new TextEncoder().encode(str)))
+}
 
 export {
   signIn,
   signOut,
+  hashSHA256,
   createUser,
   createSession,
   validateToken,
