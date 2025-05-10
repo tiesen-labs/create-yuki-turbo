@@ -2,8 +2,7 @@
 
 import * as React from 'react'
 
-import type { Options } from './config'
-import type { SessionResult } from './types'
+import type { Options, SessionResult } from './types'
 
 /**
  * Supported authentication providers

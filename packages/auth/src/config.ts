@@ -24,5 +24,3 @@ export const authOptions = {
   discord: new DiscordProvider(),
   google: new GoogleProvider(),
 } satisfies AuthOptions
-
-export type Options = typeof authOptions
