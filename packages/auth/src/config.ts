@@ -17,7 +17,7 @@ export const SESSION_COOKIE_NAME = 'auth_token' // Name of the session cookie
  * Each provider requires CLIENT_ID and CLIENT_SECRET environment variables
  * (e.g., DISCORD_CLIENT_ID, DISCORD_CLIENT_SECRET)
  *
- * Callback URL should be set to: {{ BASE_URL }}/api/auth/:provider/callback
+ * Callback URL should be set to: {{ BASE_URL }}/api/auth/{{ provider }}/callback
  * (e.g., https://yourdomain.com/api/auth/discord/callback)
  */
 export const authOptions = {
