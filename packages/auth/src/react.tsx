@@ -101,7 +101,7 @@ function SessionProvider({
         }
       } else {
         const redirectTo =
-          (args[0] as { redirectTo?: string }).redirectTo ?? '/'
+          (args[0] as { redirectTo?: string } | undefined)?.redirectTo ?? '/'
         window.location.href = `/api/auth/sign-in/${provider}?redirect_to=${encodeURIComponent(redirectTo)}`
         return undefined as TProvider extends 'credentials' ? string : undefined
       }
