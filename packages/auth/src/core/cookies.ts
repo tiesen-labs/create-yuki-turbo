@@ -64,7 +64,7 @@ async function setCookie(
     if (cookieOptions.expires instanceof Date)
       cookieOptions.expires = cookieOptions.expires.toUTCString() as never
 
-    const cookieString = `${key}=${value}; ${Object.entries(options)
+    const cookieString = `${key}=${value}; ${Object.entries(cookieOptions)
       .map(([k, v]) => `${k}=${v}`)
       .join('; ')}`
     res.headers.append('set-cookie', cookieString)
