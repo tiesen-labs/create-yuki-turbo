@@ -1,7 +1,7 @@
 import { cache } from 'react'
 
 import { authOptions } from './config'
-import { Auth } from './core/auth'
+import { Auth } from './core'
 
 const { auth: uncachedAuth, signIn, signOut, handlers } = Auth(authOptions)
 
