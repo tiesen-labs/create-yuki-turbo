@@ -3,23 +3,16 @@ import { Google } from 'arctic'
 import { BaseProvider } from './base'
 
 export class GoogleProvider extends BaseProvider {
-  private readonly GOOGLE_USER_INFO_URL =
+  protected provider = new Google(
+    process.env.GOOGLE_CLIENT_ID ?? '',
+    process.env.GOOGLE_CLIENT_SECRET ?? '',
+    this.createCallbackUrl('google'),
+  )
+
+  protected readonly API_URL =
     'https://openidconnect.googleapis.com/v1/userinfo'
-  private readonly DEFAULT_SCOPES = ['openid', 'profile', 'email']
-  private provider: Google
+  protected readonly DEFAULT_SCOPES = ['openid', 'profile', 'email']
 
-  constructor() {
-    super()
-    this.provider = new Google(
-      process.env.GOOGLE_CLIENT_ID ?? '',
-      process.env.GOOGLE_CLIENT_SECRET ?? '',
-      this.createCallbackUrl('google'),
-    )
-  }
-
-  /**
-   * Creates an authorization URL for Google OAuth
-   */
   public createAuthorizationURL(state: string, codeVerifier: string | null) {
     return this.provider.createAuthorizationURL(
       state,
@@ -28,26 +21,14 @@ export class GoogleProvider extends BaseProvider {
     )
   }
 
-  /**
-   * Fetches user data from Google API using the provided authorization code
-   * @see https://developers.google.com/identity/protocols/oauth2/openid-connect#obtainuserinfo
-   */
-  public async fetchUserData(
-    code: string,
-    codeVerifier: string | null,
-  ): Promise<{
-    providerAccountId: string
-    name: string
-    email: string
-    image: string
-  }> {
+  public async fetchUserData(code: string, codeVerifier: string | null) {
     const tokens = await this.provider.validateAuthorizationCode(
       code,
       codeVerifier ?? '',
     )
     const accessToken = tokens.accessToken()
 
-    const response = await fetch(this.GOOGLE_USER_INFO_URL, {
+    const response = await fetch(this.API_URL, {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
     if (!response.ok) {

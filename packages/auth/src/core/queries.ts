@@ -19,18 +19,6 @@ import {
 import { deleteCookie, getCookie } from './cookies'
 import { verify } from './password'
 
-/**
- * Creates a new session for a user
- *
- * Generates a cryptographically secure random token, hashes it for database
- * storage, and creates a session record associated with the user. Only the
- * hash is stored in the database while the original token is returned to be
- * set as a cookie or passed to the client.
- *
- * @param userId - The unique identifier of the user
- * @returns Object containing the unhashed session token and expiration date
- * @throws Error if session creation fails
- */
 async function createSession(
   userId: string,
 ): Promise<{ sessionToken: string; expires: Date }> {
@@ -53,18 +41,6 @@ async function createSession(
   return { sessionToken: token, expires: session.expires }
 }
 
-/**
- * Validates a session token and refreshes it if needed
- *
- * Follows the session validation pattern recommended by Lucia Auth:
- * 1. Hash the provided token
- * 2. Look up the session by hashed token
- * 3. Check if session has expired and delete if necessary
- * 4. Refresh the session if it's beyond the refresh threshold
- *
- * @param token - The unhashed session token to validate
- * @returns Session result containing user data if valid, or just expiration if invalid
- */
 async function validateToken(token: string): Promise<SessionResult> {
   const sessionToken = hashSHA256(token)
 
@@ -104,39 +80,14 @@ async function validateToken(token: string): Promise<SessionResult> {
   return { user, expires: session.expires }
 }
 
-/**
- * Invalidates a specific session token
- *
- * @param token - The unhashed session token to invalidate
- */
 async function invalidateToken(token: string): Promise<void> {
   await db.delete(sessions).where(eq(sessions.sessionToken, hashSHA256(token)))
 }
 
-/**
- * Invalidates all sessions for a specific user
- *
- * @param userId - The unique identifier of the user
- */
 async function invalidateAllTokens(userId: string): Promise<void> {
   await db.delete(sessions).where(eq(sessions.userId, userId))
 }
 
-/**
- * Signs in a user with email and password
- *
- * @param input - Object containing email and password credentials
- * @returns Object containing the session token and expiration date
- * @throws Error if credentials are invalid or authentication fails
- *
- * @example
- * // Sign in a user
- * try {
- *   const session = await signIn({ email: 'user@example.com', password: 'password123' });
- * } catch (error) {
- *   // Handle authentication failure
- * }
- */
 async function signIn(input: {
   email: string
   password: string
@@ -152,20 +103,6 @@ async function signIn(input: {
   return createSession(user.id)
 }
 
-/**
- * Signs out the current user by invalidating their session
- *
- * @param request - Optional Request object to extract the session token from
- * @returns Promise that resolves when the session is invalidated
- *
- * @example
- * // Sign out the current user
- * await signOut();
- *
- * @example
- * // Sign out with a specific request context
- * await signOut(request);
- */
 async function signOut(request?: Request): Promise<void> {
   const token =
     (await getCookie(SESSION_COOKIE_NAME, request)) ??
@@ -178,30 +115,7 @@ async function signOut(request?: Request): Promise<void> {
   await Promise.all(promises)
 }
 
-/**
- * Creates a new user or links accounts for existing users
- *
- * @description
- * This function has three possible outcomes:
- * 1. Return existing user if the provider account is already linked
- * 2. Link new provider to existing user with matching email
- * 3. Create new user and link provider account
- *
- * @param data - User data including provider details, name, email, and image
- * @returns The created or existing user object
- * @throws Error if user creation fails
- *
- * @example
- * // Create user from OAuth data
- * const user = await createUser({
- *   provider: 'google',
- *   providerAccountId: '123456',
- *   name: 'John Doe',
- *   email: 'john@example.com',
- *   image: 'https://example.com/avatar.png'
- * });
- */
-async function createUser(data: {
+async function getOrCreateUserFromOAuth(data: {
   provider: string
   providerAccountId: string
   name: string
@@ -247,16 +161,6 @@ async function createUser(data: {
   })
 }
 
-/**
- * Creates a secure hash of a session token
- *
- * Uses SHA-256 to hash the token before storing in the database.
- * This ensures that even if the database is compromised, the original
- * tokens cannot be recovered and used to hijack sessions.
- *
- * @param str - The string to hash
- * @returns Hex-encoded string representation of the SHA-256 hash
- */
 function hashSHA256(str: string): string {
   return encodeHexLowerCase(sha256(new TextEncoder().encode(str)))
 }
@@ -264,8 +168,7 @@ function hashSHA256(str: string): string {
 export {
   signIn,
   signOut,
-  hashSHA256,
-  createUser,
+  getOrCreateUserFromOAuth,
   createSession,
   validateToken,
   invalidateToken,

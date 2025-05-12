@@ -3,23 +3,15 @@ import { Discord } from 'arctic'
 import { BaseProvider } from './base'
 
 export class DiscordProvider extends BaseProvider {
-  private readonly DISCORD_API_URL = 'https://discord.com/api/users/@me'
-  private readonly DISCORD_CDN_URL = 'https://cdn.discordapp.com/avatars'
-  private readonly DEFAULT_SCOPES = ['identify', 'email']
-  protected provider: Discord
+  protected provider = new Discord(
+    process.env.DISCORD_CLIENT_ID ?? '',
+    process.env.DISCORD_CLIENT_SECRET ?? '',
+    this.createCallbackUrl('discord'),
+  )
 
-  constructor() {
-    super()
-    this.provider = new Discord(
-      process.env.DISCORD_CLIENT_ID ?? '',
-      process.env.DISCORD_CLIENT_SECRET ?? '',
-      this.createCallbackUrl('discord'),
-    )
-  }
+  protected readonly API_URL = 'https://discord.com/api/users/@me'
+  protected readonly DEFAULT_SCOPES = ['identify', 'email']
 
-  /**
-   * Creates an authorization URL for Discord OAuth
-   */
   public createAuthorizationURL(state: string, codeVerifier: string | null) {
     return this.provider.createAuthorizationURL(
       state,
@@ -28,26 +20,14 @@ export class DiscordProvider extends BaseProvider {
     )
   }
 
-  /**
-   * Fetches user data from Discord API using the provided authorization code
-   * @see https://discord.com/developers/docs/topics/oauth2#client-credentials-flow
-   */
-  public async fetchUserData(
-    code: string,
-    codeVerifier: string | null,
-  ): Promise<{
-    providerAccountId: string
-    name: string
-    email: string
-    image: string
-  }> {
+  public async fetchUserData(code: string, codeVerifier: string | null) {
     const tokens = await this.provider.validateAuthorizationCode(
       code,
       codeVerifier,
     )
     const accessToken = tokens.accessToken()
 
-    const response = await fetch(this.DISCORD_API_URL, {
+    const response = await fetch(this.API_URL, {
       headers: { Authorization: `Bearer ${accessToken}` },
     })
 
@@ -58,9 +38,8 @@ export class DiscordProvider extends BaseProvider {
 
     const user = (await response.json()) as DiscordUserResponse
 
-    // Generate avatar URL or use default if avatar is null
     const avatarUrl = user.avatar
-      ? `${this.DISCORD_CDN_URL}/${user.id}/${user.avatar}.png`
+      ? `https://cdn.discordapp.com/embed/avatars/${user.id}/${user.avatar}.png`
       : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.id) % 5}.png`
 
     return {

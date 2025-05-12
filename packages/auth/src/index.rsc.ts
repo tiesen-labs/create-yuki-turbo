@@ -18,7 +18,6 @@ const auth = cache(uncachedAuth)
 export type * from './types'
 export { auth, signIn, signOut, handlers }
 export {
-  hashSHA256,
   validateToken,
   invalidateToken,
   invalidateAllTokens,

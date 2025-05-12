@@ -5,58 +5,15 @@ import { SESSION_COOKIE_NAME } from '../config'
 import { deleteCookie, getCookie, setCookie } from './cookies'
 import {
   createSession,
-  createUser,
+  getOrCreateUserFromOAuth,
   signIn,
   signOut,
   validateToken,
 } from './queries'
 
-/**
- * Creates an authentication handler with OAuth providers
- *
- * @description
- * The Auth function creates a complete authentication system with OAuth providers.
- * It handles OAuth flows (login initiation and callback), session management,
- * and provides HTTP handlers for authentication operations.
- *
- * @param providers - Configuration object containing OAuth provider settings
- *
- * @returns Authentication handlers and utility functions:
- *  - auth: Function to verify authentication status
- *  - signIn: Function to authenticate users with email/password
- *  - signOut: Function to end user sessions
- *  - handlers: HTTP handlers for auth routes (GET/POST)
- *    - GET: Handles OAuth flow and session validation
- *    - POST: Handles email/password signin and signout
- *
- * @example
- * ```typescript
- * // Create authentication handler with Google provider
- * const authHandler = Auth({
- *   google: new Google(),
- * })
- *
- * // Use in API route
- * export const { GET, POST } = authHandler.handlers
- * ```
- */
 export function Auth<TProviders extends Providers>(
   providers: AuthOptions<TProviders>,
 ) {
-  /**
-   * Authenticates a request by validating the session token
-   *
-   * @param request - Optional request object to extract the session token from
-   * @returns Promise resolving to a SessionResult with user information if authenticated
-   *
-   * @example
-   * // Authenticate the current request
-   * const session = await auth();
-   *
-   * @example
-   * // Authenticate with a specific request
-   * const session = await auth(request);
-   */
   async function auth(request?: Request): Promise<SessionResult> {
     const token =
       (await getCookie(SESSION_COOKIE_NAME, request)) ??
@@ -65,23 +22,12 @@ export function Auth<TProviders extends Providers>(
     return validateToken(token)
   }
 
-  /**
-   * Creates a HTTP 302 redirect response with the specified URL
-   * @param url - The destination URL to redirect to (string or URL object)
-   * @returns A Response object configured for redirection
-   */
   const createRedirectResponse = (url: string | URL): Response =>
     new Response(null, {
       status: 302,
       headers: { location: url.toString() },
     })
 
-  /**
-   * Handles the initial OAuth flow by generating authorization URL and setting cookies
-   * @param req - Incoming request
-   * @returns Redirect response to the provider's authorization URL
-   * @throws Error if provider is not supported or configuration is invalid
-   */
   const handleOAuthStart = async (req: Request): Promise<Response> => {
     const url = new URL(req.url)
     const redirectTo = url.searchParams.get('redirect_to') ?? '/'
@@ -124,13 +70,6 @@ export function Auth<TProviders extends Providers>(
     return response
   }
 
-  /**
-   * Handles the OAuth callback by verifying state, exchanging code for tokens,
-   * creating user session, and setting session cookies
-   * @param req - Incoming request with OAuth code and state
-   * @returns Redirect response to the original destination with session
-   * @throws Error if required parameters are missing or validation fails
-   */
   const handleOAuthCallback = async (req: Request): Promise<Response> => {
     const url = new URL(req.url)
     const providerName = String(url.pathname.split('/').slice(-2, -1))
@@ -149,7 +88,10 @@ export function Auth<TProviders extends Providers>(
 
     // Fetch user data and create session
     const userData = await provider.fetchUserData(code, storedCode)
-    const user = await createUser({ ...userData, provider: providerName })
+    const user = await getOrCreateUserFromOAuth({
+      ...userData,
+      provider: providerName,
+    })
     const sessionCookie = await createSession(user.id)
 
     // Create response and handle cross-origin redirects
@@ -176,11 +118,6 @@ export function Auth<TProviders extends Providers>(
     return response
   }
 
-  /**
-   * Handles GET requests for authentication flows
-   * @param req - Incoming request
-   * @returns Response based on the requested auth operation
-   */
   const handleGetRequest = async (req: Request): Promise<Response> => {
     const url = new URL(req.url)
     const pathName = url.pathname
@@ -211,11 +148,6 @@ export function Auth<TProviders extends Providers>(
     }
   }
 
-  /**
-   * Handles POST requests for authentication operations
-   * @param req - Incoming request
-   * @returns Response based on the requested auth operation
-   */
   const handlePostRequest = async (req: Request): Promise<Response> => {
     const { pathname } = new URL(req.url)
 
@@ -254,11 +186,6 @@ export function Auth<TProviders extends Providers>(
     }
   }
 
-  /**
-   * Wraps handler functions with CORS headers
-   * @param handler - Request handler function
-   * @returns Handler function with CORS headers applied to response
-   */
   const withCors = (handler: (req: Request) => Promise<Response>) => {
     return async (req: Request) => {
       const response = await handler(req)
