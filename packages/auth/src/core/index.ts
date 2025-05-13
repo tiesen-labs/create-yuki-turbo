@@ -126,9 +126,6 @@ export function Auth<TProviders extends Providers>(
       // User session verification endpoint
       if (pathName === '/api/auth') {
         const session = await auth(req)
-        if (session.user) {
-          session.user.password = undefined as unknown as null
-        }
         return Response.json(session)
       }
 

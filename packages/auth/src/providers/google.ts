@@ -39,7 +39,7 @@ export class GoogleProvider extends BaseProvider {
     const user = (await response.json()) as GoogleUserResponse
 
     return {
-      providerAccountId: user.sub,
+      accountId: user.sub,
       name: user.name,
       email: user.email,
       image: user.picture,

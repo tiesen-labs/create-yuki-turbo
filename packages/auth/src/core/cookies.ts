@@ -1,5 +1,3 @@
-'use server'
-
 /**
  * Cookie management utilities for authentication
  *

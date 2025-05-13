@@ -6,7 +6,7 @@ import {
   encodeHexLowerCase,
 } from '@oslojs/encoding'
 
-import { db, eq } from '@yuki/db'
+import { and, db, eq } from '@yuki/db'
 import { accounts, sessions, users } from '@yuki/db/schema'
 
 import type { SessionResult } from '../types'
@@ -17,43 +17,38 @@ import {
   TOKEN_BYTES,
 } from '../config'
 import { deleteCookie, getCookie } from './cookies'
-import { verify } from './password'
+import { Password } from './password'
 
 async function createSession(
   userId: string,
 ): Promise<{ sessionToken: string; expires: Date }> {
   const bytes = new Uint8Array(TOKEN_BYTES)
   crypto.getRandomValues(bytes)
-  const token = encodeBase32LowerCaseNoPadding(bytes)
+  const sessionToken = encodeBase32LowerCaseNoPadding(bytes)
 
-  const sessionToken = hashSHA256(token)
+  const token = hashSHA256(sessionToken)
   const expires = new Date(Date.now() + SESSION_EXPIRATION)
 
   // Store the hashed token in the database
   const [session] = await db
     .insert(sessions)
-    .values({ sessionToken, expires, userId })
+    .values({ token, expires, userId })
     .returning()
 
   if (!session) throw new Error('Failed to create session')
 
   // Return the unhashed token to the client along with expiration
-  return { sessionToken: token, expires: session.expires }
+  return { sessionToken, expires: session.expires }
 }
 
 async function validateToken(token: string): Promise<SessionResult> {
   const sessionToken = hashSHA256(token)
 
   // Lookup the session and associated user in the database
-  const [result] = await db
-    .select({
-      sessionToken: sessions.sessionToken,
-      expires: sessions.expires,
-      user: users,
-    })
-    .from(sessions)
-    .where(eq(sessions.sessionToken, sessionToken))
-    .innerJoin(users, eq(users.id, sessions.userId))
+  const result = await db.query.sessions.findFirst({
+    where: (sessions, { eq }) => eq(sessions.token, sessionToken),
+    with: { user: true },
+  })
 
   // Return early if session not found
   if (!result) return { expires: new Date() }
@@ -63,7 +58,7 @@ async function validateToken(token: string): Promise<SessionResult> {
 
   // Check if session has expired
   if (now > session.expires.getTime()) {
-    await db.delete(sessions).where(eq(sessions.sessionToken, sessionToken))
+    await db.delete(sessions).where(eq(sessions.token, sessionToken))
     return { expires: new Date() }
   }
 
@@ -73,7 +68,7 @@ async function validateToken(token: string): Promise<SessionResult> {
     await db
       .update(sessions)
       .set({ expires: newExpires })
-      .where(eq(sessions.sessionToken, sessionToken))
+      .where(eq(sessions.token, sessionToken))
     session.expires = newExpires
   }
 
@@ -81,7 +76,7 @@ async function validateToken(token: string): Promise<SessionResult> {
 }
 
 async function invalidateToken(token: string): Promise<void> {
-  await db.delete(sessions).where(eq(sessions.sessionToken, hashSHA256(token)))
+  await db.delete(sessions).where(eq(sessions.token, hashSHA256(token)))
 }
 
 async function invalidateAllTokens(userId: string): Promise<void> {
@@ -93,11 +88,18 @@ async function signIn(input: {
   password: string
 }): Promise<{ sessionToken: string; expires: Date }> {
   const [user] = await db
-    .select({ id: users.id, password: users.password })
+    .select({ id: users.id, password: accounts.password })
     .from(users)
     .where(eq(users.email, input.email))
+    .innerJoin(
+      accounts,
+      and(eq(accounts.provider, 'credentials'), eq(accounts.userId, users.id)),
+    )
 
-  if (!user?.password || !verify(input.password, user.password))
+  if (
+    !user?.password ||
+    !(await new Password().verify(user.password, input.password))
+  )
     throw new Error('Invalid email or password')
 
   return createSession(user.id)
@@ -117,19 +119,16 @@ async function signOut(request?: Request): Promise<void> {
 
 async function getOrCreateUserFromOAuth(data: {
   provider: string
-  providerAccountId: string
+  accountId: string
   name: string
   email: string
   image: string
 }): Promise<typeof users.$inferSelect> {
-  const { provider, providerAccountId, email } = data
+  const { provider, accountId, email } = data
 
   const existingAccount = await db.query.accounts.findFirst({
     where: (accounts, { and, eq }) =>
-      and(
-        eq(accounts.provider, provider),
-        eq(accounts.providerAccountId, providerAccountId),
-      ),
+      and(eq(accounts.provider, provider), eq(accounts.accountId, accountId)),
     with: { user: true },
   })
   if (existingAccount?.user) return existingAccount.user
@@ -142,7 +141,7 @@ async function getOrCreateUserFromOAuth(data: {
     if (existingUser) {
       await tx.insert(accounts).values({
         provider,
-        providerAccountId,
+        accountId,
         userId: existingUser.id,
       })
       return existingUser
@@ -153,7 +152,7 @@ async function getOrCreateUserFromOAuth(data: {
 
     await tx.insert(accounts).values({
       provider,
-      providerAccountId,
+      accountId,
       userId: newUser.id,
     })
 

@@ -43,7 +43,7 @@ export class DiscordProvider extends BaseProvider {
       : `https://cdn.discordapp.com/embed/avatars/${parseInt(user.id) % 5}.png`
 
     return {
-      providerAccountId: user.id,
+      accountId: user.id,
       name: user.username,
       email: user.email,
       image: avatarUrl,

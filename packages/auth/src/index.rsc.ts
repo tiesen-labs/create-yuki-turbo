@@ -22,4 +22,4 @@ export {
   invalidateToken,
   invalidateAllTokens,
 } from './core/queries'
-export { hash, verify } from './core/password'
+export { Password } from './core/password'

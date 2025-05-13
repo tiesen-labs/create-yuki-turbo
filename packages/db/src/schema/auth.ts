@@ -7,12 +7,13 @@ export const users = pgTable('user', (t) => ({
   id: t.uuid().primaryKey().defaultRandom().notNull(),
   name: t.varchar({ length: 255 }).notNull(),
   email: t.varchar({ length: 255 }).unique().notNull(),
-  password: t.varchar({ length: 255 }),
   image: t.varchar({ length: 255 }).notNull(),
   createdAt: t.timestamp().defaultNow().notNull(),
   updatedAt: t
     .timestamp({ mode: 'date', withTimezone: true })
-    .$onUpdateFn(() => new Date()),
+    .defaultNow()
+    .$onUpdateFn(() => new Date())
+    .notNull(),
 }))
 
 export const usersRelations = relations(users, ({ many }) => ({
@@ -25,15 +26,14 @@ export const accounts = pgTable(
   'account',
   (t) => ({
     provider: t.varchar({ length: 255 }).notNull(),
-    providerAccountId: t.varchar({ length: 255 }).notNull(),
+    accountId: t.varchar({ length: 255 }).notNull(),
     userId: t
       .uuid()
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
+    password: t.varchar({ length: 255 }),
   }),
-  (account) => [
-    primaryKey({ columns: [account.provider, account.providerAccountId] }),
-  ],
+  (account) => [primaryKey({ columns: [account.provider, account.accountId] })],
 )
 
 export const accountsRelations = relations(accounts, ({ one }) => ({
@@ -41,7 +41,7 @@ export const accountsRelations = relations(accounts, ({ one }) => ({
 }))
 
 export const sessions = pgTable('session', (t) => ({
-  sessionToken: t.varchar({ length: 255 }).primaryKey().notNull(),
+  token: t.varchar({ length: 255 }).primaryKey().notNull(),
   expires: t.timestamp({ mode: 'date', withTimezone: true }).notNull(),
   userId: t
     .uuid()
