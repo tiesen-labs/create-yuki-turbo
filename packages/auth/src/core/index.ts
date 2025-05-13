@@ -11,6 +11,13 @@ import {
   validateToken,
 } from './queries'
 
+const DEFAULT_COOKIE_OPTIONS = {
+  path: '/',
+  httpOnly: true,
+  sameSite: 'lax' as const,
+  secure: process.env.NODE_ENV === 'production',
+}
+
 export function Auth<TProviders extends Providers>(
   providers: AuthOptions<TProviders>,
 ) {
@@ -70,8 +77,8 @@ export function Auth<TProviders extends Providers>(
     return response
   }
 
-  const handleOAuthCallback = async (req: Request): Promise<Response> => {
-    const url = new URL(req.url)
+  const handleOAuthCallback = async (request: Request): Promise<Response> => {
+    const url = new URL(request.url)
     const providerName = String(url.pathname.split('/').slice(-2, -1))
     const provider = providers[providerName]
     if (!provider) throw new Error(`Provider ${providerName} is not supported`)
@@ -79,9 +86,11 @@ export function Auth<TProviders extends Providers>(
     // Get parameters from URL and cookies
     const code = url.searchParams.get('code')
     const state = url.searchParams.get('state')
-    const storedState = await getCookie('auth_state', req)
-    const storedCode = await getCookie('code_verifier', req)
-    const redirectTo = (await getCookie('redirect_to', req)) ?? '/'
+    const [storedState, storedCode, redirectTo] = await Promise.all([
+      getCookie('auth_state', request),
+      getCookie('code_verifier', request),
+      getCookie('redirect_to', request),
+    ])
 
     if (!code || !state || !storedState || !storedCode)
       throw new Error('Missing required parameters')
@@ -95,44 +104,43 @@ export function Auth<TProviders extends Providers>(
     const sessionCookie = await createSession(user.id)
 
     // Create response and handle cross-origin redirects
-    const redirectUrl = new URL(redirectTo, req.url)
+    const redirectUrl = new URL(redirectTo ?? '/', request.url)
     if (redirectUrl.origin !== url.origin)
       redirectUrl.searchParams.set('token', sessionCookie.sessionToken)
 
     const response = createRedirectResponse(redirectUrl)
 
     // Set session cookie and clear temporary cookies
-    await setCookie(
-      SESSION_COOKIE_NAME,
-      sessionCookie.sessionToken,
-      { expires: sessionCookie.expires },
-      response,
-    )
-
     await Promise.all([
+      setCookie(
+        SESSION_COOKIE_NAME,
+        sessionCookie.sessionToken,
+        { ...DEFAULT_COOKIE_OPTIONS, expires: sessionCookie.expires },
+        response,
+      ),
       deleteCookie('auth_state', response),
-      deleteCookie('code_verifier', response),
-      deleteCookie('redirect_to', response),
+      deleteCookie('code_verifier'),
+      deleteCookie('redirect_to'),
     ])
 
     return response
   }
 
-  const handleGetRequest = async (req: Request): Promise<Response> => {
-    const url = new URL(req.url)
+  const handleGetRequest = async (request: Request): Promise<Response> => {
+    const url = new URL(request.url)
     const pathName = url.pathname
 
     try {
       // User session verification endpoint
       if (pathName === '/api/auth') {
-        const session = await auth(req)
+        const session = await auth(request)
         return Response.json(session)
       }
 
       // OAuth flow endpoints
       return url.pathname.endsWith('/callback')
-        ? await handleOAuthCallback(req)
-        : await handleOAuthStart(req)
+        ? await handleOAuthCallback(request)
+        : await handleOAuthStart(request)
     } catch (error) {
       const errorMessage =
         error instanceof OAuth2RequestError
@@ -145,33 +153,31 @@ export function Auth<TProviders extends Providers>(
     }
   }
 
-  const handlePostRequest = async (req: Request): Promise<Response> => {
-    const { pathname } = new URL(req.url)
+  const handlePostRequest = async (request: Request): Promise<Response> => {
+    const { pathname } = new URL(request.url)
 
     try {
       // Sign-in endpoint
       if (pathname === '/api/auth/sign-in') {
-        const { email, password } = (await req.json()) as {
+        const { email, password } = (await request.json()) as {
           email: string
           password: string
         }
         const { sessionToken, expires } = await signIn({ email, password })
 
         const response = Response.json({ token: sessionToken }, { status: 200 })
-        await setCookie(
-          SESSION_COOKIE_NAME,
-          sessionToken,
-          { expires },
-          response,
-        )
+        await setCookie(SESSION_COOKIE_NAME, sessionToken, {
+          ...DEFAULT_COOKIE_OPTIONS,
+          expires,
+        })
         return response
       }
 
       // Sign-out endpoint
       if (pathname === '/api/auth/sign-out') {
-        await signOut(req)
+        await signOut(request)
         const response = createRedirectResponse('/')
-        await deleteCookie(SESSION_COOKIE_NAME, response)
+        await deleteCookie(SESSION_COOKIE_NAME)
         return response
       }
 
@@ -183,9 +189,9 @@ export function Auth<TProviders extends Providers>(
     }
   }
 
-  const withCors = (handler: (req: Request) => Promise<Response>) => {
-    return async (req: Request) => {
-      const response = await handler(req)
+  const withCors = (handler: (request: Request) => Promise<Response>) => {
+    return async (request: Request) => {
+      const response = await handler(request)
       response.headers.set('Access-Control-Allow-Origin', '*')
       response.headers.set('Access-Control-Request-Method', '*')
       response.headers.set('Access-Control-Allow-Methods', 'OPTIONS, GET, POST')

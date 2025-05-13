@@ -1,6 +1,14 @@
 import { Google } from 'arctic'
 
+import type { ProviderUserData } from './base'
 import { BaseProvider } from './base'
+
+interface GoogleUserResponse {
+  sub: string
+  email: string
+  name: string
+  picture: string
+}
 
 export class GoogleProvider extends BaseProvider {
   protected provider = new Google(
@@ -13,7 +21,10 @@ export class GoogleProvider extends BaseProvider {
     'https://openidconnect.googleapis.com/v1/userinfo'
   protected readonly DEFAULT_SCOPES = ['openid', 'profile', 'email']
 
-  public createAuthorizationURL(state: string, codeVerifier: string | null) {
+  public createAuthorizationURL(
+    state: string,
+    codeVerifier: string | null,
+  ): URL {
     return this.provider.createAuthorizationURL(
       state,
       codeVerifier ?? '',
@@ -21,7 +32,10 @@ export class GoogleProvider extends BaseProvider {
     )
   }
 
-  public async fetchUserData(code: string, codeVerifier: string | null) {
+  public async fetchUserData(
+    code: string,
+    codeVerifier: string | null,
+  ): Promise<ProviderUserData> {
     const tokens = await this.provider.validateAuthorizationCode(
       code,
       codeVerifier ?? '',
@@ -45,11 +59,4 @@ export class GoogleProvider extends BaseProvider {
       image: user.picture,
     }
   }
-}
-
-interface GoogleUserResponse {
-  sub: string
-  email: string
-  name: string
-  picture: string
 }

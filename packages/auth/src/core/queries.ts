@@ -112,10 +112,8 @@ async function signOut(request?: Request): Promise<void> {
     ''
 
   if (token) {
-    const promises: Promise<unknown>[] = []
-    promises.push(invalidateToken(token))
-    if (!request) promises.push(deleteCookie(SESSION_COOKIE_NAME))
-    await Promise.all(promises)
+    await invalidateToken(token)
+    if (!request) await deleteCookie(SESSION_COOKIE_NAME)
   }
 }
 

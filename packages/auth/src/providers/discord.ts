@@ -1,6 +1,14 @@
 import { Discord } from 'arctic'
 
+import type { ProviderUserData } from './base'
 import { BaseProvider } from './base'
+
+interface DiscordUserResponse {
+  id: string
+  username: string
+  email: string
+  avatar: string | null
+}
 
 export class DiscordProvider extends BaseProvider {
   protected provider = new Discord(
@@ -12,7 +20,10 @@ export class DiscordProvider extends BaseProvider {
   protected readonly API_URL = 'https://discord.com/api/users/@me'
   protected readonly DEFAULT_SCOPES = ['identify', 'email']
 
-  public createAuthorizationURL(state: string, codeVerifier: string | null) {
+  public createAuthorizationURL(
+    state: string,
+    codeVerifier: string | null,
+  ): URL {
     return this.provider.createAuthorizationURL(
       state,
       codeVerifier,
@@ -20,7 +31,10 @@ export class DiscordProvider extends BaseProvider {
     )
   }
 
-  public async fetchUserData(code: string, codeVerifier: string | null) {
+  public async fetchUserData(
+    code: string,
+    codeVerifier: string | null,
+  ): Promise<ProviderUserData> {
     const tokens = await this.provider.validateAuthorizationCode(
       code,
       codeVerifier,
@@ -49,11 +63,4 @@ export class DiscordProvider extends BaseProvider {
       image: avatarUrl,
     }
   }
-}
-
-interface DiscordUserResponse {
-  id: string
-  username: string
-  email: string
-  avatar: string | null
 }
