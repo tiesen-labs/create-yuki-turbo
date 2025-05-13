@@ -112,8 +112,8 @@ export function Auth<TProviders extends Providers>(
         response,
       ),
       deleteCookie('auth_state', response),
-      deleteCookie('code_verifier'),
-      deleteCookie('redirect_to'),
+      deleteCookie('code_verifier', response),
+      deleteCookie('redirect_to', response),
     ])
 
     return response
@@ -159,7 +159,12 @@ export function Auth<TProviders extends Providers>(
         const { sessionToken, expires } = await signIn({ email, password })
 
         const response = Response.json({ token: sessionToken }, { status: 200 })
-        await setCookie(SESSION_COOKIE_NAME, sessionToken, { expires })
+        await setCookie(
+          SESSION_COOKIE_NAME,
+          sessionToken,
+          { expires },
+          response,
+        )
         return response
       }
 
@@ -167,7 +172,7 @@ export function Auth<TProviders extends Providers>(
       if (pathname === '/api/auth/sign-out') {
         await signOut(request)
         const response = createRedirectResponse('/')
-        await deleteCookie(SESSION_COOKIE_NAME)
+        await deleteCookie(SESSION_COOKIE_NAME, response)
         return response
       }
 
