@@ -21,10 +21,10 @@ const DEFAULT_COOKIE_OPTIONS = {
 
 async function getCookie(
   key: string,
-  req?: Request,
+  request?: Request,
 ): Promise<string | undefined> {
-  if (req) {
-    const cookies = req.headers
+  if (request) {
+    const cookies = request.headers
       .get('cookie')
       ?.split(';')
       .reduce((acc: Record<string, string>, cookie) => {
@@ -50,14 +50,14 @@ async function setCookie(
     sameSite?: 'strict' | 'lax' | 'none'
     [key: string]: unknown
   } = {},
-  res?: Response,
+  response?: Response,
 ): Promise<void> {
   const cookieOptions = {
     ...DEFAULT_COOKIE_OPTIONS,
     ...options,
   }
 
-  if (res) {
+  if (response) {
     // Format Date objects to UTC string if present
     if (cookieOptions.expires instanceof Date)
       cookieOptions.expires = cookieOptions.expires.toUTCString() as never
@@ -65,13 +65,13 @@ async function setCookie(
     const cookieString = `${key}=${value}; ${Object.entries(cookieOptions)
       .map(([k, v]) => `${k}=${v}`)
       .join('; ')}`
-    res.headers.append('set-cookie', cookieString)
+    response.headers.append('set-cookie', cookieString)
   } else (await cookies()).set(key, value, cookieOptions)
 }
 
-async function deleteCookie(key: string, res?: Response): Promise<void> {
-  if (res)
-    res.headers.append(
+async function deleteCookie(key: string, response?: Response): Promise<void> {
+  if (response)
+    response.headers.append(
       'set-cookie',
       `${key}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0`,
     )

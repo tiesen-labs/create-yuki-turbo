@@ -165,9 +165,11 @@ function hashSHA256(str: string): string {
 }
 
 export {
+  // Authentication
   signIn,
   signOut,
   getOrCreateUserFromOAuth,
+  // Session management
   createSession,
   validateToken,
   invalidateToken,
