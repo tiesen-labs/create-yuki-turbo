@@ -111,10 +111,12 @@ async function signOut(request?: Request): Promise<void> {
     request?.headers.get('Authorization')?.replace('Bearer ', '') ??
     ''
 
-  const promises: Promise<unknown>[] = []
-  if (token) promises.push(invalidateToken(token))
-  if (!request) promises.push(deleteCookie(SESSION_COOKIE_NAME))
-  await Promise.all(promises)
+  if (token) {
+    const promises: Promise<unknown>[] = []
+    promises.push(invalidateToken(token))
+    if (!request) promises.push(deleteCookie(SESSION_COOKIE_NAME))
+    await Promise.all(promises)
+  }
 }
 
 async function getOrCreateUserFromOAuth(data: {
