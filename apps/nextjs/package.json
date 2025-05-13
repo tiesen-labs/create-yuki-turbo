@@ -15,7 +15,7 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@tanstack/react-query": "^5.75.7",
+    "@tanstack/react-query": "^5.76.0",
     "@trpc/client": "^11.1.2",
     "@trpc/tanstack-react-query": "^11.1.2",
     "@yuki/api": "workspace:*",
@@ -33,8 +33,8 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.6",
     "@types/node": "22.15.17",
-    "@types/react": "19.1.3",
-    "@types/react-dom": "^19.1.3",
+    "@types/react": "19.1.4",
+    "@types/react-dom": "^19.1.5",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
