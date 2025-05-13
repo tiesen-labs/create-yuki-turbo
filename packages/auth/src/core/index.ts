@@ -11,13 +11,6 @@ import {
   validateToken,
 } from './queries'
 
-const DEFAULT_COOKIE_OPTIONS = {
-  path: '/',
-  httpOnly: true,
-  sameSite: 'lax' as const,
-  secure: process.env.NODE_ENV === 'production',
-}
-
 export function Auth<TProviders extends Providers>(
   providers: AuthOptions<TProviders>,
 ) {
@@ -115,7 +108,7 @@ export function Auth<TProviders extends Providers>(
       setCookie(
         SESSION_COOKIE_NAME,
         sessionCookie.sessionToken,
-        { ...DEFAULT_COOKIE_OPTIONS, expires: sessionCookie.expires },
+        { expires: sessionCookie.expires },
         response,
       ),
       deleteCookie('auth_state', response),
@@ -166,10 +159,7 @@ export function Auth<TProviders extends Providers>(
         const { sessionToken, expires } = await signIn({ email, password })
 
         const response = Response.json({ token: sessionToken }, { status: 200 })
-        await setCookie(SESSION_COOKIE_NAME, sessionToken, {
-          ...DEFAULT_COOKIE_OPTIONS,
-          expires,
-        })
+        await setCookie(SESSION_COOKIE_NAME, sessionToken, { expires })
         return response
       }
 
