@@ -48,7 +48,7 @@ function Typography({
 
   return (
     <Comp
-      data-slot="button"
+      data-slot="typography"
       className={cn(typographyVariants({ variant, color, className }))}
       {...props}
     />

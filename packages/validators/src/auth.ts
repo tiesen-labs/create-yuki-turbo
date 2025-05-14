@@ -1,42 +1,35 @@
-import { z } from 'zod'
+import * as z from 'zod'
 
-const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/
+const passwordRegex = z
+  .string()
+  .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/, {
+    message: 'Password not strong enough',
+  })
 
 export const signInSchema = z.object({
   email: z.email(),
-  password: z.string().regex(passwordRegex, {
-    message: 'Invalid password',
-  }),
+  password: passwordRegex,
 })
 
 export const signUpSchema = z
   .object({
-    name: z.string().min(3),
+    name: z.string(),
     email: z.email(),
-    password: z.string().regex(passwordRegex, {
-      message: 'Invalid password',
-    }),
-    confirmPassword: z.string().min(8),
+    password: passwordRegex,
+    confirmPassword: passwordRegex,
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
+  .refine((val) => val.password === val.confirmPassword, {
     path: ['confirmPassword'],
+    message: 'Passwords do not match',
   })
 
 export const changePasswordSchema = z
   .object({
-    currentPassword: z
-      .string()
-      .regex(passwordRegex, { message: 'Invalid password' })
-      .optional(),
-    newPassword: z
-      .string()
-      .regex(passwordRegex, { message: 'Invalid password' }),
-    confirmPassword: z
-      .string()
-      .regex(passwordRegex, { message: 'Invalid password' }),
+    currentPassword: passwordRegex.optional(),
+    newPassword: passwordRegex,
+    confirmNewPassword: passwordRegex,
   })
-  .refine((data) => data.newPassword === data.confirmPassword, {
+  .refine((val) => val.newPassword === val.confirmNewPassword, {
+    path: ['confirmNewPassword'],
     message: 'Passwords do not match',
-    path: ['confirmPassword'],
   })

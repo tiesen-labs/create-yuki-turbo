@@ -1,9 +1,11 @@
+import { Pool } from '@neondatabase/serverless'
 import { drizzle } from 'drizzle-orm/neon-serverless'
 
 import * as schema from './schema'
 
 const createDrizzleClient = () =>
-  drizzle(process.env.DATABASE_URL ?? '', {
+  drizzle({
+    client: new Pool({ connectionString: process.env.DATABASE_URL }),
     schema,
     casing: 'snake_case',
   })
