@@ -9,7 +9,7 @@ export abstract class BaseProvider {
   protected abstract provider: unknown
 
   protected abstract readonly API_URL: string
-  protected abstract readonly DEFAULT_SCOPES: string[]
+  protected abstract readonly SCOPES: string[]
 
   abstract createAuthorizationURL(
     state: string,

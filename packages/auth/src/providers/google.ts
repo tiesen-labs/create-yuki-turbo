@@ -19,7 +19,7 @@ export class GoogleProvider extends BaseProvider {
 
   protected readonly API_URL =
     'https://openidconnect.googleapis.com/v1/userinfo'
-  protected readonly DEFAULT_SCOPES = ['openid', 'profile', 'email']
+  protected readonly SCOPES = ['openid', 'profile', 'email']
 
   public createAuthorizationURL(
     state: string,
@@ -28,7 +28,7 @@ export class GoogleProvider extends BaseProvider {
     return this.provider.createAuthorizationURL(
       state,
       codeVerifier ?? '',
-      this.DEFAULT_SCOPES,
+      this.SCOPES,
     )
   }
 

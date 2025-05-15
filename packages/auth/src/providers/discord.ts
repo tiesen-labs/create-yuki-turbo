@@ -18,7 +18,7 @@ export class DiscordProvider extends BaseProvider {
   )
 
   protected readonly API_URL = 'https://discord.com/api/users/@me'
-  protected readonly DEFAULT_SCOPES = ['identify', 'email']
+  protected readonly SCOPES = ['identify', 'email']
 
   public createAuthorizationURL(
     state: string,
@@ -27,7 +27,7 @@ export class DiscordProvider extends BaseProvider {
     return this.provider.createAuthorizationURL(
       state,
       codeVerifier,
-      this.DEFAULT_SCOPES,
+      this.SCOPES,
     )
   }
 
