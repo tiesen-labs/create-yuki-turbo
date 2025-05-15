@@ -7,18 +7,18 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "react-server": "./src/index.rsc.ts",
-      "default": "./src/index.ts"
+      "react-server": "./dist/index.rsc.js",
+      "default": "./dist/index.js"
     },
     "./react": {
       "types": "./dist/react.d.ts",
-      "default": "./src/react.tsx"
+      "default": "./dist/react.js"
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsdown",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsc --watch",
+    "dev": "tsdown --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
@@ -38,6 +38,7 @@
     "@yuki/tsconfig": "workspace:*",
     "eslint": "latest",
     "prettier": "latest",
+    "tsdown": "^0.11.9",
     "typescript": "latest"
   }
 }

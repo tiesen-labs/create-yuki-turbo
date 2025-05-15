@@ -7,22 +7,22 @@
   "exports": {
     "./utils": {
       "types": "./dist/utils.d.ts",
-      "default": "./src/utils.ts"
+      "default": "./dist/utils.js"
     },
     "./*": {
       "types": "./dist/components/*.d.ts",
-      "default": "./src/components/*.tsx"
+      "default": "./dist/components/*.js"
     },
     "./hooks/*": {
       "types": "./dist/hooks/*.d.ts",
-      "default": "./src/hooks/*.ts"
+      "default": "./dist/hooks/*.js"
     },
-    "./tailwind.css": "./src/tailwind.css"
+    "./tailwind.css": "./dist/tailwind.css"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsdown",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsc --watch",
+    "dev": "tsdown --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
@@ -47,6 +47,7 @@
     "eslint": "latest",
     "prettier": "latest",
     "tailwindcss": "^4.1.6",
+    "tsdown": "^0.11.9",
     "tw-animate-css": "^1.2.9",
     "typescript": "latest"
   }
