@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    "./utils": {
+    ".": {
       "types": "./dist/utils.d.ts",
       "default": "./dist/utils.js"
     },
