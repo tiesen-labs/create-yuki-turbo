@@ -38,7 +38,7 @@
     "drizzle-kit": "^0.31.1",
     "eslint": "latest",
     "prettier": "latest",
-    "tsdown": "^0.11.9",
+    "tsdown": "latest",
     "typescript": "latest"
   }
 }

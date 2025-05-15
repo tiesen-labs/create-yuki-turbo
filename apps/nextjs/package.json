@@ -42,7 +42,7 @@
     "eslint": "latest",
     "postcss": "^8.5.3",
     "prettier": "latest",
-    "tailwindcss": "^4.1.6",
+    "tailwindcss": "latest",
     "typescript": "latest"
   }
 }

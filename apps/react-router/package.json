@@ -42,8 +42,10 @@
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "tailwindcss": "^4.1.6",
-    "typescript": "~5.8.3",
+    "eslint": "latest",
+    "prettier": "latest",
+    "tailwindcss": "latest",
+    "typescript": "latest",
     "vite": "^6.3.5",
     "vite-tsconfig-paths": "^5.1.4"
   }
