@@ -8,16 +8,7 @@
  */
 import { cookies } from 'next/headers'
 
-/**
- * Default cookie options that will be applied to all cookies
- * unless explicitly overridden
- */
-const DEFAULT_COOKIE_OPTIONS = {
-  path: '/',
-  httpOnly: true,
-  sameSite: 'lax' as const,
-  secure: process.env.NODE_ENV === 'production',
-}
+import type { AuthOptions } from '../types'
 
 async function getCookie(
   key: string,
@@ -40,33 +31,22 @@ async function getCookie(
 async function setCookie(
   key: string,
   value: string,
-  options: {
-    path?: string
-    domain?: string
-    maxAge?: number
-    expires?: number | Date
-    httpOnly?: boolean
-    secure?: boolean
-    sameSite?: 'strict' | 'lax' | 'none'
-    [key: string]: unknown
-  } = {},
+  options: Partial<AuthOptions['cookieOptions']> = {},
   response?: Response,
 ): Promise<void> {
-  const cookieOptions = {
-    ...DEFAULT_COOKIE_OPTIONS,
-    ...options,
-  }
+  delete options.key
 
   if (response) {
     // Format Date objects to UTC string if present
-    if (cookieOptions.expires instanceof Date)
-      cookieOptions.expires = cookieOptions.expires.toUTCString() as never
+    if (options.expires instanceof Date)
+      options.expires = options.expires.toUTCString() as never
 
-    const cookieString = `${key}=${value}; ${Object.entries(cookieOptions)
+    const cookieString = `${key}=${value}; ${Object.entries(options)
       .map(([k, v]) => `${k}=${v}`)
       .join('; ')}`
+
     response.headers.append('set-cookie', cookieString)
-  } else (await cookies()).set(key, value, cookieOptions)
+  } else (await cookies()).set(key, value, options)
 }
 
 async function deleteCookie(key: string, response?: Response): Promise<void> {

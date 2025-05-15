@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import type { Options, SessionResult } from './types'
 
-type Provider = 'credentials' | keyof Options
+type Provider = 'credentials' | keyof Options['providers']
 
 type SessionContextValue = {
   signIn: <TProvider extends Provider>(

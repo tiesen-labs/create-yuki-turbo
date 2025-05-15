@@ -10,24 +10,18 @@ import { and, db, eq } from '@yuki/db'
 import { accounts, sessions, users } from '@yuki/db/schema'
 
 import type { SessionResult } from '../types'
-import {
-  SESSION_COOKIE_NAME,
-  SESSION_EXPIRATION,
-  SESSION_REFRESH_THRESHOLD,
-  TOKEN_BYTES,
-} from '../config'
-import { deleteCookie, getCookie } from './cookies'
+import { authOptions } from '../config'
 import { Password } from './password'
 
 async function createSession(
   userId: string,
 ): Promise<{ sessionToken: string; expires: Date }> {
-  const bytes = new Uint8Array(TOKEN_BYTES)
+  const bytes = new Uint8Array(20)
   crypto.getRandomValues(bytes)
   const sessionToken = encodeBase32LowerCaseNoPadding(bytes)
 
   const token = hashSHA256(sessionToken)
-  const expires = new Date(Date.now() + SESSION_EXPIRATION)
+  const expires = new Date(Date.now() + authOptions.session.expires)
 
   // Store the hashed token in the database
   const [session] = await db
@@ -63,8 +57,8 @@ async function validateToken(token: string): Promise<SessionResult> {
   }
 
   // Refresh session if it's beyond the refresh threshold
-  if (now >= session.expires.getTime() - SESSION_REFRESH_THRESHOLD) {
-    const newExpires = new Date(Date.now() + SESSION_EXPIRATION)
+  if (now >= session.expires.getTime() - authOptions.session.expiresThreshold) {
+    const newExpires = new Date(Date.now() + authOptions.session.expires)
     await db
       .update(sessions)
       .set({ expires: newExpires })
@@ -83,7 +77,7 @@ async function invalidateAllTokens(userId: string): Promise<void> {
   await db.delete(sessions).where(eq(sessions.userId, userId))
 }
 
-async function signIn(input: {
+async function verifyCredentials(input: {
   email: string
   password: string
 }): Promise<{ sessionToken: string; expires: Date }> {
@@ -103,18 +97,6 @@ async function signIn(input: {
     throw new Error('Invalid email or password')
 
   return createSession(user.id)
-}
-
-async function signOut(request?: Request): Promise<void> {
-  const token =
-    (await getCookie(SESSION_COOKIE_NAME, request)) ??
-    request?.headers.get('Authorization')?.replace('Bearer ', '') ??
-    ''
-
-  if (token) {
-    await invalidateToken(token)
-    if (!request) await deleteCookie(SESSION_COOKIE_NAME)
-  }
 }
 
 async function getOrCreateUserFromOAuth(data: {
@@ -166,8 +148,7 @@ function hashSHA256(str: string): string {
 
 export {
   // Authentication
-  signIn,
-  signOut,
+  verifyCredentials,
   getOrCreateUserFromOAuth,
   // Session management
   createSession,

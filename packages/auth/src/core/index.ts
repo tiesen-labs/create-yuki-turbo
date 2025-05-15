@@ -1,25 +1,38 @@
 import { generateCodeVerifier, generateState, OAuth2RequestError } from 'arctic'
 
 import type { AuthOptions, Providers, SessionResult } from '../types'
-import { SESSION_COOKIE_NAME } from '../config'
 import { deleteCookie, getCookie, setCookie } from './cookies'
 import {
   createSession,
   getOrCreateUserFromOAuth,
-  signIn,
-  signOut,
+  invalidateToken,
   validateToken,
+  verifyCredentials,
 } from './queries'
 
-export function Auth<TProviders extends Providers>(
-  providers: AuthOptions<TProviders>,
-) {
+export function Auth<TProviders extends Providers>({
+  cookieKey,
+  cookieOptions,
+  providers,
+}: AuthOptions<TProviders>) {
   async function auth(request?: Request): Promise<SessionResult> {
     const token =
-      (await getCookie(SESSION_COOKIE_NAME, request)) ??
+      (await getCookie(cookieKey, request)) ??
       request?.headers.get('Authorization')?.replace('Bearer ', '') ??
       ''
     return validateToken(token)
+  }
+
+  async function signOut(request?: Request): Promise<void> {
+    const token =
+      (await getCookie(cookieKey, request)) ??
+      request?.headers.get('Authorization')?.replace('Bearer ', '') ??
+      ''
+
+    if (token) {
+      await invalidateToken(token)
+      if (!request) await deleteCookie(cookieKey)
+    }
   }
 
   const createRedirectResponse = (url: string | URL): Response =>
@@ -60,7 +73,6 @@ export function Auth<TProviders extends Providers>(
 
     // Set cookies for the callback and create response
     const response = createRedirectResponse(authorizationUrl)
-    const cookieOptions = { maxAge: 60 * 5 } // 5 minutes
     await Promise.all([
       setCookie('auth_state', state, cookieOptions, response),
       setCookie('code_verifier', codeVerifier, cookieOptions, response),
@@ -106,9 +118,9 @@ export function Auth<TProviders extends Providers>(
     // Set session cookie and clear temporary cookies
     await Promise.all([
       setCookie(
-        SESSION_COOKIE_NAME,
+        cookieKey,
         sessionCookie.sessionToken,
-        { expires: sessionCookie.expires },
+        { ...cookieOptions, expires: sessionCookie.expires },
         response,
       ),
       deleteCookie('auth_state', response),
@@ -156,13 +168,16 @@ export function Auth<TProviders extends Providers>(
           email: string
           password: string
         }
-        const { sessionToken, expires } = await signIn({ email, password })
+        const { sessionToken, expires } = await verifyCredentials({
+          email,
+          password,
+        })
 
         const response = Response.json({ token: sessionToken }, { status: 200 })
         await setCookie(
-          SESSION_COOKIE_NAME,
+          cookieKey,
           sessionToken,
-          { expires },
+          { ...cookieOptions, expires },
           response,
         )
         return response
@@ -172,7 +187,7 @@ export function Auth<TProviders extends Providers>(
       if (pathname === '/api/auth/sign-out') {
         await signOut(request)
         const response = createRedirectResponse('/')
-        await deleteCookie(SESSION_COOKIE_NAME, response)
+        await deleteCookie(cookieKey, response)
         return response
       }
 
@@ -197,7 +212,7 @@ export function Auth<TProviders extends Providers>(
 
   return {
     auth,
-    signIn,
+    signIn: verifyCredentials,
     signOut,
     handlers: {
       GET: withCors(handleGetRequest),
