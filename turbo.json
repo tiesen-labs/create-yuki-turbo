@@ -3,7 +3,6 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
       "outputs": [".cache/tsbuildinfo.json", "dist/**"]
     },
     "clean": {
@@ -21,12 +20,10 @@
       "outputLogs": "new-only"
     },
     "lint": {
-      "dependsOn": ["^lint"],
       "outputs": [".cache/.eslintcache"],
       "outputLogs": "new-only"
     },
     "typecheck": {
-      "dependsOn": ["^typecheck"],
       "outputs": [".cache/tsbuildinfo.json"],
       "outputLogs": "new-only"
     },

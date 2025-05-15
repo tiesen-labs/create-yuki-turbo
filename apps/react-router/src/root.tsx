@@ -12,8 +12,8 @@ import {
 
 import { SessionProvider } from '@yuki/auth/react'
 import { env } from '@yuki/env'
+import { ThemeProvider } from '@yuki/ui'
 import { Toaster } from '@yuki/ui/sonner'
-import { ThemeProvider } from '@yuki/ui/utils'
 
 import type { Route } from './+types/root'
 import { createMetadata } from '@/lib/metadata'
