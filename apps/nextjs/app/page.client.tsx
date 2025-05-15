@@ -93,7 +93,6 @@ export const SubscriptionStatus: React.FC = () => {
   const { trpc, queryClient } = useTRPC()
   const { status, reset } = useSubscription(
     trpc.post.onUpdate.subscriptionOptions(undefined, {
-      onError: (error) => toast.error(error.message),
       onData: ({ action, data }) => {
         switch (action) {
           case 'create':

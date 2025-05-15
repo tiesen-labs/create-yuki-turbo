@@ -1,7 +1,7 @@
 import { Suspense } from 'react'
 import Link from 'next/link'
 
-import { auth } from '@yuki/auth'
+import { auth, signOut } from '@yuki/auth'
 import { Button } from '@yuki/ui/button'
 import { GithubIcon } from '@yuki/ui/icons'
 import { Typography } from '@yuki/ui/typography'
@@ -80,7 +80,12 @@ const AuthShowcase: React.FC = async () => {
       {session.user && (
         <div className="flex justify-between">
           <Typography variant="h3">Welcome, {session.user.name}</Typography>
-          <form action="/api/auth/sign-out" method="POST">
+          <form
+            action={async () => {
+              'use server'
+              await signOut()
+            }}
+          >
             <Button variant="secondary">Logout</Button>
           </form>
         </div>
