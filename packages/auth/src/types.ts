@@ -8,10 +8,14 @@ export type Providers = Record<string, BaseProvider>
 export interface AuthOptions<T extends Providers = Providers> {
   cookieKey: string
   cookieOptions: {
+    expires?: Date | number
+    maxAge?: number
+    domain?: string
     path: string
-    httpOnly: boolean
     secure: boolean
+    httpOnly: boolean
     sameSite: 'strict' | 'lax' | 'none'
+    priority?: 'low' | 'medium' | 'high'
     [key: string]: unknown
   }
   session: {
