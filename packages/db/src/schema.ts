@@ -1,8 +1,6 @@
 import { relations } from 'drizzle-orm'
 import { pgTable, primaryKey } from 'drizzle-orm/pg-core'
 
-import { posts } from './post'
-
 export const users = pgTable('user', (t) => ({
   id: t.uuid().primaryKey().defaultRandom().notNull(),
   name: t.varchar({ length: 255 }).notNull(),
@@ -51,4 +49,19 @@ export const sessions = pgTable('session', (t) => ({
 
 export const sessionRelations = relations(sessions, ({ one }) => ({
   user: one(users, { fields: [sessions.userId], references: [users.id] }),
+}))
+
+export const posts = pgTable('post', (t) => ({
+  id: t.uuid().primaryKey().defaultRandom().notNull(),
+  title: t.varchar({ length: 255 }).notNull(),
+  content: t.text().notNull(),
+  authorId: t
+    .uuid()
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  createdAt: t.timestamp().defaultNow().notNull(),
+}))
+
+export const postRelations = relations(posts, ({ one }) => ({
+  author: one(users, { fields: [posts.authorId], references: [users.id] }),
 }))

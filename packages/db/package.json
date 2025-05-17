@@ -7,19 +7,19 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "default": "./src/index.ts"
     },
     "./schema": {
-      "types": "./dist/schema/index.js",
-      "default": "./dist/schema/index.js"
+      "types": "./dist/schema.d.ts",
+      "default": "./src/schema.ts"
     }
   },
   "scripts": {
-    "build": "tsdown",
+    "build": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
     "db:push": "bun with-env drizzle-kit push",
     "db:studio": "bun with-env drizzle-kit studio",
-    "dev": "tsdown --watch",
+    "dev": "tsc --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
@@ -38,7 +38,6 @@
     "drizzle-kit": "^0.31.1",
     "eslint": "latest",
     "prettier": "latest",
-    "tsdown": "latest",
     "typescript": "latest"
   }
 }

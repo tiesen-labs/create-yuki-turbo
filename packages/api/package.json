@@ -7,13 +7,13 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+      "default": "./src/index.ts"
     }
   },
   "scripts": {
-    "build": "tsdown",
+    "build": "tsc",
     "clean": "git clean -xdf .cache .turbo dist node_modules",
-    "dev": "tsdown --watch",
+    "dev": "tsc --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
@@ -32,7 +32,6 @@
     "@yuki/tsconfig": "workspace:*",
     "eslint": "latest",
     "prettier": "latest",
-    "tsdown": "latest",
     "typescript": "latest"
   }
 }
