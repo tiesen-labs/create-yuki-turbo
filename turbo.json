@@ -42,7 +42,6 @@
   },
   "globalEnv": [
     "AUTH_PROXY_URL",
-    "AUTH_SECRET",
     "DATABASE_URL",
     "DISCORD_CLIENT_ID",
     "DISCORD_CLIENT_SECRET",
