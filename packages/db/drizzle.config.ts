@@ -12,8 +12,8 @@ import { env } from '@yuki/env'
 const nonPoolingUrl = env.DATABASE_URL.replace('-pooler', '')
 
 export default {
-  schema: './src/schema',
-  out: './src/schema/migrations',
+  schema: './src/schema.ts',
+  out: './migrations',
 
   dialect: 'postgresql',
   dbCredentials: { url: nonPoolingUrl },
