@@ -30,7 +30,7 @@
   },
   "prettier": "@yuki/prettier-config",
   "dependencies": {
-    "@radix-ui/react-slot": "^1.2.2",
+    "@radix-ui/react-slot": "^1.2.3",
     "@standard-schema/spec": "^1.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

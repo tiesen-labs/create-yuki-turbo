@@ -45,7 +45,7 @@
     "@babel/preset-env": "^7.27.2",
     "@babel/runtime": "^7.27.1",
     "@types/babel__core": "^7.20.5",
-    "@types/react": "19.1.4",
+    "@types/react": "19.1.5",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",

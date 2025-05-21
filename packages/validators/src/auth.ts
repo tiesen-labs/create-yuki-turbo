@@ -1,9 +1,9 @@
-import * as z from 'zod'
+import * as z from 'zod/v4'
 
 const passwordRegex = z
   .string()
   .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/, {
-    message: 'Password not strong enough',
+    error: 'Password not strong enough',
   })
 
 export const signInSchema = z.object({
@@ -20,7 +20,7 @@ export const signUpSchema = z
   })
   .refine((val) => val.password === val.confirmPassword, {
     path: ['confirmPassword'],
-    message: 'Passwords do not match',
+    error: 'Passwords do not match',
   })
 
 export const changePasswordSchema = z
@@ -31,5 +31,5 @@ export const changePasswordSchema = z
   })
   .refine((val) => val.newPassword === val.confirmNewPassword, {
     path: ['confirmNewPassword'],
-    message: 'Passwords do not match',
+    error: 'Passwords do not match',
   })

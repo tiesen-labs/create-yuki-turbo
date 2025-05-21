@@ -21,7 +21,7 @@
   "prettier": "@yuki/prettier-config",
   "dependencies": {
     "@t3-oss/env-core": "^0.13.4",
-    "zod": "^4.0.0-beta.20250415T232143"
+    "zod": "^3.25.17"
   },
   "devDependencies": {
     "@yuki/eslint-config": "workspace:*",
