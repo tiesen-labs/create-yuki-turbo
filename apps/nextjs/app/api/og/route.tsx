@@ -16,7 +16,7 @@ export function GET(req: NextRequest) {
         style={{
           fontFamily: 'Geist',
           backgroundColor: '#0c0c0c',
-          backgroundImage: `linear-gradient(to top right, hsl(221,89%,72%), transparent)`,
+          backgroundImage: `linear-gradient(to top right, #a96249, transparent)`,
         }}
         tw="flex flex-col w-full h-full p-12 text-white"
       >
