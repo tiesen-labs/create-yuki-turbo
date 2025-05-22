@@ -34,7 +34,7 @@
   "devDependencies": {
     "@react-router/dev": "^7.6.0",
     "@react-router/fs-routes": "^7.6.0",
-    "@tailwindcss/vite": "^4.1.7",
+    "@tailwindcss/vite": "catalog:tailwind",
     "@types/node": "22.15.21",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
@@ -44,7 +44,7 @@
     "@yuki/tsconfig": "workspace:*",
     "eslint": "catalog:tool",
     "prettier": "catalog:tool",
-    "tailwindcss": "catalog:tool",
+    "tailwindcss": "catalog:tailwind",
     "typescript": "catalog:tool",
     "vite": "^6.3.5",
     "vite-tsconfig-paths": "^5.1.4"

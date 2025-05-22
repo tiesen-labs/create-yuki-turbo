@@ -31,7 +31,7 @@
     "superjson": "catalog:trpc"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.1.7",
+    "@tailwindcss/postcss": "catalog:tailwind",
     "@types/node": "22.15.21",
     "@types/react": "catalog:react",
     "@types/react-dom": "catalog:react",
@@ -41,7 +41,7 @@
     "dotenv-cli": "^8.0.0",
     "eslint": "catalog:tool",
     "prettier": "catalog:tool",
-    "tailwindcss": "catalog:tool",
+    "tailwindcss": "catalog:tailwind",
     "typescript": "catalog:tool"
   }
 }

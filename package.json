@@ -20,6 +20,11 @@
         "@types/react": "19.1.5",
         "@types/react-dom": "^19.1.5"
       },
+      "tailwind": {
+        "@tailwindcss/postcss": "^4.1.7",
+        "@tailwindcss/vite": "^4.1.7",
+        "tailwindcss": "^4.1.7"
+      },
       "trpc": {
         "@tanstack/react-query": "^5.76.1",
         "@trpc/client": "^11.1.2",
@@ -30,7 +35,6 @@
       "tool": {
         "eslint": "^9.27.0",
         "prettier": "^3.5.3",
-        "tailwindcss": "^4.1.7",
         "typescript": "^5.8.3"
       }
     }
