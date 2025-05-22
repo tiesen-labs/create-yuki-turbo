@@ -46,7 +46,6 @@
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
     "eslint": "catalog:tool",
-    "postcss": "^8.5.3",
     "prettier": "catalog:tool",
     "tailwindcss": "catalog:tailwind",
     "tw-animate-css": "^1.3.0",
