@@ -17,9 +17,9 @@
     "@expo-google-fonts/geist": "^0.3.1",
     "@react-navigation/elements": "^2.4.2",
     "@react-navigation/native": "^7.1.9",
-    "@tanstack/react-query": "^5.76.1",
-    "@trpc/client": "^11.1.2",
-    "@trpc/tanstack-react-query": "^11.1.2",
+    "@tanstack/react-query": "catalog:trpc",
+    "@trpc/client": "catalog:trpc",
+    "@trpc/tanstack-react-query": "catalog:trpc",
     "@yuki/api": "workspace:*",
     "@yuki/auth": "workspace:*",
     "expo": "~53.0.9",
@@ -32,25 +32,25 @@
     "expo-status-bar": "~2.2.3",
     "expo-web-browser": "~14.1.6",
     "lucide-react-native": "^0.511.0",
-    "react": "19.0.0",
+    "react": "catalog:react",
     "react-native": "0.79.2",
     "react-native-gesture-handler": "~2.25.0",
     "react-native-reanimated": "~3.17.5",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.10.0",
-    "superjson": "^2.2.2"
+    "superjson": "catalog:trpc"
   },
   "devDependencies": {
     "@babel/core": "^7.27.1",
     "@babel/preset-env": "^7.27.2",
     "@babel/runtime": "^7.27.1",
     "@types/babel__core": "^7.20.5",
-    "@types/react": "19.1.5",
+    "@types/react": "catalog:react",
     "@yuki/eslint-config": "workspace:*",
     "@yuki/prettier-config": "workspace:*",
     "@yuki/tsconfig": "workspace:*",
-    "eslint": "latest",
-    "prettier": "latest",
-    "typescript": "latest"
+    "eslint": "catalog:tool",
+    "prettier": "catalog:tool",
+    "typescript": "catalog:tool"
   }
 }
