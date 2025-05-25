@@ -13,15 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@yuki/ui/card'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-  useForm,
-} from '@yuki/ui/form'
+import { useForm } from '@yuki/ui/form'
 import { Loader2Icon, RotateCcwIcon, TrashIcon } from '@yuki/ui/icons'
 import { Input } from '@yuki/ui/input'
 import { toast } from '@yuki/ui/sonner'
@@ -33,50 +25,55 @@ export const CreatePost: React.FC = () => {
   const { trpc, trpcClient, queryClient } = useTRPC()
 
   const form = useForm({
-    schema: createPostSchema,
+    validator: createPostSchema,
     defaultValues: { title: '', content: '' },
-    submitFn: trpcClient.post.create.mutate,
+    onSubmit: trpcClient.post.create.mutate,
     onSuccess: async () => {
       await queryClient.invalidateQueries(trpc.post.all.queryFilter())
       form.reset()
     },
-    onError: (error) => {
-      toast.error(error)
-    },
+    onError: (error) => toast.error(error.message),
   })
 
   return (
     <Card>
       <CardContent>
-        <Form form={form}>
-          <FormField
+        <form
+          className="grid gap-4"
+          onSubmit={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            form.handleSubmit()
+          }}
+        >
+          <form.Field
             name="title"
-            render={(field) => (
-              <FormItem>
-                <FormLabel>Title</FormLabel>
-                <FormControl {...field}>
+            render={({ field, meta }) => (
+              <div id={meta.id} className="grid gap-1">
+                <form.Label>Title</form.Label>
+                <form.Control {...field}>
                   <Input placeholder="What's on your mind?" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+                </form.Control>
+                <form.Message />
+              </div>
             )}
           />
 
-          <FormField
+          <form.Field
             name="content"
-            render={(field) => (
-              <FormItem>
-                <FormLabel>Content</FormLabel>
-                <FormControl {...field}>
+            render={({ field, meta }) => (
+              <div id={meta.id} className="grid gap-1">
+                <form.Label>Content</form.Label>
+                <form.Control {...field}>
                   <Input placeholder="What's on your mind?" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
+                </form.Control>
+                <form.Message />
+              </div>
             )}
           />
 
-          <Button disabled={form.isPending}>Create Post</Button>
-        </Form>
+          <Button disabled={form.state.isPending}>Create Post</Button>
+        </form>
       </CardContent>
     </Card>
   )

@@ -22,6 +22,8 @@
     "@trpc/tanstack-react-query": "catalog:trpc",
     "@yuki/api": "workspace:*",
     "@yuki/auth": "workspace:*",
+    "@yuki/ui": "workspace:*",
+    "@yuki/validators": "workspace:*",
     "expo": "~53.0.9",
     "expo-constants": "~17.1.6",
     "expo-dev-client": "^5.1.8",

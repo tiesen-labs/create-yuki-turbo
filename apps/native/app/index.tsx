@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import {
   Pressable,
   SafeAreaView,
@@ -24,8 +24,9 @@ import {
 } from 'lucide-react-native'
 
 import type { RouterOutputs } from '@yuki/api'
+import { useForm } from '@yuki/ui/form'
 
-import { trpc } from '@/lib/trpc'
+import { trpc, trpcClient } from '@/lib/trpc'
 
 export default function HomeScreen() {
   return (
@@ -258,20 +259,15 @@ const PostCardSkeleton: React.FC = () => {
 
 const CreatePost: React.FC = () => {
   const { colors } = useTheme()
-  const [formData, setFormData] = useState({
-    title: '',
-    content: '',
-  })
 
   const queryClient = useQueryClient()
-  const { mutate, isPending } = useMutation(
-    trpc.post.create.mutationOptions({
-      onSettled: () => {
-        void queryClient.invalidateQueries(trpc.post.all.queryFilter())
-        setFormData({ title: '', content: '' })
-      },
-    }),
-  )
+  const form = useForm({
+    defaultValues: { title: '', content: '' },
+    onSubmit: trpcClient.post.create.mutate,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries(trpc.post.all.queryFilter())
+    },
+  })
 
   return (
     <View
@@ -280,41 +276,49 @@ const CreatePost: React.FC = () => {
         backgroundColor: colors.card,
       }}
     >
-      <TextInput
-        placeholder="Title"
-        placeholderTextColor={colors.text + '50'}
-        style={{
-          ...styles.form_input,
-          borderColor: colors.border,
-          color: colors.text,
-        }}
-        value={formData.title}
-        onChangeText={(text) => {
-          setFormData({ ...formData, title: text })
-        }}
+      <form.Field
+        name="title"
+        render={({ field, meta }) => (
+          <View id={meta.id}>
+            <TextInput
+              placeholder="Title"
+              placeholderTextColor={colors.text + '50'}
+              style={{
+                ...styles.form_input,
+                borderColor: colors.border,
+                color: colors.text,
+              }}
+              value={field.value}
+              onChangeText={field.onChange}
+            />
+          </View>
+        )}
       />
-      <TextInput
-        placeholder="Content"
-        placeholderTextColor={colors.text + '50'}
-        style={{
-          ...styles.form_input,
-          borderColor: colors.border,
-          color: colors.text,
-        }}
-        value={formData.content}
-        onChangeText={(text) => {
-          setFormData({ ...formData, content: text })
-        }}
+
+      <form.Field
+        name="content"
+        render={({ field, meta }) => (
+          <View id={meta.id}>
+            <TextInput
+              placeholder="Content"
+              placeholderTextColor={colors.text + '50'}
+              style={{
+                ...styles.form_input,
+                borderColor: colors.border,
+                color: colors.text,
+              }}
+              value={field.value}
+              onChangeText={field.onChange}
+            />
+          </View>
+        )}
       />
+
       <Pressable
-        disabled={isPending}
         style={{
           ...styles.form_button,
           backgroundColor: colors.primary,
-          opacity: isPending ? 0.8 : 1,
-        }}
-        onPress={() => {
-          mutate(formData)
+          opacity: form.state.isPending ? 0.8 : 1,
         }}
       >
         <Text
@@ -322,8 +326,9 @@ const CreatePost: React.FC = () => {
             ...styles.card_content,
             color: colors.background,
           }}
+          onPress={form.handleSubmit}
         >
-          {isPending ? 'Creating...' : 'Create Post'}
+          Create Post
         </Text>
       </Pressable>
     </View>
