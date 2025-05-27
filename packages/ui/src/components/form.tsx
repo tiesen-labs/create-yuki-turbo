@@ -350,24 +350,7 @@ function useForm<
   )
 }
 
-function FieldInfo<
-  TForm extends ReturnType<typeof useForm>,
-  TFieldName extends
-    keyof TForm['state']['value'] = keyof TForm['state']['value'],
->({
-  children,
-}: {
-  form: TForm
-  fieldName: TFieldName
-  children: (
-    field: ReturnType<typeof useFormField<TForm, TFieldName>>,
-  ) => React.ReactNode
-}) {
-  const field = useFormField<TForm, TFieldName>()
-  return children(field)
-}
-
-export { useForm, useFormField, FieldInfo }
+export { useForm }
 
 /** The Standard Schema interface. */
 interface StandardSchemaV1<Input = unknown, Output = Input> {
