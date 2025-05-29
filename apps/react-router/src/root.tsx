@@ -11,7 +11,6 @@ import {
 } from 'react-router'
 
 import { SessionProvider } from '@yuki/auth/react'
-import { env } from '@yuki/env'
 import { Toaster } from '@yuki/ui/sonner'
 import { ThemeProvider } from '@yuki/ui/utils'
 
@@ -29,7 +28,7 @@ export function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
         <Links />
       </head>
 
-      <body className="flecx-col flex min-h-dvh font-sans antialiased">
+      <body className="flex min-h-dvh flex-col font-sans antialiased">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -65,17 +64,14 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       error.status === 404
         ? 'This page could not be found.'
         : error.statusText || details
-  } else if (
-    env.NODE_ENV === 'development' &&
-    error &&
-    error instanceof Error
-  ) {
+  } else if (error instanceof Error) {
     details = error.message
-    stack = error.stack
+    // eslint-disable-next-line no-restricted-properties
+    stack = process.env.NODE_ENV === 'development' ? error.stack : undefined
   }
 
   return (
-    <main className="flex min-h-dvh flex-col items-center justify-center">
+    <main className="flex min-h-dvh min-w-1/2 flex-col items-center justify-center">
       <div>
         <h1 className="mr-5 inline-block border-r pr-6 align-top text-2xl leading-12 font-medium">
           {message}
@@ -86,7 +82,7 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
       </div>
 
       {stack && (
-        <pre className="bg-secondary container max-w-xl overflow-x-auto rounded-md p-4">
+        <pre className="bg-secondary container mt-4 max-w-2xl overflow-x-auto rounded-md p-4">
           <code>{stack}</code>
         </pre>
       )}
