@@ -26,13 +26,13 @@ export default function HomePage({
   return (
     <HydrateClient>
       <main className="container max-w-2xl py-4">
-        <Typography variant="h1" className="text-center">
+        <Typography variant="h2" className="text-center" as="h1">
           Create
           <span className="text-[#46120d] dark:text-[#a96249]"> Yuki </span>
           Turbo
         </Typography>
 
-        <Typography className="text-center text-lg">
+        <Typography className="text-center">
           A type-safe fullstack framework for building web applications.
         </Typography>
 
