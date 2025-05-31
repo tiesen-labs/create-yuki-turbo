@@ -15,8 +15,8 @@
   "prettier": "@yuki/prettier-config",
   "dependencies": {
     "@expo-google-fonts/geist": "^0.4.0",
-    "@react-navigation/elements": "^2.4.2",
-    "@react-navigation/native": "^7.1.9",
+    "@react-navigation/elements": "^2.4.3",
+    "@react-navigation/native": "^7.1.10",
     "@tanstack/react-query": "catalog:trpc",
     "@trpc/client": "catalog:trpc",
     "@trpc/tanstack-react-query": "catalog:trpc",
@@ -43,9 +43,9 @@
     "superjson": "catalog:trpc"
   },
   "devDependencies": {
-    "@babel/core": "^7.27.3",
+    "@babel/core": "^7.27.4",
     "@babel/preset-env": "^7.27.2",
-    "@babel/runtime": "^7.27.3",
+    "@babel/runtime": "^7.27.4",
     "@types/babel__core": "^7.20.5",
     "@types/react": "catalog:react",
     "@yuki/eslint-config": "workspace:*",

@@ -26,7 +26,7 @@ export default function HomePage({
   return (
     <HydrateClient>
       <main className="container max-w-2xl py-4">
-        <Typography variant="h2" className="text-center" as="h1">
+        <Typography variant="h2" className="text-center" component="h1">
           Create
           <span className="text-[#46120d] dark:text-[#a96249]"> Yuki </span>
           Turbo
@@ -59,7 +59,9 @@ export default function HomePage({
 
           {session.user && (
             <div className="flex justify-between">
-              <Typography variant="h3">Welcome, {session.user.name}</Typography>
+              <Typography variant="h5" component="h3">
+                Welcome, {session.user.name}
+              </Typography>
               <Form action="/api/auth/sign-out" method="POST">
                 <Button variant="secondary">Logout</Button>
               </Form>
