@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { cn } from '@yuki/ui/utils'
+import { cn } from '@yuki/ui'
 
 function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
   return (
