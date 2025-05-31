@@ -41,7 +41,7 @@ export const LoginForm: React.FC = () => {
       <form.Field
         name="email"
         render={({ field, meta }) => (
-          <div id={meta.id} className="grid gap-1">
+          <div id={meta.id} className="grid gap-2">
             <form.Label>Email</form.Label>
             <form.Control {...field}>
               <Input type="email" placeholder="yuki@example.com" />
@@ -54,7 +54,7 @@ export const LoginForm: React.FC = () => {
       <form.Field
         name="password"
         render={({ field, meta }) => (
-          <div id={meta.id} className="grid gap-1">
+          <div id={meta.id} className="grid gap-2">
             <form.Label>Password</form.Label>
             <form.Control {...field}>
               <Input type="password" placeholder="••••••••" />

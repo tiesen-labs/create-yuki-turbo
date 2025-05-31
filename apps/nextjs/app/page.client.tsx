@@ -49,7 +49,7 @@ export const CreatePost: React.FC = () => {
           <form.Field
             name="title"
             render={({ field, meta }) => (
-              <div id={meta.id} className="grid gap-1">
+              <div id={meta.id} className="grid gap-2">
                 <form.Label>Title</form.Label>
                 <form.Control {...field}>
                   <Input placeholder="What's on your mind?" />
@@ -62,7 +62,7 @@ export const CreatePost: React.FC = () => {
           <form.Field
             name="content"
             render={({ field, meta }) => (
-              <div id={meta.id} className="grid gap-1">
+              <div id={meta.id} className="grid gap-2">
                 <form.Label>Content</form.Label>
                 <form.Control {...field}>
                   <Input placeholder="What's on your mind?" />

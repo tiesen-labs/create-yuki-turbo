@@ -104,6 +104,10 @@ export const links: Route.LinksFunction = () => [
     href: 'https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap',
   },
   {
+    rel: 'stylesheet',
+    href: 'https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&display=swap',
+  },
+  {
     rel: 'icon',
     type: 'image/x-icon',
     href: 'https://tiesen.id.vn/favicon.ico',
