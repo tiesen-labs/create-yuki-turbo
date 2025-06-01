@@ -1,4 +1,5 @@
 import { Suspense } from 'react'
+import { cookies, headers } from 'next/headers'
 import Link from 'next/link'
 
 import { auth, signOut } from '@yuki/auth'
@@ -65,7 +66,7 @@ export default function HomePage() {
 }
 
 const AuthShowcase: React.FC = async () => {
-  const session = await auth()
+  const session = await auth({ headers: await headers() })
 
   return (
     <section className="mt-4 flex flex-col gap-4">
@@ -85,7 +86,8 @@ const AuthShowcase: React.FC = async () => {
           <form
             action={async () => {
               'use server'
-              await signOut()
+              await signOut({ headers: await headers() })
+              ;(await cookies()).delete('auth_token')
             }}
           >
             <Button variant="secondary">Logout</Button>

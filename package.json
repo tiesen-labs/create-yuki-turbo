@@ -33,7 +33,7 @@
         "superjson": "^2.2.2"
       },
       "tool": {
-        "eslint": "^9.27.0",
+        "eslint": "^9.28.0",
         "prettier": "^3.5.3",
         "typescript": "^5.8.3"
       }
