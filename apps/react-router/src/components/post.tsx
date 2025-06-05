@@ -88,9 +88,11 @@ const PostCard: React.FC<{ post: RouterOutputs['post']['all'][number] }> = ({
   const { trpc, queryClient } = useTRPC()
   const { mutate, isPending } = useMutation(
     trpc.post.delete.mutationOptions({
-      onError: (error) => toast.error(error.message),
       onSuccess: () =>
         queryClient.invalidateQueries(trpc.post.all.queryFilter()),
+      onError: (error) => {
+        toast.error(error.message)
+      },
     }),
   )
 
