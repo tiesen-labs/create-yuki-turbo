@@ -26,7 +26,9 @@ export const LoginForm: React.FC = () => {
       if (isExternal) router.push(`${redirectTo}?token=${token}`)
       else router.push(redirectTo)
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      toast.error(error.message)
+    },
   })
 
   return (

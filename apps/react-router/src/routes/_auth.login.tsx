@@ -50,7 +50,9 @@ const LoginForm: React.FC = () => {
       toast.success('You have successfully logged in!')
       await navigate('/')
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      toast.error(error.message)
+    },
   })
 
   return (

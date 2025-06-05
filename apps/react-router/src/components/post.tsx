@@ -29,7 +29,9 @@ export const CreatePost: React.FC = () => {
       void queryClient.invalidateQueries(trpc.post.all.queryFilter())
       form.reset()
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      toast.error(error.message)
+    },
   })
 
   return (

@@ -25,7 +25,9 @@ export const RegisterForm: React.FC = () => {
       toast.success('You have successfully registered!')
       router.push(`/login?redirect_to=${redirectTo}`)
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      toast.error(error.message)
+    },
   })
 
   return (
