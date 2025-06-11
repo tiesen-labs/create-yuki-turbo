@@ -1,5 +1,8 @@
 # create-yuki-turbo
 
+> [!WARNING]
+> This repository has been moved to [tiesen243/create-yuki-stack](https://github.com/tiesen243/create-yuki-stack)
+
 ## Installation
 
 > [!NOTE]
